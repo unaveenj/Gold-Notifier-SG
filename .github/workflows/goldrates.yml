@@ -2,7 +2,9 @@ name: Gold WhatsApp Bot
 
 on:
   schedule:
-    - cron: "0 0-14/2 * * *"
+    - cron: "0 0 * * *"   # 08:00 SGT
+    - cron: "0 5 * * *"   # 13:00 SGT
+    - cron: "0 12 * * *"  # 20:00 SGT
   workflow_dispatch:
 
 jobs:
