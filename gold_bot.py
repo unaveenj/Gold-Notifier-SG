@@ -4,7 +4,8 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 import pytz
-from twilio.rest import Client
+import smtplib
+from email.mime.text import MIMEText
 
 URL = "https://mustafajewellery.com/"
 MAX_ATTEMPTS = 3
@@ -101,31 +102,40 @@ def scrape_with_retry():
 def build_message(result: dict) -> str:
     if result["status"] == "OK":
         return (
-            "Mustafa Gold Rates (SGD)\n"
+            "Gold Price Update (SGD)\n"
             f"22k (916): {result['price_22k_916']}\n"
             f"24k (999): {result['price_24k_999']}\n\n"
-            f"Shop last updated: {result.get('shop_last_updated')}\n"
+            f"Last updated on source: {result.get('shop_last_updated')}\n"
             f"Job run time: {result['scrape_time_sgt']} (SGT)\n"
             "Status: OK"
         )
     else:
         return (
-            "Mustafa Gold Rates (SGD) - STALE\n\n"
+            "Gold Price Update (SGD) - STALE\n\n"
             f"Job run time: {result['scrape_time_sgt']} (SGT)\n"
             "Status: FAILED\n"
             f"Error: {result.get('error')}"
         )
 
 
-def send_whatsapp_twilio(body: str) -> str:
-    sid = os.environ["TWILIO_ACCOUNT_SID"]
-    token = os.environ["TWILIO_AUTH_TOKEN"]
-    from_no = os.environ["TWILIO_FROM"]
-    to_no = os.environ["TWILIO_TO"]
+def send_email_notification(message):
 
-    client = Client(sid, token)
-    msg = client.messages.create(from_=from_no, to=to_no, body=body)
-    return msg.sid
+    gmail_user = os.environ["GMAIL_USER"]
+    gmail_password = os.environ["GMAIL_APP_PASSWORD"]
+
+    msg = MIMEText(message)
+    msg["Subject"] = "📊 Gold Price Update"
+    msg["From"] = gmail_user
+    msg["To"] = gmail_user
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10) as server:
+        server.login(gmail_user, gmail_password)
+        server.send_message(msg)
+
+    try:
+        send_email_notification(message)
+    except Exception as e:
+        print("Email notification failed:", e)
 
 
 if __name__ == "__main__":
@@ -138,5 +148,4 @@ if __name__ == "__main__":
     print(message)
     print("==============================")
 
-    sid = send_whatsapp_twilio(message)
-    print(f"\n✅ Sent via Twilio. Message SID: {sid}\n")
+    send_email_notification(message)
