@@ -13,6 +13,8 @@ TOTAL_DEADLINE_SECONDS = 10
 USER_AGENT = "Mozilla/5.0 (compatible; GoldRateBot/1.0)"
 SGT = pytz.timezone("Asia/Singapore")
 
+EMAIL_SENT = False
+
 
 def now_sgt():
     return datetime.now(SGT).strftime("%Y-%m-%d %H:%M:%S")
@@ -35,13 +37,16 @@ def must_text(tag, label: str) -> str:
 
 
 def is_numberish(x: str) -> bool:
-    return x.replace(".", "", 1).isdigit()
+    try:
+        float(x)
+        return True
+    except:
+        return False
 
 
 def parse_gold_rates(html: str):
     soup = BeautifulSoup(html, "html.parser")
 
-    # IDs start with digits => use find(id=...) (NOT CSS selectors)
     p22_tag = soup.find(id="22k_price1")
     p24_tag = soup.find(id="24k_price1")
     date_tag = soup.find(id="date_update_gold")
@@ -119,6 +124,11 @@ def build_message(result: dict) -> str:
 
 
 def send_email_notification(message):
+    global EMAIL_SENT
+
+    if EMAIL_SENT:
+        print("Email already sent. Skipping duplicate.")
+        return
 
     gmail_user = os.environ["GMAIL_USER"]
     gmail_password = os.environ["GMAIL_APP_PASSWORD"]
@@ -132,10 +142,8 @@ def send_email_notification(message):
         server.login(gmail_user, gmail_password)
         server.send_message(msg)
 
-    try:
-        send_email_notification(message)
-    except Exception as e:
-        print("Email notification failed:", e)
+    EMAIL_SENT = True
+    print("Email notification sent")
 
 
 if __name__ == "__main__":
@@ -148,4 +156,7 @@ if __name__ == "__main__":
     print(message)
     print("==============================")
 
-    send_email_notification(message)
+    try:
+        send_email_notification(message)
+    except Exception as e:
+        print("Email notification failed:", e)
