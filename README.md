@@ -1,6 +1,6 @@
 # 🪙 GoldAlert SG — Gold Price Notifier
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://goldalert-sg.streamlit.app)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://gold-sg.streamlit.app/)
 
 An automated gold price monitoring system for Singapore that scrapes live jewellery gold prices and sends email alerts to subscribers. Features a premium SaaS-style landing page for subscription management.
 
