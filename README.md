@@ -1,186 +1,228 @@
-# 🪙 Gold Rate WhatsApp Bot
+# 🪙 Gold Price Notifier Bot
 
-An automated gold price monitoring bot that scrapes Gold price
-gold rates and sends WhatsApp notifications 3 times per day.
+An automated gold price monitoring bot that scrapes a public gold pricing website and sends **email notifications** on a scheduled basis.
 
-Built with: - Python - BeautifulSoup - Twilio WhatsApp Sandbox - GitHub
-Actions (serverless scheduler)
+Built with:
+- Python
+- BeautifulSoup
+- Gmail SMTP
+- GitHub Actions (serverless scheduler)
 
-------------------------------------------------------------------------
+---
 
-## 🚀 What This Bot Does
+# 🚀 What This Bot Does
 
-Every day at:
+Every hour between:
 
--   🕗 08:00 SGT\
--   🕐 13:00 SGT\
--   🕗 20:00 SGT
+- 🕗 08:00 SGT  
+- 🕙 22:00 SGT  
 
-It:
+The bot will:
 
-1.  Scrapes gold prices from xxx
-2.  Extracts:
-    -   22k (916) jewellery price
-    -   24k (999) jewellery price
-    -   Shop "Last Updated" timestamp
-3.  Sends the result to WhatsApp
-4.  Notifies even if scraping fails (with error details)
+1. Scrape gold prices from a public gold price website
+2. Extract:
+   - 22k (916) jewellery price
+   - 24k (999) jewellery price
+   - Website "Last Updated" timestamp
+3. Send the result via **email notification**
+4. Notify even if scraping fails (with error details)
 
-------------------------------------------------------------------------
+---
 
-## 🏗 Architecture
+# 🏗 Architecture
 
-    GitHub Actions (cron 3× daily)
-            ↓
-    Python Scraper (Retry + Timeout logic)
-            ↓
-    Twilio WhatsApp API
-            ↓
-    My WhatsApp 📲
+```
+GitHub Actions (hourly cron)
+        ↓
+Python Scraper (Retry + Timeout logic)
+        ↓
+Gmail SMTP
+        ↓
+Email Notification 📧
+```
 
-------------------------------------------------------------------------
+---
 
-## 🧠 Reliability Features
+# 🧠 Reliability Features
 
--   ✅ Max 3 retry attempts
--   ✅ 10-second total scrape deadline
--   ✅ Exponential backoff
--   ✅ Numeric validation of prices
--   ✅ Structured failure notifications
--   ✅ Runs serverlessly (no VM needed)
+- ✅ Max 3 retry attempts
+- ✅ 10-second total scrape deadline
+- ✅ Exponential backoff
+- ✅ Numeric validation of prices
+- ✅ Structured failure notifications
+- ✅ Serverless execution (GitHub Actions)
+- ✅ Email spam protection (send once per run)
 
-------------------------------------------------------------------------
+---
 
-## 📲 Example Notification
+# 📲 Example Notification
 
-### On Success
+## On Success
 
-    Gold Rates (SGD)
-    22k (916): 204.40
-    24k (999): 222.00
+```
+Gold Price Update (SGD)
 
-    Shop last updated: 26-02-2026 07:17:03 AM (SGT)
-    Job run time: 2026-02-26 08:00:02 (SGT)
-    Status: OK
+22k (916): 204.40
+24k (999): 222.00
 
-### On Failure
+Last updated on source: 26-02-2026 07:17:03 AM
+Job run time: 2026-02-26 08:00:02 (SGT)
 
-    Gold Rates (SGD) - STALE
+Status: OK
+```
 
-    Job run time: 2026-02-26 08:00:02 (SGT)
-    Status: FAILED
-    Error: <error details>
+## On Failure
 
-------------------------------------------------------------------------
+```
+Gold Price Update (SGD) - STALE
 
-## 🔐 Setup Instructions
+Job run time: 2026-02-26 08:00:02 (SGT)
 
-### 1️⃣ Clone Repo
+Status: FAILED
+Error: <error details>
+```
 
-``` bash
+---
+
+# 🔐 Setup Instructions
+
+## 1️⃣ Clone Repo
+
+```bash
 git clone https://github.com/<your-username>/<repo-name>.git
 cd <repo-name>
 ```
 
-------------------------------------------------------------------------
+---
 
-### 2️⃣ Install Dependencies (Local Testing)
+## 2️⃣ Install Dependencies (Local Testing)
 
-``` bash
+```bash
 pip install -r requirements.txt
 ```
 
-------------------------------------------------------------------------
+---
 
-### 3️⃣ Configure Twilio WhatsApp Sandbox
+# 📧 Configure Gmail SMTP
 
-1.  Create Twilio account
-2.  Enable WhatsApp Sandbox
-3.  Join sandbox from your WhatsApp:
-    -   Send the provided `join xxxxxx` code
-4.  Collect:
-    -   Account SID
-    -   Auth Token
-    -   Sandbox WhatsApp number
+You must use a **Google App Password**, not your normal Gmail password.
 
-------------------------------------------------------------------------
+Steps:
 
-### 4️⃣ Add GitHub Secrets
+1. Enable **2-Step Verification** on your Google account
+2. Go to **Google Account → Security → App Passwords**
+3. Generate a password for:
+
+```
+App: Mail
+Device: Other
+```
+
+Google will give a **16-character password**.
+
+---
+
+# 🔑 Add GitHub Secrets
 
 Go to:
 
+```
 Repo → Settings → Secrets and variables → Actions
+```
 
-Add:
+Add the following secrets:
 
-  Secret Name            Description
-  ---------------------- ------------------------------
-  `TWILIO_ACCOUNT_SID`   Twilio Account SID
-  `TWILIO_AUTH_TOKEN`    Twilio Auth Token
-  `TWILIO_FROM`          e.g. `whatsapp:+14155238886`
-  `TWILIO_TO`            e.g. `whatsapp:+65XXXXXXXX`
+| Secret Name | Description |
+|-------------|-------------|
+| `GMAIL_USER` | Your Gmail address |
+| `GMAIL_APP_PASSWORD` | Google App Password |
 
-------------------------------------------------------------------------
+Example:
 
-## ⏰ Scheduling
+```
+GMAIL_USER = your_email@gmail.com
+GMAIL_APP_PASSWORD = abcd efgh ijkl mnop
+```
+
+---
+
+# ⏰ Scheduling
 
 Configured in:
 
+```
 .github/workflows/goldrates.yml
+```
 
 Cron (UTC):
 
-``` yaml
-0 0 * * *   # 08:00 SGT
-0 5 * * *   # 13:00 SGT
-0 12 * * *  # 20:00 SGT
+```yaml
+0 0-14 * * *
 ```
 
-------------------------------------------------------------------------
+This equals:
 
-## 🛠 Core Logic
+| UTC | Singapore |
+|-----|-----------|
+| 00:00 | 08:00 |
+| 01:00 | 09:00 |
+| ... | ... |
+| 14:00 | 22:00 |
+
+So the bot runs **hourly between 08:00 – 22:00 SGT**.
+
+---
+
+# 🛠 Core Logic
 
 The scraper:
 
--   Uses `requests`
--   Parses HTML with BeautifulSoup
--   Extracts elements by ID:
-    -   `22k_price1`
-    -   `24k_price1`
-    -   `date_update_gold`
-    -   `time_updates_gold`
+- Uses `requests`
+- Parses HTML with BeautifulSoup
+- Extracts elements by ID:
 
-Retry Strategy: - 3 attempts max - 10 second global deadline -
-Exponential backoff (0.5s → 1s)
+```
+22k_price1
+24k_price1
+date_update_gold
+time_updates_gold
+```
 
-------------------------------------------------------------------------
+Retry Strategy:
 
-## 📈 Future Enhancements
+- 3 attempts max
+- 10 second global deadline
+- Exponential backoff (0.5s → 1s)
 
--   Store historical prices in Google Sheets
--   Add price change detection
--   Send alerts only on significant movement
--   Add dashboard (Grafana)
--   Support multiple jewellery shops
--   Migrate to WhatsApp Cloud API (lower cost long-term)
+---
 
-------------------------------------------------------------------------
+# 📈 Future Enhancements
 
-## ⚠ Disclaimer
+Possible improvements:
 
-This project scrapes publicly available price data for personal
-monitoring purposes.\
-Ensure compliance with website terms before deploying at scale.
+- Store historical prices in Google Sheets
+- Generate daily gold price charts
+- Add price change detection
+- Send alerts only when price changes
+- Support multiple pricing websites
+- Add dashboard (Grafana)
 
-------------------------------------------------------------------------
+---
 
-## 🧑‍💻 Author
+# ⚠ Disclaimer
 
-Built as a lightweight automation project to monitor gold prices
-efficiently using serverless infrastructure.
+This project scrapes publicly available pricing data for **personal monitoring purposes only**.
 
-------------------------------------------------------------------------
+Ensure compliance with the target website's terms of service before deploying at scale.
 
-## ⭐ If You Found This Useful
+---
 
-Star the repo 😄
+# 🧑‍💻 Author
+
+Built as a lightweight automation project to monitor gold prices using serverless infrastructure.
+
+---
+
+# ⭐ If You Found This Useful
+
+Consider starring the repo ⭐
