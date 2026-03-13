@@ -1,10 +1,11 @@
 import streamlit as st
 from pyairtable import Table
-import os
 from dotenv import load_dotenv
+from pathlib import Path
+import os
 
-# Load environment variables
-load_dotenv()
+# Load root .env
+load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent / ".env")
 
 API_KEY = os.getenv("AIRTABLE_API_KEY")
 BASE_ID = os.getenv("AIRTABLE_BASE_ID")
@@ -28,7 +29,7 @@ if st.button("Subscribe"):
         st.stop()
 
     try:
-        # Check if email already exists
+        # Check for existing subscriber
         existing = table.all(formula=f"{{email}}='{email}'")
 
         if existing:

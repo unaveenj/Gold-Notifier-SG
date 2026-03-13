@@ -1,4 +1,4 @@
-name: Gold WhatsApp Bot
+name: Gold Price Bot
 
 on:
   schedule:
@@ -8,6 +8,7 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -15,11 +16,13 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install deps
-        run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: pip install -r scraper/requirements.txt
 
-      - name: Run bot
+      - name: Run scraper
         env:
+          AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
+          AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-        run: python gold_bot.py
+        run: python scraper/gold_bot.py
