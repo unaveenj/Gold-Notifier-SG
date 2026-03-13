@@ -1,14 +1,8 @@
 import streamlit as st
 from pyairtable import Table
-from dotenv import load_dotenv
-from pathlib import Path
-import os
 
-# Load root .env
-load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent / ".env")
-
-API_KEY = os.getenv("AIRTABLE_API_KEY")
-BASE_ID = os.getenv("AIRTABLE_BASE_ID")
+API_KEY = st.secrets["AIRTABLE_API_KEY"]
+BASE_ID = st.secrets["AIRTABLE_BASE_ID"]
 
 table = Table(API_KEY, BASE_ID, "subscribers")
 
