@@ -35,9 +35,30 @@ def subscribe_email(email: str):
     return "success"
 
 # ── Hero ───────────────────────────────────────────────────────────────────────
-st.title("🪙 Gold Price Alerts for Singapore")
-st.subheader("Never miss the best time to buy gold.")
-st.caption("Track jewellery gold prices automatically and receive alerts when the market moves.")
+st.title("🪙 GoldAlert SG")
+st.subheader("Never miss the best time to buy gold in Singapore.")
+st.caption("Get automated alerts when jewellery gold prices change. Track 22k and 24k rates from Mustafa Jewellery.")
+
+st.divider()
+
+# ── Features ──────────────────────────────────────────────────────────────────
+st.subheader("✨ Key Features")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown("**📈 Price Tracking**")
+    st.caption("Real-time monitoring of 22k (916) and 24k (999) gold prices.")
+
+    st.markdown("**📧 Smart Alerts**")
+    st.caption("Email notifications only when prices change.")
+
+with col2:
+    st.markdown("**📊 Trend Indicators**")
+    st.caption("Up ↑ and down ↓ arrows show price movements.")
+
+    st.markdown("**⏰ Timely Updates**")
+    st.caption("Alerts every 2 hours during market hours (9am-11pm SGT).")
 
 st.divider()
 
@@ -113,6 +134,18 @@ with col2:
 with col3:
     st.markdown("**③ You're Alerted**")
     st.caption("Receive an email the moment the price shifts. Act fast, buy smart.")
+
+st.divider()
+
+# ── User Feedback ──────────────────────────────────────────────────────────────
+st.subheader("💬 What Our Users Say")
+
+st.markdown(
+    """
+    > *"This service gave me the perfect alert to head to Little India and purchase gold just as prices were dropping. Saved me hundreds!"*  
+    *- A happy subscriber from Singapore*
+    """
+)
 
 st.divider()
 
