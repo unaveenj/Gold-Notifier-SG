@@ -37,7 +37,19 @@ def subscribe_email(email: str):
 # ── Hero ───────────────────────────────────────────────────────────────────────
 st.title("🪙 GoldAlert SG")
 st.subheader("Never miss the best time to buy gold in Singapore.")
-st.caption("Get automated alerts when jewellery gold prices change. Track 22k and 24k rates from Mustafa Jewellery.")
+st.caption("Get automated alerts when jewellery gold prices change. Track 22k and 24k rates in real-time.")
+
+st.divider()
+
+# ── User Feedback ──────────────────────────────────────────────────────────────
+st.subheader("💬 What Our Users Say")
+
+st.markdown(
+    """
+    > *"This service gave me the perfect alert to head to Little India and purchase gold just as prices were dropping. Saved me hundreds!"*  
+    *- A happy subscriber from Singapore*
+    """
+)
 
 st.divider()
 
@@ -129,7 +141,7 @@ with col1:
 
 with col2:
     st.markdown("**② We Monitor**")
-    st.caption("Our bot checks Mustafa Jewellery prices every hour, around the clock.")
+    st.caption("Our bot checks gold prices every 2 hours, around the clock.")
 
 with col3:
     st.markdown("**③ You're Alerted**")
@@ -137,17 +149,7 @@ with col3:
 
 st.divider()
 
-# ── User Feedback ──────────────────────────────────────────────────────────────
-st.subheader("💬 What Our Users Say")
-
-st.markdown(
-    """
-    > *"This service gave me the perfect alert to head to Little India and purchase gold just as prices were dropping. Saved me hundreds!"*  
-    *- A happy subscriber from Singapore*
-    """
-)
-
 st.divider()
 
 # ── Footer ─────────────────────────────────────────────────────────────────────
-st.caption("GoldAlert SG · Powered by Mustafa Jewellery live data · Free · Singapore")
+st.caption("GoldAlert SG · Free · Singapore")
