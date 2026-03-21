@@ -69,10 +69,12 @@ def get_subscribers():
 def get_last_prices():
     records = airtable_prices.all()
     if not records:
+        print("No previous prices found in Airtable.")
         return None
     # Sort by id descending to get latest
     records.sort(key=lambda r: r['id'], reverse=True)
     fields = records[0]['fields']
+    print(f"Last prices fetched: {fields}")
     return {
         'price_22k_916': fields.get('price_22k_916'),
         'price_24k_999': fields.get('price_24k_999'),
@@ -219,7 +221,9 @@ def build_message(result: dict, last_prices: dict = None) -> str:
                     emoji22 = ' ↑'
                 elif curr22 < last22:
                     emoji22 = ' ↓'
-            except:
+                print(f"22k: last={last22}, curr={curr22}, emoji='{emoji22}'")
+            except Exception as e:
+                print(f"Error comparing 22k prices: {e}")
                 pass
             try:
                 last24 = float(last_prices['price_24k_999'])
@@ -228,7 +232,9 @@ def build_message(result: dict, last_prices: dict = None) -> str:
                     emoji24 = ' ↑'
                 elif curr24 < last24:
                     emoji24 = ' ↓'
-            except:
+                print(f"24k: last={last24}, curr={curr24}, emoji='{emoji24}'")
+            except Exception as e:
+                print(f"Error comparing 24k prices: {e}")
                 pass
 
         return (
