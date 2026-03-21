@@ -44,6 +44,7 @@ SGT = pytz.timezone("Asia/Singapore")
 # --------------------------------------------------
 
 airtable = Table(AIRTABLE_API_KEY, AIRTABLE_BASE_ID, "subscribers")
+airtable_prices = Table(AIRTABLE_API_KEY, AIRTABLE_BASE_ID, "prices")
 
 # --------------------------------------------------
 # Airtable subscriber fetch
@@ -59,6 +60,23 @@ def get_subscribers():
             emails.append(fields["email"])
 
     return emails
+
+
+# --------------------------------------------------
+# Airtable last prices fetch
+# --------------------------------------------------
+
+def get_last_prices():
+    records = airtable_prices.all()
+    if not records:
+        return None
+    # Sort by id descending to get latest
+    records.sort(key=lambda r: r['id'], reverse=True)
+    fields = records[0]['fields']
+    return {
+        'price_22k_916': fields.get('price_22k_916'),
+        'price_24k_999': fields.get('price_24k_999'),
+    }
 
 
 # --------------------------------------------------
@@ -184,14 +202,39 @@ def scrape_with_retry():
 # Build email message
 # --------------------------------------------------
 
-def build_message(result: dict) -> str:
+def build_message(result: dict, last_prices: dict = None) -> str:
 
     if result["status"] == "OK":
 
+        p22 = result['price_22k_916']
+        p24 = result['price_24k_999']
+        emoji22 = ''
+        emoji24 = ''
+
+        if last_prices:
+            try:
+                last22 = float(last_prices['price_22k_916'])
+                curr22 = float(p22)
+                if curr22 > last22:
+                    emoji22 = ' ↑'
+                elif curr22 < last22:
+                    emoji22 = ' ↓'
+            except:
+                pass
+            try:
+                last24 = float(last_prices['price_24k_999'])
+                curr24 = float(p24)
+                if curr24 > last24:
+                    emoji24 = ' ↑'
+                elif curr24 < last24:
+                    emoji24 = ' ↓'
+            except:
+                pass
+
         return (
             "Gold Price Update (SGD)\n"
-            f"22k (916): {result['price_22k_916']}\n"
-            f"24k (999): {result['price_24k_999']}\n\n"
+            f"22k (916): {p22}{emoji22}\n"
+            f"24k (999): {p24}{emoji24}\n\n"
             f"Last updated on source: {result.get('shop_last_updated')}\n"
             f"Job run time: {result['scrape_time_sgt']} (SGT)\n"
             "Status: OK"
@@ -253,7 +296,8 @@ def send_email_to_all(message):
 if __name__ == "__main__":
 
     result = scrape_with_retry()
-    message = build_message(result)
+    last_prices = get_last_prices()
+    message = build_message(result, last_prices)
 
     print("\n==============================")
     print("📨 MESSAGE TO SEND")
@@ -262,3 +306,14 @@ if __name__ == "__main__":
     print("==============================")
 
     send_email_to_all(message)
+
+    # Update prices if scrape was successful
+    if result["status"] == "OK":
+        try:
+            airtable_prices.create({
+                'price_22k_916': result['price_22k_916'],
+                'price_24k_999': result['price_24k_999'],
+            })
+            print("Prices updated in Airtable.")
+        except Exception as e:
+            print("Failed to update prices:", e)
