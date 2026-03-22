@@ -74,17 +74,22 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Service unavailable.' }, { status: 503 })
   }
 
-  const subscriberId = await findSubscriber(normalised)
-  if (!subscriberId) {
-    // Don't reveal whether email exists — return same response
-    return NextResponse.json({ ok: true })
+  try {
+    const subscriberId = await findSubscriber(normalised)
+    if (!subscriberId) {
+      // Don't reveal whether email exists — return same response
+      return NextResponse.json({ ok: true })
+    }
+
+    const otp = String(Math.floor(100000 + Math.random() * 900000))
+
+    await deleteExistingOtps(normalised)
+    await saveOtp(normalised, otp)
+    await sendOtpEmail(normalised, otp)
+  } catch (err) {
+    console.error('Unsubscribe request error:', err)
+    return NextResponse.json({ error: 'Service error. Please try again.' }, { status: 500 })
   }
-
-  const otp = String(Math.floor(100000 + Math.random() * 900000))
-
-  await deleteExistingOtps(normalised)
-  await saveOtp(normalised, otp)
-  await sendOtpEmail(normalised, otp)
 
   return NextResponse.json({ ok: true })
 }
