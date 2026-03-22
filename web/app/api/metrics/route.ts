@@ -2,13 +2,13 @@ import { NextResponse } from 'next/server'
 
 const NOTIFICATIONS_BASE = 1000 // historical seed count
 
-async function countRecords(baseId: string, table: string, apiKey: string): Promise<number> {
+async function countRecords(baseId: string, table: string, apiKey: string, field?: string): Promise<number> {
   let count = 0
   let offset: string | undefined
 
   do {
     const url = new URL(`https://api.airtable.com/v0/${baseId}/${encodeURIComponent(table)}`)
-    url.searchParams.set('fields[]', 'email')
+    if (field) url.searchParams.set('fields[]', field)
     url.searchParams.set('pageSize', '100')
     if (offset) url.searchParams.set('offset', offset)
 
@@ -36,8 +36,8 @@ export async function GET() {
 
   try {
     const [subscribers, priceRecords] = await Promise.all([
-      countRecords(baseId, 'subscribers', apiKey),
-      countRecords(baseId, 'prices', apiKey),
+      countRecords(baseId, 'subscribers', apiKey, 'email'),
+      countRecords(baseId, 'prices', apiKey, 'shop'),
     ])
 
     // Each record in the prices table = one scraper run = one notification batch sent
