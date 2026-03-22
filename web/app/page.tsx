@@ -424,7 +424,7 @@ export default function HomePage() {
             <div className="gold-rule reveal reveal-d2" />
             <div className="testimonials-grid">
               {TESTIMONIALS.map((t, i) => (
-                <div key={t.author} className={`testimonial-card reveal reveal-d${i + 1}`}>
+                <div key={t.detail} className={`testimonial-card reveal reveal-d${i + 1}`}>
                   <span className="testimonial-quote-mark" aria-hidden="true">&ldquo;</span>
                   <p className="testimonial-text">{t.quote}</p>
                   <div className="testimonial-footer">
