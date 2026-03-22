@@ -293,13 +293,11 @@ const TESTIMONIALS = [
   {
     quote:
       'I saved over S$300 buying at the right time thanks to the alerts! The emails are concise and come at the perfect moment.',
-    author: 'Priya R.',
     detail: 'Gold buyer, Singapore',
   },
   {
     quote:
       "The alerts helped me plan my purchase around a price dip I'd been waiting weeks for. Bought 50g at just the right moment — couldn't have timed it without GoldAlert SG.",
-    author: 'Marcus T.',
     detail: 'Regular gold investor, Singapore',
   },
 ]
@@ -430,8 +428,7 @@ export default function HomePage() {
                   <span className="testimonial-quote-mark" aria-hidden="true">&ldquo;</span>
                   <p className="testimonial-text">{t.quote}</p>
                   <div className="testimonial-footer">
-                    <p className="testimonial-author">— {t.author}</p>
-                    <p className="testimonial-detail">{t.detail}</p>
+                    <p className="testimonial-detail">— {t.detail}</p>
                   </div>
                 </div>
               ))}
