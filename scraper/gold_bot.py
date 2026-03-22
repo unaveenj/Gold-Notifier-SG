@@ -32,6 +32,7 @@ GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
 # Config
 # --------------------------------------------------
 
+SITE_URL       = os.getenv("SITE_URL", "https://goldalert-sg.vercel.app")
 MUSTAFA_URL    = "https://mustafajewellery.com/"
 MALABAR_URL    = "https://www.malabargoldanddiamonds.com/stores/singapore"
 JOYALUKKAS_GQL = "https://www.joyalukkas.com/graphql"
@@ -351,7 +352,8 @@ def build_message(mustafa_result: dict, malabar_result: dict, joyalukkas_result:
         f"{SEPARATOR}\n\n"
         f"{SEPARATOR}\n"
         f"{joyalukkas_section}\n"
-        f"{SEPARATOR}"
+        f"{SEPARATOR}\n\n"
+        f"To unsubscribe: {SITE_URL}/unsubscribe"
     )
 
 
