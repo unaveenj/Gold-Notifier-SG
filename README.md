@@ -1,116 +1,224 @@
 # 🪙 GoldAlert SG — Gold Price Notifier
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://gold-sg.streamlit.app/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat&logo=next.js&logoColor=white)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=flat&logo=vercel&logoColor=white)](https://vercel.com)
+[![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat&logo=python&logoColor=white)](https://python.org)
+[![GitHub Actions](https://img.shields.io/badge/Scheduler-GitHub%20Actions-2088FF?style=flat&logo=github-actions&logoColor=white)](https://github.com/features/actions)
+[![Airtable](https://img.shields.io/badge/Database-Airtable-18BFFF?style=flat&logo=airtable&logoColor=white)](https://airtable.com)
 
-An automated gold price monitoring system for Singapore that scrapes live jewellery gold prices and sends email alerts to subscribers. Features a premium SaaS-style landing page for subscription management.
-
-Built with:
-- Python · BeautifulSoup · Gmail SMTP
-- Streamlit · Airtable
-- GitHub Actions (serverless scheduler)
-
----
-
-# 🖥 Frontend — Luxury Financial Terminal UI
-
-The Streamlit frontend has been redesigned as a polished, premium SaaS landing page. The aesthetic direction is **"Luxury Financial Terminal"** — editorial, refined, and data-precise.
-
-### Design System
-
-| Element | Choice |
-|---|---|
-| **Display font** | Cormorant Garamond (serif, editorial) |
-| **Data/number font** | DM Mono (monospaced, instrument-like) |
-| **Body font** | Outfit (modern, clean) |
-| **Gold accent** | `#c8a84b` — real 22k gold, not garish yellow |
-| **Background** | `#050507` near-black for maximum gold contrast |
-
-### Key UI Features
-
-- **Sticky frosted navbar** — blur backdrop with gold logo, pinned on scroll
-- **Hero section** — grain noise texture overlay, radial gold ambient glow, large serif headline split between regular + italic weights, animated live-status badge
-- **Subscription form** — dark card with gold hairline borders; button transitions from transparent outline to filled gold on hover
-- **Flip clock counters** — two-panel card flip architecture with staggered slide-up entrance animations, DM Mono digits on dark instrument panels with corner accent gradients
-- **Value proposition** — large editorial `S$350` in Cormorant Garamond with gold gradient, decorative hairline accents above and below
-- **How it works** — Roman numerals (I, II, III) with geometric icons, minimal dark cards
-- **Footer** — gold hairline divider with centred ornament, reassurance copy
-
-### Page Sections
-
-1. **Hero** — headline, subheadline, live badge, description
-2. **Subscribe** — email form with duplicate protection, whitespace trimming, validation
-3. **Live Metrics** — flip clock counters for subscriber count and notifications sent (live from Airtable)
-4. **Value Proposition** — quantified savings with editorial treatment
-5. **How It Works** — three-step process cards
-6. **Trust Footer** — no-spam guarantee, SGD-only notice, hourly check frequency
+> Free, automated gold price monitoring for Singapore. Get instant email alerts when 22k and 24k gold prices change at Mustafa Jewellery.
 
 ---
 
-# 🚀 What This Bot Does
+## 🖥 Live UI
 
-Every hour between **08:00 – 22:00 SGT**, the bot:
+![GoldAlert SG Hero](docs/screenshots/hero.png)
 
-1. Scrapes gold prices from Mustafa Jewellery
-2. Extracts 22k (916) and 24k (999) jewellery prices + last updated timestamp
-3. Sends an email notification to all Airtable subscribers
+![GoldAlert SG Full Page](docs/screenshots/full-page.png)
+
+---
+
+## ✨ What This Does
+
+Every **2 hours from 9am–11pm SGT**, the system:
+
+1. Scrapes live gold prices from Mustafa Jewellery (22k & 24k)
+2. Compares with previous prices — adds ↑ / ↓ trend indicators
+3. Sends email alerts to all subscribers via Gmail SMTP
 4. Notifies even on scrape failure (with error details)
 
+Subscribers sign up via the **Next.js landing page** hosted on Vercel. Emails are stored in **Airtable**. The scraper runs on **GitHub Actions** — fully serverless, zero infrastructure cost.
+
 ---
 
-# 🏗 Architecture
+## 🏗 Architecture
 
 ```
-Streamlit UI (subscription form)
-        ↓
-Airtable (subscriber email store)
-        ↓
-GitHub Actions (hourly cron · 08:00–22:00 SGT)
-        ↓
-Python Scraper (retry + timeout logic)
-        ↓
+Next.js UI (Vercel)
+  ↓  Subscribe form → Airtable API
+Airtable (subscriber store)
+  ↓
+GitHub Actions (cron · 9am–11pm SGT · every 2 hours)
+  ↓
+Python Scraper (BeautifulSoup + retry logic)
+  ↓
 Gmail SMTP
-        ↓
+  ↓
 Email Notification 📧
 ```
 
 ---
 
-# 🧠 Reliability Features
+## 🎨 Frontend — Dark Luxury Gold UI
 
-- ✅ Max 3 retry attempts per scrape
-- ✅ 10-second total scrape deadline
-- ✅ Exponential backoff (0.5s → 1s)
-- ✅ Numeric validation of prices
-- ✅ Structured failure notifications
-- ✅ Serverless execution (GitHub Actions)
-- ✅ Duplicate email subscription protection
-- ✅ Airtable-backed subscriber store
-- ✅ Live subscriber count on landing page
+Built with **Next.js 14 App Router**, pure CSS, and Google Fonts. No UI library dependencies.
+
+| Element | Choice |
+|---|---|
+| **Display font** | Cormorant Garamond (serif, editorial) |
+| **Body font** | Outfit (modern, clean) |
+| **Number font** | JetBrains Mono (monospaced, precise) |
+| **Gold accent** | `#c8a84b` — real 22k gold hue |
+| **Background** | `#070708` near-black |
+| **Motion** | Canvas particle system (130 gold dust particles + 7 glow orbs) |
+
+### Page Sections
+
+1. **Announcement bar** — animated gold shimmer · "100% Free for Life — Limited Early Access"
+2. **Hero** — live badge, Cormorant headline with shimmer animation, subscribe form, live metrics
+3. **Stats band** — 2hr updates · 22k & 24k · 100% free
+4. **Features** — 4 cards with gold border glow on hover
+5. **Testimonials** — 2-column social proof cards
+6. **How It Works** — 3-step process with connector lines
+7. **Value Prop** — "Save up to S$350 per 100g" with gold shimmer
+8. **CTA** — repeat subscribe form
+9. **Footer**
 
 ---
 
-# 📲 Example Notification
-
-**On Success**
+## 📁 Project Structure
 
 ```
-Gold Price Update (SGD)
+Gold-Notifier-SG/
+├── web/                        ← Next.js app (deploy this to Vercel)
+│   ├── app/
+│   │   ├── globals.css         ← All styles + gold animations
+│   │   ├── layout.tsx          ← Root layout with Google Fonts
+│   │   ├── page.tsx            ← Landing page (canvas, form, sections)
+│   │   └── api/
+│   │       ├── subscribe/      ← POST: add subscriber to Airtable
+│   │       └── metrics/        ← GET: live subscriber + alert counts
+│   ├── .env.local.example      ← Copy to .env.local with your keys
+│   └── package.json
+├── scraper/
+│   ├── gold_bot.py             ← Scraper + email sender (Python)
+│   └── requirements.txt
+├── .github/
+│   └── workflows/goldrates.yml ← GitHub Actions cron scheduler
+└── docs/
+    └── screenshots/            ← UI screenshots
+```
 
-22k (916): 204.40
-24k (999): 222.00
+---
 
-Last updated on source: 26-02-2026 07:17:03 AM
-Job run time: 2026-02-26 08:00:02 (SGT)
+## 🚀 Setup
+
+### 1 — Clone
+
+```bash
+git clone https://github.com/unaveenj/Gold-Notifier-SG.git
+cd Gold-Notifier-SG
+```
+
+### 2 — Web App (Next.js → Vercel)
+
+```bash
+cd web
+npm install
+
+# Copy and fill in your Airtable credentials
+cp .env.local.example .env.local
+```
+
+`.env.local`:
+```
+AIRTABLE_API_KEY=your_airtable_personal_access_token
+AIRTABLE_BASE_ID=your_airtable_base_id
+```
+
+Run locally:
+```bash
+npm run dev   # http://localhost:3000
+```
+
+**Deploy to Vercel:**
+1. Import repo at [vercel.com/new](https://vercel.com/new)
+2. Set **Root Directory** → `web`
+3. Add environment variables: `AIRTABLE_API_KEY`, `AIRTABLE_BASE_ID`
+4. Deploy ✓
+
+### 3 — Scraper (Python)
+
+```bash
+pip install -r scraper/requirements.txt
+```
+
+### 4 — Gmail SMTP
+
+Use a **Google App Password** (not your regular password):
+
+1. Enable **2-Step Verification** on your Google account
+2. Go to **Google Account → Security → App Passwords**
+3. Generate a password for `Mail / Other`
+
+### 5 — GitHub Secrets
+
+Go to `Repo → Settings → Secrets → Actions`:
+
+| Secret | Description |
+|---|---|
+| `AIRTABLE_API_KEY` | Airtable personal access token |
+| `AIRTABLE_BASE_ID` | Airtable base ID |
+| `GMAIL_USER` | Your Gmail address |
+| `GMAIL_APP_PASSWORD` | Google App Password (16 chars) |
+
+---
+
+## ⏰ Schedule
+
+Cron in `.github/workflows/goldrates.yml`:
+
+```yaml
+"0 1,3,5,7,9,11,13,15 * * *"
+# UTC 01:00–15:00 = SGT 09:00–23:00, every 2 hours
+```
+
+| UTC | SGT |
+|-----|-----|
+| 01:00 | 09:00 |
+| 03:00 | 11:00 |
+| 05:00 | 13:00 |
+| 07:00 | 15:00 |
+| 09:00 | 17:00 |
+| 11:00 | 19:00 |
+| 13:00 | 21:00 |
+| 15:00 | 23:00 |
+
+---
+
+## 🧠 Reliability
+
+- ✅ Max 3 retry attempts per scrape
+- ✅ 10-second total scrape deadline with exponential backoff
+- ✅ Numeric price validation
+- ✅ Failure email sent even when scrape fails
+- ✅ Duplicate subscription protection (Airtable dedup)
+- ✅ Live subscriber + alert counts on landing page (60s refresh)
+- ✅ Fully serverless — no server to maintain
+
+---
+
+## 📲 Email Format
+
+**On success:**
+```
+📊 Gold Price Update
+
+22k (916): S$204.40 ↑
+24k (999): S$222.00 →
+
+Last updated on source: 22-03-2026 09:17:03 AM
+Job run time: 2026-03-22 09:00:02 (SGT)
 
 Status: OK
 ```
 
-**On Failure**
-
+**On failure:**
 ```
-Gold Price Update (SGD) - STALE
+📊 Gold Price Update - STALE
 
-Job run time: 2026-02-26 08:00:02 (SGT)
+Job run time: 2026-03-22 09:00:02 (SGT)
 
 Status: FAILED
 Error: <error details>
@@ -118,107 +226,36 @@ Error: <error details>
 
 ---
 
-# 🔐 Setup Instructions
+## 🛠 Scraper — Target Elements
 
-## 1️⃣ Clone Repo
-
-```bash
-git clone https://github.com/<your-username>/<repo-name>.git
-cd <repo-name>
 ```
-
-## 2️⃣ Install Dependencies
-
-```bash
-pip install -r scraper/requirements.txt
-pip install -r streamlit_app/requirements.txt
-```
-
-## 3️⃣ Configure Gmail SMTP
-
-Use a **Google App Password**, not your normal Gmail password.
-
-1. Enable **2-Step Verification** on your Google account
-2. Go to **Google Account → Security → App Passwords**
-3. Generate a password for `Mail / Other`
-
-Google will give a **16-character password**.
-
-## 4️⃣ Add GitHub Secrets
-
-Go to `Repo → Settings → Secrets and variables → Actions` and add:
-
-| Secret | Description |
-|---|---|
-| `AIRTABLE_API_KEY` | Airtable personal access token |
-| `AIRTABLE_BASE_ID` | Airtable base ID |
-| `GMAIL_USER` | Your Gmail address |
-| `GMAIL_APP_PASSWORD` | Google App Password |
-
-## 5️⃣ Add Streamlit Secrets
-
-In Streamlit Community Cloud, add to `secrets.toml`:
-
-```toml
-AIRTABLE_API_KEY = "your_key"
-AIRTABLE_BASE_ID = "your_base_id"
+mustafajewellery.com
+  #22k_price1        → 22k (916) price
+  #24k_price1        → 24k (999) price
+  #date_update_gold  → source last-updated date
+  #time_updates_gold → source last-updated time
 ```
 
 ---
 
-# ⏰ Scheduling
+## 📈 Roadmap
 
-Cron configured in `.github/workflows/goldrates.yml`:
-
-```yaml
-0 0-14 * * *   # Runs hourly 00:00–14:00 UTC = 08:00–22:00 SGT
-```
-
-| UTC | Singapore |
-|-----|-----------|
-| 00:00 | 08:00 |
-| 01:00 | 09:00 |
-| ... | ... |
-| 14:00 | 22:00 |
+- [ ] Historical price chart in email
+- [ ] Price threshold alerts (notify only when below X)
+- [ ] Unsubscribe link in email footer
+- [ ] Multiple pricing sources
+- [ ] Daily digest option
 
 ---
 
-# 🛠 Core Scraper Logic
+## ⚠ Disclaimer
 
-Targets Mustafa Jewellery website. Extracts elements by ID:
-
-```
-22k_price1        → 22k (916) gold price
-24k_price1        → 24k (999) gold price
-date_update_gold  → source last-updated date
-time_updates_gold → source last-updated time
-```
-
-Retry strategy: 3 attempts max · 10s global deadline · exponential backoff
+Scrapes publicly available data for personal monitoring purposes only. Ensure compliance with the target website's terms of service before deploying at scale.
 
 ---
 
-# 📈 Future Enhancements
+## 🧑‍💻 Author
 
-- Store historical prices in Airtable/Google Sheets
-- Price change detection (alert only on delta)
-- Daily gold price chart in email
-- Price threshold alerts (notify only below X)
-- Support multiple pricing sources
-- Unsubscribe link in email footer
-
----
-
-# ⚠ Disclaimer
-
-This project scrapes publicly available pricing data for **personal monitoring purposes only**. Ensure compliance with the target website's terms of service before deploying at scale.
-
----
-
-# 🧑‍💻 Author
-
-Built as a lightweight automation project to monitor Singapore gold prices using serverless infrastructure.
-
----
+Built as a lightweight serverless automation to help Singapore gold buyers time their purchases.
 
 ⭐ Star this repo if you found it useful
