@@ -1,4 +1,5 @@
 import os
+import re
 import time
 import requests
 from bs4 import BeautifulSoup
@@ -22,111 +23,109 @@ if not os.getenv("AIRTABLE_API_KEY"):
 # Environment variables
 # --------------------------------------------------
 
-AIRTABLE_API_KEY = os.getenv("AIRTABLE_API_KEY")
-AIRTABLE_BASE_ID = os.getenv("AIRTABLE_BASE_ID")
-
-GMAIL_USER = os.getenv("GMAIL_USER")
+AIRTABLE_API_KEY  = os.getenv("AIRTABLE_API_KEY")
+AIRTABLE_BASE_ID  = os.getenv("AIRTABLE_BASE_ID")
+GMAIL_USER        = os.getenv("GMAIL_USER")
 GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
 
 # --------------------------------------------------
 # Config
 # --------------------------------------------------
 
-URL = "https://mustafajewellery.com/"
+MUSTAFA_URL  = "https://mustafajewellery.com/"
+MALABAR_URL  = "https://www.malabargoldanddiamonds.com/stores/singapore"
 MAX_ATTEMPTS = 3
-TOTAL_DEADLINE_SECONDS = 10
-USER_AGENT = "Mozilla/5.0 (compatible; GoldRateBot/1.0)"
+TOTAL_DEADLINE_SECONDS = 15
+USER_AGENT   = "Mozilla/5.0 (compatible; GoldRateBot/1.0)"
+SEPARATOR    = "=" * 33
 
 SGT = pytz.timezone("Asia/Singapore")
 
 # --------------------------------------------------
-# Airtable connection
+# Airtable tables
 # --------------------------------------------------
 
-airtable = Table(AIRTABLE_API_KEY, AIRTABLE_BASE_ID, "subscribers")
-airtable_prices = Table(AIRTABLE_API_KEY, AIRTABLE_BASE_ID, "prices")
+airtable_subscribers = Table(AIRTABLE_API_KEY, AIRTABLE_BASE_ID, "subscribers")
+airtable_prices      = Table(AIRTABLE_API_KEY, AIRTABLE_BASE_ID, "prices")
 
 # --------------------------------------------------
-# Airtable subscriber fetch
+# Airtable helpers
 # --------------------------------------------------
 
 def get_subscribers():
-    records = airtable.all()
-    emails = []
-
-    for record in records:
-        fields = record.get("fields", {})
-        if "email" in fields:
-            emails.append(fields["email"])
-
-    return emails
+    records = airtable_subscribers.all()
+    return [r["fields"]["email"] for r in records if "email" in r.get("fields", {})]
 
 
-# --------------------------------------------------
-# Airtable last prices fetch
-# --------------------------------------------------
-
-def get_last_prices():
+def get_last_prices(shop: str):
+    """Return the most recent price record for the given shop."""
     records = airtable_prices.all()
-    if not records:
-        print("No previous prices found in Airtable.")
+    shop_records = [r for r in records if r.get("fields", {}).get("shop") == shop]
+    if not shop_records:
+        print(f"No previous prices found for {shop}.")
         return None
-    # Sort by id descending to get latest
-    records.sort(key=lambda r: r['id'], reverse=True)
-    fields = records[0]['fields']
-    print(f"Last prices fetched: {fields}")
+    shop_records.sort(key=lambda r: r["id"], reverse=True)
+    fields = shop_records[0]["fields"]
+    print(f"Last prices for {shop}: {fields}")
     return {
-        'price_22k_916': fields.get('price_22k_916'),
-        'price_24k_999': fields.get('price_24k_999'),
+        "price_22k_916": fields.get("price_22k_916"),
+        "price_24k_999": fields.get("price_24k_999"),
     }
 
 
+def save_prices(price_22k, price_24k, shop: str):
+    try:
+        airtable_prices.create({
+            "price_22k_916": price_22k,
+            "price_24k_999": price_24k,
+            "shop": shop,
+        })
+        print(f"Prices saved to Airtable for {shop}.")
+    except Exception as e:
+        print(f"Failed to save prices for {shop}: {e}")
+
+
 # --------------------------------------------------
-# Utility functions
+# Utility
 # --------------------------------------------------
 
 def now_sgt():
     return datetime.now(SGT).strftime("%Y-%m-%d %H:%M:%S")
 
 
-def fetch_html(timeout_seconds: float) -> str:
-    headers = {"User-Agent": USER_AGENT, "Accept": "text/html"}
-    r = requests.get(URL, headers=headers, timeout=timeout_seconds)
-    r.raise_for_status()
-    return r.text
-
-
-def must_text(tag, label: str) -> str:
-
-    if tag is None:
-        raise ValueError(f"Missing element: {label}")
-
-    value = tag.get_text(strip=True)
-
-    if not value:
-        raise ValueError(f"Empty value for: {label}")
-
-    return value
-
-
 def is_numberish(x: str) -> bool:
     try:
         float(x)
         return True
-    except:
+    except Exception:
         return False
 
 
+def must_text(tag, label: str) -> str:
+    if tag is None:
+        raise ValueError(f"Missing element: {label}")
+    value = tag.get_text(strip=True)
+    if not value:
+        raise ValueError(f"Empty value for: {label}")
+    return value
+
+
+def fetch_html(url: str, timeout_seconds: float) -> str:
+    headers = {"User-Agent": USER_AGENT, "Accept": "text/html"}
+    r = requests.get(url, headers=headers, timeout=timeout_seconds)
+    r.raise_for_status()
+    return r.text
+
+
 # --------------------------------------------------
-# Parse gold prices
+# Mustafa parser
 # --------------------------------------------------
 
-def parse_gold_rates(html: str):
-
+def parse_mustafa_rates(html: str):
     soup = BeautifulSoup(html, "html.parser")
 
-    p22_tag = soup.find(id="22k_price1")
-    p24_tag = soup.find(id="24k_price1")
+    p22_tag  = soup.find(id="22k_price1")
+    p24_tag  = soup.find(id="24k_price1")
     date_tag = soup.find(id="date_update_gold")
     time_tag = soup.find(id="time_updates_gold")
 
@@ -137,7 +136,6 @@ def parse_gold_rates(html: str):
         raise ValueError(f"Prices not numeric. Got 22k={p22}, 24k={p24}")
 
     last_updated = None
-
     if date_tag and time_tag:
         last_updated = f"{date_tag.get_text(strip=True)} {time_tag.get_text(strip=True)}"
 
@@ -145,151 +143,173 @@ def parse_gold_rates(html: str):
 
 
 # --------------------------------------------------
-# Scrape with retry logic
+# Malabar parser
+# Singapore country code on Malabar site = 85
+# element IDs: price22kt_85, price24kt_85, updatedtime_85
+# Price format: "179.00 SGD" — strip " SGD" suffix
 # --------------------------------------------------
 
-def scrape_with_retry():
+def parse_malabar_rates(html: str):
+    soup = BeautifulSoup(html, "html.parser")
 
-    start = time.time()
+    p22_tag  = soup.find(id="price22kt_85")
+    p24_tag  = soup.find(id="price24kt_85")
+    time_tag = soup.find(id="updatedtime_85")
+
+    p22_raw = must_text(p22_tag, "price22kt_85")
+    p24_raw = must_text(p24_tag, "price24kt_85")
+
+    # Strip currency suffix e.g. "179.00 SGD" → "179.00"
+    p22 = re.sub(r"[^\d.]", "", p22_raw).strip()
+    p24 = re.sub(r"[^\d.]", "", p24_raw).strip()
+
+    if not is_numberish(p22) or not is_numberish(p24):
+        raise ValueError(f"Prices not numeric. Got 22k={p22_raw}, 24k={p24_raw}")
+
+    last_updated = time_tag.get_text(strip=True) if time_tag else None
+
+    return p22, p24, last_updated
+
+
+# --------------------------------------------------
+# Generic scraper with retry
+# --------------------------------------------------
+
+def scrape_with_retry(url: str, parser_fn, shop: str) -> dict:
+    start      = time.time()
     last_error = None
 
     for attempt in range(1, MAX_ATTEMPTS + 1):
-
-        elapsed = time.time() - start
+        elapsed   = time.time() - start
         remaining = TOTAL_DEADLINE_SECONDS - elapsed
 
         if remaining <= 0:
             break
 
-        print(f"\n🔎 Attempt {attempt} (remaining time: {round(remaining, 2)}s)")
+        print(f"\n🔎 [{shop}] Attempt {attempt} (remaining: {round(remaining, 2)}s)")
 
         try:
-
-            html = fetch_html(timeout_seconds=remaining)
-            p22, p24, last_updated = parse_gold_rates(html)
-
-            print("✅ SCRAPE SUCCESS")
-
+            html = fetch_html(url, timeout_seconds=remaining)
+            p22, p24, last_updated = parser_fn(html)
+            print(f"✅ [{shop}] SCRAPE SUCCESS — 22k={p22}, 24k={p24}")
             return {
-                "status": "OK",
-                "scrape_time_sgt": now_sgt(),
-                "price_22k_916": p22,
-                "price_24k_999": p24,
+                "status":           "OK",
+                "shop":             shop,
+                "scrape_time_sgt":  now_sgt(),
+                "price_22k_916":    p22,
+                "price_24k_999":    p24,
                 "shop_last_updated": last_updated,
             }
 
         except Exception as e:
-
             last_error = str(e)
-            print(f"❌ Attempt {attempt} failed: {last_error}")
-
+            print(f"❌ [{shop}] Attempt {attempt} failed: {last_error}")
             backoff = 0.5 * (2 ** (attempt - 1))
-
-            if (
-                (time.time() - start + backoff) < TOTAL_DEADLINE_SECONDS
-                and attempt < MAX_ATTEMPTS
-            ):
+            if (time.time() - start + backoff) < TOTAL_DEADLINE_SECONDS and attempt < MAX_ATTEMPTS:
                 time.sleep(backoff)
 
-    print("\n🚨 ALL ATTEMPTS FAILED")
-
+    print(f"\n🚨 [{shop}] ALL ATTEMPTS FAILED")
     return {
-        "status": "FAILED",
+        "status":          "FAILED",
+        "shop":            shop,
         "scrape_time_sgt": now_sgt(),
-        "error": last_error or "Unknown error",
+        "error":           last_error or "Unknown error",
     }
 
 
 # --------------------------------------------------
-# Build email message
+# Build shop section (used inside the combined email)
 # --------------------------------------------------
 
-def build_message(result: dict, last_prices: dict = None) -> str:
+def build_shop_section(result: dict, last_prices: dict) -> str:
+    shop = result["shop"]
 
     if result["status"] == "OK":
-
-        p22 = result['price_22k_916']
-        p24 = result['price_24k_999']
-        emoji22 = ''
-        emoji24 = ''
+        p22 = result["price_22k_916"]
+        p24 = result["price_24k_999"]
+        emoji22 = emoji24 = ""
 
         if last_prices:
             try:
-                last22 = float(last_prices['price_22k_916'])
-                curr22 = float(p22)
-                if curr22 > last22:
-                    emoji22 = ' ↑'
-                elif curr22 < last22:
-                    emoji22 = ' ↓'
-                print(f"22k: last={last22}, curr={curr22}, emoji='{emoji22}'")
-            except Exception as e:
-                print(f"Error comparing 22k prices: {e}")
+                if float(p22) > float(last_prices["price_22k_916"]):
+                    emoji22 = " ↑"
+                elif float(p22) < float(last_prices["price_22k_916"]):
+                    emoji22 = " ↓"
+            except Exception:
                 pass
             try:
-                last24 = float(last_prices['price_24k_999'])
-                curr24 = float(p24)
-                if curr24 > last24:
-                    emoji24 = ' ↑'
-                elif curr24 < last24:
-                    emoji24 = ' ↓'
-                print(f"24k: last={last24}, curr={curr24}, emoji='{emoji24}'")
-            except Exception as e:
-                print(f"Error comparing 24k prices: {e}")
+                if float(p24) > float(last_prices["price_24k_999"]):
+                    emoji24 = " ↑"
+                elif float(p24) < float(last_prices["price_24k_999"]):
+                    emoji24 = " ↓"
+            except Exception:
                 pass
 
         return (
-            "Gold Price Update (SGD)\n"
-            f"22k (916): {p22}{emoji22}\n"
-            f"24k (999): {p24}{emoji24}\n\n"
-            f"Last updated on source: {result.get('shop_last_updated')}\n"
+            f"🏪 {shop}\n"
+            f"22k (916): S${p22}{emoji22}\n"
+            f"24k (999): S${p24}{emoji24}\n\n"
+            f"Last updated on source: {result.get('shop_last_updated', 'N/A')}\n"
             f"Job run time: {result['scrape_time_sgt']} (SGT)\n"
-            "Status: OK"
+            f"Status: OK"
         )
 
     else:
-
         return (
-            "Gold Price Update (SGD) - STALE\n\n"
-            f"Job run time: {result['scrape_time_sgt']} (SGT)\n"
-            "Status: FAILED\n"
-            f"Error: {result.get('error')}"
+            f"🏪 {shop}\n"
+            f"Status: FAILED\n"
+            f"Error: {result.get('error')}\n"
+            f"Job run time: {result['scrape_time_sgt']} (SGT)"
         )
+
+
+# --------------------------------------------------
+# Build combined email message
+# --------------------------------------------------
+
+def build_message(mustafa_result: dict, malabar_result: dict,
+                  mustafa_last: dict, malabar_last: dict) -> str:
+
+    mustafa_section = build_shop_section(mustafa_result, mustafa_last)
+    malabar_section = build_shop_section(malabar_result, malabar_last)
+
+    return (
+        f"📊 Gold Price Update (SGD)\n\n"
+        f"{SEPARATOR}\n"
+        f"{mustafa_section}\n"
+        f"{SEPARATOR}\n\n"
+        f"{SEPARATOR}\n"
+        f"{malabar_section}\n"
+        f"{SEPARATOR}"
+    )
 
 
 # --------------------------------------------------
 # Send email notifications
 # --------------------------------------------------
 
-def send_email_to_all(message):
-
+def send_email_to_all(message: str):
     subscribers = get_subscribers()
 
     if not subscribers:
         print("No subscribers found. Skipping email.")
         return
 
-    print(f"Subscribers found: {len(subscribers)}")
-    print("Sending emails...")
+    print(f"Sending to {len(subscribers)} subscriber(s)...")
 
     try:
-
         with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10) as server:
-
             server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
 
             for email in subscribers:
-
                 msg = MIMEText(message)
                 msg["Subject"] = "📊 Gold Price Update"
-                msg["From"] = GMAIL_USER
-                msg["To"] = email
+                msg["From"]    = GMAIL_USER
+                msg["To"]      = email
 
                 server.send_message(msg)
-
-                print(f"Email sent to {email}")
-
-                # Prevent Gmail rate limiting
-                time.sleep(1)
+                print(f"  ✉️  Sent to {email}")
+                time.sleep(1)  # Avoid Gmail rate limiting
 
     except Exception as e:
         print("Email sending failed:", e)
@@ -301,25 +321,28 @@ def send_email_to_all(message):
 
 if __name__ == "__main__":
 
-    result = scrape_with_retry()
-    last_prices = get_last_prices()
-    message = build_message(result, last_prices)
+    # Scrape both sources
+    mustafa_result = scrape_with_retry(MUSTAFA_URL, parse_mustafa_rates, "Mustafa Jewellery")
+    malabar_result = scrape_with_retry(MALABAR_URL, parse_malabar_rates, "Malabar Gold SG")
 
-    print("\n==============================")
-    print("📨 MESSAGE TO SEND")
-    print("==============================")
+    # Fetch last prices per shop for trend arrows
+    mustafa_last = get_last_prices("Mustafa Jewellery")
+    malabar_last = get_last_prices("Malabar Gold SG")
+
+    # Build and send combined email
+    message = build_message(mustafa_result, malabar_result, mustafa_last, malabar_last)
+
+    print("\n" + SEPARATOR)
+    print("📨 EMAIL TO SEND")
+    print(SEPARATOR)
     print(message)
-    print("==============================")
+    print(SEPARATOR)
 
     send_email_to_all(message)
 
-    # Update prices if scrape was successful
-    if result["status"] == "OK":
-        try:
-            airtable_prices.create({
-                'price_22k_916': result['price_22k_916'],
-                'price_24k_999': result['price_24k_999'],
-            })
-            print("Prices updated in Airtable.")
-        except Exception as e:
-            print("Failed to update prices:", e)
+    # Save prices to Airtable (only on success)
+    if mustafa_result["status"] == "OK":
+        save_prices(mustafa_result["price_22k_916"], mustafa_result["price_24k_999"], "Mustafa Jewellery")
+
+    if malabar_result["status"] == "OK":
+        save_prices(malabar_result["price_22k_916"], malabar_result["price_24k_999"], "Malabar Gold SG")
