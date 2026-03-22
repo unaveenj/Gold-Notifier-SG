@@ -939,10 +939,120 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: 0.25rem;
 }
 
+.footer-unsub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-decoration: underline;
+  margin-top: 0.75rem;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.footer-unsub:hover { opacity: 1; }
+
 .footer-legal {
   font-size: 0.67rem;
   color: rgba(92,84,72,0.5);
   margin-top: 0.5rem;
+}
+
+/* === UNSUBSCRIBE PAGE === */
+.unsub-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.unsub-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 3rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+}
+
+.unsub-back {
+  align-self: flex-start;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+.unsub-back:hover { color: var(--gold-1); }
+
+.unsub-logo {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--gold-1);
+  letter-spacing: 0.05em;
+}
+
+.unsub-title {
+  font-family: var(--font-cormorant, serif);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.unsub-sub {
+  font-size: 0.88rem;
+  color: var(--text-sub);
+  line-height: 1.6;
+  max-width: 320px;
+}
+.unsub-sub strong { color: var(--text); }
+
+.unsub-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.unsub-otp-input {
+  text-align: center;
+  letter-spacing: 0.35em;
+  font-size: 1.5rem !important;
+  font-family: var(--font-mono, monospace) !important;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #8b2020, #b02a2a) !important;
+}
+.btn-danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, #a02525, #c43030) !important;
+}
+
+.unsub-resend {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: -0.25rem;
+}
+.unsub-resend:hover { color: var(--gold-1); }
+
+.unsub-success-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--gold-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--gold-1);
 }
 
 /* === RESPONSIVE === */

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback, Fragment } from 'react'
+import Link from 'next/link'
 
 /* ─── Types ─── */
 interface Particle {
@@ -517,6 +518,7 @@ export default function HomePage() {
             Powered by automated monitoring across 3 Singapore jewellers
           </p>
           <p className="footer-legal">© 2025 GoldAlert SG · Free Service · Singapore</p>
+          <Link href="/unsubscribe" className="footer-unsub">Unsubscribe</Link>
         </footer>
       </main>
     </>
