@@ -32,8 +32,9 @@ GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
 # Config
 # --------------------------------------------------
 
-MUSTAFA_URL  = "https://mustafajewellery.com/"
-MALABAR_URL  = "https://www.malabargoldanddiamonds.com/stores/singapore"
+MUSTAFA_URL    = "https://mustafajewellery.com/"
+MALABAR_URL    = "https://www.malabargoldanddiamonds.com/stores/singapore"
+JOYALUKKAS_GQL = "https://www.joyalukkas.com/graphql"
 MAX_ATTEMPTS = 3
 TOTAL_DEADLINE_SECONDS = 15
 USER_AGENT   = "Mozilla/5.0 (compatible; GoldRateBot/1.0)"
@@ -172,6 +173,72 @@ def parse_malabar_rates(html: str):
 
 
 # --------------------------------------------------
+# Joyalukkas scraper (GraphQL API)
+# Store header "sg" returns SG-specific rates in SGD
+# --------------------------------------------------
+
+def fetch_joyalukkas_rates(shop: str) -> dict:
+    query = "{getgoldrates{metal_rate_time Data{GOLD_22KT_RATE GOLD_24KT_RATE}}}"
+    headers = {
+        "User-Agent": USER_AGENT,
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Store": "sg",
+    }
+    start      = time.time()
+    last_error = None
+
+    for attempt in range(1, MAX_ATTEMPTS + 1):
+        elapsed   = time.time() - start
+        remaining = TOTAL_DEADLINE_SECONDS - elapsed
+        if remaining <= 0:
+            break
+
+        print(f"\n🔎 [{shop}] Attempt {attempt} (remaining: {round(remaining, 2)}s)")
+        try:
+            r = requests.post(
+                JOYALUKKAS_GQL,
+                json={"query": query},
+                headers=headers,
+                timeout=remaining,
+            )
+            r.raise_for_status()
+            gql_data = r.json()["data"]["getgoldrates"]
+            entry    = gql_data["Data"][0]
+            p22      = entry["GOLD_22KT_RATE"].strip()
+            p24      = entry["GOLD_24KT_RATE"].strip()
+
+            if not is_numberish(p22) or not is_numberish(p24):
+                raise ValueError(f"Prices not numeric: 22k={p22}, 24k={p24}")
+
+            last_updated = gql_data.get("metal_rate_time")
+            print(f"✅ [{shop}] SCRAPE SUCCESS — 22k={p22}, 24k={p24}")
+            return {
+                "status":            "OK",
+                "shop":              shop,
+                "scrape_time_sgt":   now_sgt(),
+                "price_22k_916":     p22,
+                "price_24k_999":     p24,
+                "shop_last_updated": last_updated,
+            }
+
+        except Exception as e:
+            last_error = str(e)
+            print(f"❌ [{shop}] Attempt {attempt} failed: {last_error}")
+            backoff = 0.5 * (2 ** (attempt - 1))
+            if (time.time() - start + backoff) < TOTAL_DEADLINE_SECONDS and attempt < MAX_ATTEMPTS:
+                time.sleep(backoff)
+
+    print(f"\n🚨 [{shop}] ALL ATTEMPTS FAILED")
+    return {
+        "status":          "FAILED",
+        "shop":            shop,
+        "scrape_time_sgt": now_sgt(),
+        "error":           last_error or "Unknown error",
+    }
+
+
+# --------------------------------------------------
 # Generic scraper with retry
 # --------------------------------------------------
 
@@ -267,11 +334,12 @@ def build_shop_section(result: dict, last_prices: dict) -> str:
 # Build combined email message
 # --------------------------------------------------
 
-def build_message(mustafa_result: dict, malabar_result: dict,
-                  mustafa_last: dict, malabar_last: dict) -> str:
+def build_message(mustafa_result: dict, malabar_result: dict, joyalukkas_result: dict,
+                  mustafa_last: dict, malabar_last: dict, joyalukkas_last: dict) -> str:
 
-    mustafa_section = build_shop_section(mustafa_result, mustafa_last)
-    malabar_section = build_shop_section(malabar_result, malabar_last)
+    mustafa_section    = build_shop_section(mustafa_result, mustafa_last)
+    malabar_section    = build_shop_section(malabar_result, malabar_last)
+    joyalukkas_section = build_shop_section(joyalukkas_result, joyalukkas_last)
 
     return (
         f"📊 Gold Price Update (SGD)\n\n"
@@ -280,6 +348,9 @@ def build_message(mustafa_result: dict, malabar_result: dict,
         f"{SEPARATOR}\n\n"
         f"{SEPARATOR}\n"
         f"{malabar_section}\n"
+        f"{SEPARATOR}\n\n"
+        f"{SEPARATOR}\n"
+        f"{joyalukkas_section}\n"
         f"{SEPARATOR}"
     )
 
@@ -321,16 +392,21 @@ def send_email_to_all(message: str):
 
 if __name__ == "__main__":
 
-    # Scrape both sources
-    mustafa_result = scrape_with_retry(MUSTAFA_URL, parse_mustafa_rates, "Mustafa Jewellery")
-    malabar_result = scrape_with_retry(MALABAR_URL, parse_malabar_rates, "Malabar Gold SG")
+    # Scrape all sources
+    mustafa_result    = scrape_with_retry(MUSTAFA_URL, parse_mustafa_rates, "Mustafa Jewellery")
+    malabar_result    = scrape_with_retry(MALABAR_URL, parse_malabar_rates, "Malabar Gold SG")
+    joyalukkas_result = fetch_joyalukkas_rates("Joyalukkas SG")
 
     # Fetch last prices per shop for trend arrows
-    mustafa_last = get_last_prices("Mustafa Jewellery")
-    malabar_last = get_last_prices("Malabar Gold SG")
+    mustafa_last    = get_last_prices("Mustafa Jewellery")
+    malabar_last    = get_last_prices("Malabar Gold SG")
+    joyalukkas_last = get_last_prices("Joyalukkas SG")
 
     # Build and send combined email
-    message = build_message(mustafa_result, malabar_result, mustafa_last, malabar_last)
+    message = build_message(
+        mustafa_result, malabar_result, joyalukkas_result,
+        mustafa_last, malabar_last, joyalukkas_last,
+    )
 
     print("\n" + SEPARATOR)
     print("📨 EMAIL TO SEND")
@@ -346,3 +422,6 @@ if __name__ == "__main__":
 
     if malabar_result["status"] == "OK":
         save_prices(malabar_result["price_22k_916"], malabar_result["price_24k_999"], "Malabar Gold SG")
+
+    if joyalukkas_result["status"] == "OK":
+        save_prices(joyalukkas_result["price_22k_916"], joyalukkas_result["price_24k_999"], "Joyalukkas SG")
