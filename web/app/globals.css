@@ -179,6 +179,20 @@ a { color: inherit; text-decoration: none; }
 .nav-logo-icon { font-size: 1.2rem; }
 .nav-logo-sg   { color: var(--gold-1); }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.nav-unsub-link {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+.nav-unsub-link:hover { color: var(--text); }
+
 /* === BUTTONS === */
 .btn-gold {
   display: inline-flex;
@@ -944,10 +958,9 @@ a { color: inherit; text-decoration: none; }
   color: var(--text-muted);
   text-decoration: underline;
   margin-top: 0.75rem;
-  opacity: 0.6;
-  transition: opacity 0.2s;
+  transition: color 0.2s;
 }
-.footer-unsub:hover { opacity: 1; }
+.footer-unsub:hover { color: var(--text); }
 
 .footer-legal {
   font-size: 0.67rem;

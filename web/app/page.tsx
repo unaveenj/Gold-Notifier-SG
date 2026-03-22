@@ -342,9 +342,12 @@ export default function HomePage() {
           <span className="nav-logo-icon">🪙</span>
           GoldAlert&nbsp;<span className="nav-logo-sg">SG</span>
         </div>
-        <button className="btn-gold-outline" onClick={scrollToForm}>
-          Subscribe Free
-        </button>
+        <div className="nav-actions">
+          <Link href="/unsubscribe" className="nav-unsub-link">Unsubscribe</Link>
+          <button className="btn-gold-outline" onClick={scrollToForm}>
+            Subscribe Free
+          </button>
+        </div>
       </nav>
 
       <main>
