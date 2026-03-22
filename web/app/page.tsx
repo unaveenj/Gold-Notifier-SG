@@ -247,17 +247,11 @@ function LiveMetrics() {
 }
 
 /* ─── Data ─── */
-const SOURCES = [
-  { name: 'Mustafa Jewellery', note: 'Little India · 24hrs' },
-  { name: 'Malabar Gold & Diamonds', note: 'Jurong · Orchard' },
-  { name: 'Joyalukkas', note: 'Mustafa Centre' },
-]
-
 const FEATURES = [
   {
     icon: '💛',
     title: '3 Shops, One Alert',
-    desc: 'Compare 22k and 24k gold prices across Mustafa Jewellery, Malabar Gold & Diamonds, and Joyalukkas — all in a single email.',
+    desc: 'Compare 22k and 24k gold prices across the top jewellers in Singapore — all delivered in a single email.',
   },
   {
     icon: '⚡',
@@ -381,7 +375,7 @@ export default function HomePage() {
             <LiveMetrics />
 
             <p className="hero-source">
-              Mustafa · Malabar · Joyalukkas · Updated every 2 hours · 9am – 11pm SGT
+              3 top Singapore jewellers · Updated every 2 hours · 9am – 11pm SGT
             </p>
           </div>
 
@@ -396,18 +390,6 @@ export default function HomePage() {
             <div key={s.label} className="stat-item">
               <div className="stat-value">{s.value}</div>
               <div className="stat-label">{s.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* ── Sources Band ── */}
-        <div className="sources-band">
-          <span className="sources-label">Live prices from</span>
-          {SOURCES.map((s, i) => (
-            <div key={s.name} className="source-item">
-              {i > 0 && <span className="sources-sep">·</span>}
-              <div className="source-name">{s.name}</div>
-              <div className="source-note">{s.note}</div>
             </div>
           ))}
         </div>
@@ -532,7 +514,7 @@ export default function HomePage() {
           <div className="footer-logo">🪙 GoldAlert SG</div>
           <p className="footer-tagline">Free Gold Price Alerts for Singapore</p>
           <p className="footer-copy">
-            Powered by automated monitoring · Mustafa Jewellery · Malabar Gold & Diamonds · Joyalukkas
+            Powered by automated monitoring across 3 Singapore jewellers
           </p>
           <p className="footer-legal">© 2025 GoldAlert SG · Free Service · Singapore</p>
         </footer>
