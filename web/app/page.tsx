@@ -155,6 +155,7 @@ function SubscribeForm({ size = 'default' }: { size?: 'default' | 'large' }) {
       setStatus('success')
       setMessage('You\'re in! Expect your first alert soon.')
       setEmail('')
+      window.dispatchEvent(new Event('metrics-refresh'))
     } catch {
       setStatus('error')
       setMessage('Something went wrong. Please try again.')
@@ -218,8 +219,12 @@ function LiveMetrics() {
 
   useEffect(() => {
     fetchMetrics()
-    const id = setInterval(fetchMetrics, 60_000)
-    return () => clearInterval(id)
+    const id = setInterval(fetchMetrics, 30_000)
+    window.addEventListener('metrics-refresh', fetchMetrics)
+    return () => {
+      clearInterval(id)
+      window.removeEventListener('metrics-refresh', fetchMetrics)
+    }
   }, [fetchMetrics])
 
   return (

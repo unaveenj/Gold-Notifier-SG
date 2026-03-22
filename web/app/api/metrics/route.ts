@@ -14,7 +14,7 @@ async function countRecords(baseId: string, table: string, apiKey: string): Prom
 
     const res = await fetch(url.toString(), {
       headers: { Authorization: `Bearer ${apiKey}` },
-      next: { revalidate: 60 },
+      cache: 'no-store',
     })
 
     if (!res.ok) break
