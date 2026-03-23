@@ -5,9 +5,16 @@ import requests
 import cloudscraper
 from bs4 import BeautifulSoup
 from datetime import datetime
+from io import BytesIO
 import pytz
 import smtplib
 from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
+import matplotlib
+matplotlib.use("Agg")  # headless — no display needed
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 from pyairtable import Table
 from dotenv import load_dotenv
 from pathlib import Path
@@ -58,6 +65,13 @@ SEPARATOR    = "=" * 33
 
 SGT = pytz.timezone("Asia/Singapore")
 
+SHOP_COLORS = {
+    "Mustafa Jewellery": "#4FC3F7",   # light blue
+    "Malabar Gold SG":   "#81C784",   # light green
+    "Joyalukkas SG":     "#FFB74D",   # amber
+    "GRT Jewels SG":     "#CE93D8",   # lavender
+}
+
 # --------------------------------------------------
 # Airtable tables
 # --------------------------------------------------
@@ -100,6 +114,88 @@ def save_prices(price_22k, price_24k, shop: str):
         print(f"Prices saved to Airtable for {shop}.")
     except Exception as e:
         print(f"Failed to save prices for {shop}: {e}")
+
+
+# --------------------------------------------------
+# Price history + chart
+# --------------------------------------------------
+
+def get_price_history() -> list:
+    """Fetch all price records from Airtable and return as a sorted list of dicts."""
+    records = airtable_prices.all()
+    history = []
+    for r in records:
+        fields  = r.get("fields", {})
+        created = r.get("createdTime")
+        shop    = fields.get("shop")
+        p22     = fields.get("price_22k_916")
+        p24     = fields.get("price_24k_999")
+        if not (created and shop and p22 and p24):
+            continue
+        try:
+            dt = datetime.fromisoformat(created.replace("Z", "+00:00")).astimezone(SGT)
+            history.append({"dt": dt, "shop": shop, "p22": float(p22), "p24": float(p24)})
+        except (ValueError, TypeError):
+            continue
+    history.sort(key=lambda x: x["dt"])
+    return history
+
+
+def generate_price_chart(history: list) -> bytes | None:
+    """
+    Render a dual-subplot dark-theme chart (22K top, 24K bottom),
+    one color-coded line per shop, and return PNG bytes.
+    """
+    if not history:
+        print("No price history — skipping chart.")
+        return None
+
+    fig, (ax22, ax24) = plt.subplots(2, 1, figsize=(12, 7), sharex=True)
+    fig.patch.set_facecolor("#0d0d0d")
+
+    for ax in (ax22, ax24):
+        ax.set_facecolor("#161616")
+        ax.tick_params(colors="#aaaaaa", labelsize=9)
+        for spine in ax.spines.values():
+            spine.set_edgecolor("#2a2a2a")
+        ax.grid(True, color="#222222", linestyle="--", linewidth=0.6, alpha=0.8)
+        ax.yaxis.label.set_color("#cccccc")
+        ax.title.set_color("#e0e0e0")
+
+    shops = list(dict.fromkeys(r["shop"] for r in history))  # preserve insertion order
+
+    for shop in shops:
+        color     = SHOP_COLORS.get(shop, "#ffffff")
+        shop_data = [r for r in history if r["shop"] == shop]
+        dts  = [r["dt"]  for r in shop_data]
+        p22s = [r["p22"] for r in shop_data]
+        p24s = [r["p24"] for r in shop_data]
+        ax22.plot(dts, p22s, label=shop, color=color, linewidth=1.8, marker="o", markersize=3)
+        ax24.plot(dts, p24s, label=shop, color=color, linewidth=1.8, marker="o", markersize=3)
+
+    ax22.set_title("22K Gold  (916 purity) — S$ per gram", fontsize=11, pad=6)
+    ax24.set_title("24K Gold  (999 purity) — S$ per gram", fontsize=11, pad=6)
+    ax22.set_ylabel("Price (S$)", color="#cccccc", fontsize=9)
+    ax24.set_ylabel("Price (S$)", color="#cccccc", fontsize=9)
+    ax24.set_xlabel("Date (SGT)", color="#cccccc", fontsize=9)
+
+    ax24.xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
+    ax24.xaxis.set_major_locator(mdates.AutoDateLocator())
+    fig.autofmt_xdate(rotation=30, ha="right")
+
+    legend = ax22.legend(
+        facecolor="#1e1e1e", edgecolor="#333333",
+        labelcolor="white", fontsize=9, loc="upper left"
+    )
+
+    fig.suptitle("GoldAlert SG — Price History", color="#c8a84b", fontsize=14, fontweight="bold", y=1.01)
+    plt.tight_layout()
+
+    buf = BytesIO()
+    plt.savefig(buf, format="png", dpi=150, bbox_inches="tight", facecolor=fig.get_facecolor())
+    plt.close(fig)
+    buf.seek(0)
+    return buf.read()
 
 
 # --------------------------------------------------
@@ -528,7 +624,7 @@ def build_message(mustafa_result: dict, malabar_result: dict, joyalukkas_result:
 # Send email notifications
 # --------------------------------------------------
 
-def send_email_to_all(message: str):
+def send_email_to_all(message: str, chart_bytes: bytes | None = None):
     subscribers = get_subscribers()
 
     if not subscribers:
@@ -537,19 +633,41 @@ def send_email_to_all(message: str):
 
     print(f"Sending to {len(subscribers)} subscriber(s)...")
 
+    chart_tag = '<img src="cid:goldchart" style="width:100%;max-width:680px;border-radius:8px;margin-bottom:20px;" alt="Gold price chart">' if chart_bytes else ""
+
+    html_body = f"""<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:24px;background:#070708;color:#e8dfc8;font-family:'Courier New',monospace;max-width:700px;">
+  <h2 style="color:#c8a84b;margin-top:0;">📊 Gold Price Update (SGD)</h2>
+  {chart_tag}
+  <pre style="white-space:pre-wrap;font-size:13px;line-height:1.7;color:#e8dfc8;background:#111;padding:16px;border-radius:6px;border:1px solid #222;">{message}</pre>
+</body>
+</html>"""
+
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10) as server:
             server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
 
             for email in subscribers:
-                msg = MIMEText(message)
+                msg = MIMEMultipart("related")
                 msg["Subject"] = "📊 Gold Price Update"
                 msg["From"]    = GMAIL_USER
                 msg["To"]      = email
 
+                alt = MIMEMultipart("alternative")
+                msg.attach(alt)
+                alt.attach(MIMEText(message, "plain"))       # plain text fallback
+                alt.attach(MIMEText(html_body, "html"))      # HTML with chart
+
+                if chart_bytes:
+                    img = MIMEImage(chart_bytes)
+                    img.add_header("Content-ID", "<goldchart>")
+                    img.add_header("Content-Disposition", "inline", filename="gold_prices.png")
+                    msg.attach(img)
+
                 server.send_message(msg)
                 print(f"  ✉️  Sent to {email}")
-                time.sleep(1)  # Avoid Gmail rate limiting
+                time.sleep(1)
 
     except Exception as e:
         print("Email sending failed:", e)
@@ -585,7 +703,11 @@ if __name__ == "__main__":
     print(message)
     print(SEPARATOR)
 
-    send_email_to_all(message)
+    # Generate price history chart
+    price_history = get_price_history()
+    chart_bytes   = generate_price_chart(price_history)
+
+    send_email_to_all(message, chart_bytes)
 
     # Save prices to Airtable (only on success)
     if mustafa_result["status"] == "OK":

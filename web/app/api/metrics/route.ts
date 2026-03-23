@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 
 const NOTIFICATIONS_BASE = 1000 // historical seed count
+const SHOP_COUNT = 4            // number of shops tracked (one price record per shop per run)
 
 async function countRecords(baseId: string, table: string, apiKey: string, field?: string): Promise<number> {
   let count = 0
@@ -40,8 +41,10 @@ export async function GET() {
       countRecords(baseId, 'prices', apiKey, 'shop'),
     ])
 
-    // Each record in the prices table = one scraper run = one notification batch sent
-    const notifications = NOTIFICATIONS_BASE + priceRecords
+    // Each run creates one price record per shop, so divide by shop count to get runs.
+    // Multiply runs by subscriber count — that's how many emails were actually sent.
+    const runs = Math.floor(priceRecords / SHOP_COUNT)
+    const notifications = NOTIFICATIONS_BASE + (runs * subscribers)
 
     return NextResponse.json({ subscribers, notifications })
   } catch {
