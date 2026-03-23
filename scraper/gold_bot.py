@@ -473,6 +473,17 @@ def build_shop_section(result: dict, last_prices: dict) -> str:
         )
 
     else:
+        if last_prices and last_prices.get("price_22k_916") and last_prices.get("price_24k_999"):
+            p22 = last_prices["price_22k_916"]
+            p24 = last_prices["price_24k_999"]
+            return (
+                f"🏪 {shop}\n"
+                f"22k (916): S${p22} (Old rate — server error)\n"
+                f"24k (999): S${p24} (Old rate — server error)\n\n"
+                f"Last updated on source: N/A\n"
+                f"Job run time: {result['scrape_time_sgt']} (SGT)\n"
+                f"Status: FAILED — {result.get('error')}"
+            )
         return (
             f"🏪 {shop}\n"
             f"Status: FAILED\n"
