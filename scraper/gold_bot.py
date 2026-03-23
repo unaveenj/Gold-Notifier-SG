@@ -2,6 +2,7 @@ import os
 import re
 import time
 import requests
+import cloudscraper
 from bs4 import BeautifulSoup
 from datetime import datetime
 import pytz
@@ -202,73 +203,62 @@ def parse_malabar_rates(html: str):
 # --------------------------------------------------
 
 def fetch_grt_html(timeout_seconds: float) -> str:
-    """Fetch GRT page with full browser headers to bypass their bot detection."""
-    r = requests.get(GRT_URL, headers=BROWSER_HEADERS, timeout=timeout_seconds)
+    """
+    Fetch GRT page via cloudscraper, which rotates browser fingerprints and
+    solves Cloudflare/WAF JS challenges that block plain requests calls.
+    """
+    scraper = cloudscraper.create_scraper(browser={"browser": "chrome", "platform": "windows", "mobile": False})
+    r = scraper.get(GRT_URL, timeout=timeout_seconds)
     r.raise_for_status()
     return r.text
 
 
 def parse_grt_rates(html: str):
     """
-    Navigate the exact DOM path confirmed via Chrome DevTools XPath:
-      /html/body/div[1]/div[1]/header/div[4]/nav/div/ul/li[7]/ul/li[2]/a
-                                                              ^^^^
-                                             li[7] = "Today's Rate" nav item
-                                             Its submenu has:
-                                               li[1] = 22K rate
-                                               li[2] = 24K rate  ← XPath the user found
+    Exact HTML structure confirmed by user:
+      <li class="menu-item menu-item-has-children">
+        <a href="#">Today's Rate ...</a>
+        <ul class="sub-menu sf-sub-indicator">
+          <li><a href="#">GOLD - 22KT -  1. g  -  SGD  $ 169.90</a></li>
+          <li><a href="#">GOLD - 24KT -  1. g  - SGD $ 184.60</a></li>
+        </ul>
+      </li>
     """
     soup = BeautifulSoup(html, "html.parser")
 
-    try:
-        # Walk the exact path: header > div[4] > nav > div > ul > li[7] > ul
-        header   = soup.find("header")
-        div4     = header.find_all("div", recursive=False)[3]   # div[4], 0-indexed = [3]
-        nav      = div4.find("nav")
-        nav_div  = nav.find("div")
-        main_ul  = nav_div.find("ul")
-        li7      = main_ul.find_all("li", recursive=False)[6]   # li[7], 0-indexed = [6]
-        sub_ul   = li7.find("ul")
-        sub_lis  = sub_ul.find_all("li", recursive=False)
+    # Find the "Today's Rate" nav item by its anchor text
+    todays_rate_li = None
+    for li in soup.find_all("li", class_="menu-item-has-children"):
+        a = li.find("a", recursive=False)
+        if a and "today" in a.get_text(strip=True).lower() and "rate" in a.get_text(strip=True).lower():
+            todays_rate_li = li
+            break
 
-        # Extract text from all sub-items and match 22K / 24K by label
-        p22 = p24 = None
-        last_updated = None
+    if todays_rate_li is None:
+        raise ValueError("GRT: Could not find 'Today's Rate' menu item in page HTML.")
 
-        for li in sub_lis:
-            text = li.get_text(separator=" ", strip=True)
-            # Confirmed format: "GOLD - 22KT -  1. g  -  SGD  $ 169.90"
-            if re.search(r"22\s*KT|22\s*[Kk]|916", text):
-                p22 = _extract_price_from_text(text)
-            elif re.search(r"24\s*KT|24\s*[Kk]|999", text):
-                p24 = _extract_price_from_text(text)
+    sub_menu = todays_rate_li.find("ul", class_="sub-menu")
+    if sub_menu is None:
+        raise ValueError("GRT: Found 'Today's Rate' item but sub-menu is missing.")
 
-        # Fallback: if labels aren't found, assign by position (li[1]=22K, li[2]=24K)
-        if (p22 is None or p24 is None) and len(sub_lis) >= 2:
-            p22 = p22 or _extract_price_from_text(sub_lis[0].get_text(strip=True))
-            p24 = p24 or _extract_price_from_text(sub_lis[1].get_text(strip=True))
+    sub_links = [a.get_text(strip=True) for a in sub_menu.find_all("a")]
 
-    except (AttributeError, IndexError) as e:
-        raise ValueError(
-            f"GRT: DOM path navigation failed — page structure may have changed. "
-            f"Re-check XPath in DevTools. Error: {e}"
-        )
+    p22 = p24 = None
+    for text in sub_links:
+        if re.search(r"22\s*KT", text, re.IGNORECASE):
+            p22 = _extract_price_from_text(text)
+        elif re.search(r"24\s*KT", text, re.IGNORECASE):
+            p24 = _extract_price_from_text(text)
 
     if not p22 or not p24:
         raise ValueError(
-            "GRT: Could not extract 22K/24K prices from the Today's Rate dropdown. "
-            f"Sub-menu text: {[li.get_text(strip=True) for li in sub_lis]}"
+            f"GRT: Could not extract 22K/24K from sub-menu. Got: {sub_links}"
         )
 
     if not is_numberish(p22) or not is_numberish(p24):
         raise ValueError(f"GRT: Prices not numeric. Got 22k={p22}, 24k={p24}")
 
-    # Look for a date/time string anywhere on the page
-    ts_match = re.search(r"\d{1,2}[/-]\d{1,2}[/-]\d{2,4}", html)
-    if ts_match:
-        last_updated = ts_match.group(0)
-
-    return p22, p24, last_updated
+    return p22, p24, None
 
 
 def _extract_price_from_text(text: str) -> str | None:
