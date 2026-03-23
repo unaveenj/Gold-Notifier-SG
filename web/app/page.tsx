@@ -251,8 +251,8 @@ function LiveMetrics() {
 const FEATURES = [
   {
     icon: '💛',
-    title: '3 Shops, One Alert',
-    desc: 'Compare 22k and 24k gold prices across the top jewellers in Singapore — all delivered in a single email.',
+    title: '4 Shops, One Alert',
+    desc: 'Compare 22k and 24k gold prices across Mustafa, Malabar, Joyalukkas and GRT — all delivered in a single email.',
   },
   {
     icon: '⚡',
@@ -290,7 +290,7 @@ const STEPS = [
 ]
 
 const STATS = [
-  { value: '3', label: 'Shops Monitored' },
+  { value: '4', label: 'Shops Monitored' },
   { value: '22k & 24k', label: 'Gold Purities Tracked' },
   { value: '100%', label: 'Free Forever' },
 ]
