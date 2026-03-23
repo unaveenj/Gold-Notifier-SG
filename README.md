@@ -34,19 +34,9 @@ Subscribers sign up via the **Next.js landing page** hosted on Vercel. Emails ar
 
 ## 🏗 Architecture
 
-```
-Next.js UI (Vercel)
-  ↓  Subscribe form → Airtable API
-Airtable (subscriber store)
-  ↓
-GitHub Actions (cron · 9am–11pm SGT · every 2 hours)
-  ↓
-Python Scraper (BeautifulSoup + retry logic)
-  ↓
-Gmail SMTP
-  ↓
-Email Notification 📧
-```
+![GoldAlert SG Architecture](docs/architecture.svg)
+
+> Open [`docs/architecture.drawio`](docs/architecture.drawio) in [diagrams.net](https://app.diagrams.net) to edit.
 
 ---
 
@@ -240,11 +230,16 @@ mustafajewellery.com
 
 ## 📈 Roadmap
 
-- [ ] Historical price chart in email
-- [ ] Price threshold alerts (notify only when below X)
-- [ ] Unsubscribe link in email footer
-- [ ] Multiple pricing sources
-- [ ] Daily digest option
+- [x] Historical price chart in email
+- [x] Price threshold alerts (notify only when below X)
+- [x] Unsubscribe link in email footer
+- [x] Multiple pricing sources — Mustafa, Malabar, Joyalukkas, GRT
+- [x] Daily digest option
+
+## 🔜 Coming Soon
+
+- [ ] **Price drop push notifications** — browser push alerts (via Web Push API) so you get notified instantly without waiting for the next email batch
+- [ ] **Telegram / WhatsApp bot** — get gold price updates directly in your messaging app, with inline reply buttons to set personal price targets
 
 ---
 

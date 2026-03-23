@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 580" width="1000" height="580" font-family="system-ui,-apple-system,'Segoe UI',sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 Z" fill="#64748b"/>
+    </marker>
+    <marker id="a-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 Z" fill="#d97706"/>
+    </marker>
+    <marker id="a-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 Z" fill="#3b82f6"/>
+    </marker>
+    <marker id="a-blue-rev" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M10,1 L1,5 L10,9 Z" fill="#3b82f6"/>
+    </marker>
+    <marker id="a-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 Z" fill="#dc2626"/>
+    </marker>
+    <marker id="a-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 Z" fill="#7c3aed"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="580" fill="#f0f4f8" rx="12"/>
+
+  <!-- Title -->
+  <text x="500" y="24" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">GoldAlert SG — System Architecture</text>
+
+  <!-- ═══ DATA SOURCES GROUP ═══ -->
+  <rect x="10" y="108" width="192" height="292" rx="8" fill="#fffbeb" stroke="#d97706" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="106" y="126" text-anchor="middle" font-size="10" fill="#92400e" font-style="italic" font-weight="600">Data Sources</text>
+
+  <rect x="22" y="135" width="168" height="36" rx="6" fill="#b45309"/>
+  <text x="106" y="158" text-anchor="middle" font-size="11" font-weight="600" fill="white">Mustafa Jewellery</text>
+
+  <rect x="22" y="183" width="168" height="36" rx="6" fill="#b45309"/>
+  <text x="106" y="206" text-anchor="middle" font-size="11" font-weight="600" fill="white">Malabar Gold SG</text>
+
+  <rect x="22" y="231" width="168" height="36" rx="6" fill="#b45309"/>
+  <text x="106" y="254" text-anchor="middle" font-size="11" font-weight="600" fill="white">Joyalukkas SG</text>
+
+  <rect x="22" y="279" width="168" height="36" rx="6" fill="#b45309"/>
+  <text x="106" y="302" text-anchor="middle" font-size="11" font-weight="600" fill="white">GRT Jewels SG</text>
+
+  <!-- Bus arrows: stores → scraper -->
+  <!-- stubs from each store right edge to bus at x=220 -->
+  <line x1="190" y1="153" x2="220" y2="153" stroke="#d97706" stroke-width="1.5"/>
+  <line x1="190" y1="201" x2="220" y2="201" stroke="#d97706" stroke-width="1.5"/>
+  <line x1="190" y1="249" x2="220" y2="249" stroke="#d97706" stroke-width="1.5"/>
+  <line x1="190" y1="297" x2="220" y2="297" stroke="#d97706" stroke-width="1.5"/>
+  <!-- vertical bus -->
+  <line x1="220" y1="153" x2="220" y2="297" stroke="#d97706" stroke-width="1.5"/>
+  <!-- main arrow from bus to scraper -->
+  <line x1="220" y1="225" x2="268" y2="195" stroke="#d97706" stroke-width="2" marker-end="url(#a-amber)"/>
+  <text x="224" y="218" font-size="9" fill="#92400e" font-style="italic">scrape prices</text>
+
+  <!-- ═══ GITHUB ACTIONS ═══ -->
+  <rect x="293" y="30" width="214" height="52" rx="8" fill="#1f6feb"/>
+  <text x="400" y="52" text-anchor="middle" font-size="12" font-weight="700" fill="white">&#9881; GitHub Actions</text>
+  <text x="400" y="70" text-anchor="middle" font-size="10" fill="#bfdbfe">cron · every 2h · 9am–11pm SGT</text>
+
+  <!-- Arrow: GitHub Actions → Scraper -->
+  <line x1="400" y1="82" x2="400" y2="133" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#a)"/>
+  <text x="406" y="114" font-size="9" fill="#475569">triggers</text>
+
+  <!-- ═══ PYTHON SCRAPER ═══ -->
+  <rect x="268" y="134" width="264" height="94" rx="8" fill="#15803d"/>
+  <text x="400" y="158" text-anchor="middle" font-size="12" font-weight="700" fill="white">Python Scraper</text>
+  <text x="400" y="176" text-anchor="middle" font-size="10" fill="#bbf7d0">gold_bot.py</text>
+  <text x="400" y="194" text-anchor="middle" font-size="9" fill="#86efac">BeautifulSoup · cloudscraper · matplotlib</text>
+  <text x="400" y="212" text-anchor="middle" font-size="9" fill="#86efac">retry logic · exponential backoff</text>
+
+  <!-- ═══ AIRTABLE GROUP ═══ -->
+  <rect x="648" y="108" width="202" height="148" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="749" y="126" text-anchor="middle" font-size="10" fill="#1e40af" font-style="italic" font-weight="600">Airtable Database</text>
+
+  <rect x="660" y="133" width="178" height="30" rx="5" fill="#1d4ed8"/>
+  <text x="749" y="153" text-anchor="middle" font-size="10" fill="white">prices</text>
+
+  <rect x="660" y="171" width="178" height="30" rx="5" fill="#1d4ed8"/>
+  <text x="749" y="191" text-anchor="middle" font-size="10" fill="white">subscribers</text>
+
+  <rect x="660" y="209" width="178" height="30" rx="5" fill="#1d4ed8"/>
+  <text x="749" y="229" text-anchor="middle" font-size="10" fill="white">otps</text>
+
+  <!-- Arrow: Scraper → Airtable (save prices) -->
+  <line x1="532" y1="181" x2="647" y2="181" stroke="#3b82f6" stroke-width="2" marker-end="url(#a-blue)"/>
+  <text x="575" y="174" font-size="9" fill="#1d4ed8">save prices</text>
+
+  <!-- Arrow: Scraper → Gmail (send alert) -->
+  <line x1="400" y1="228" x2="400" y2="347" stroke="#dc2626" stroke-width="1.5" marker-end="url(#a-red)"/>
+  <text x="406" y="295" font-size="9" fill="#991b1b">send alert</text>
+
+  <!-- ═══ GMAIL SMTP ═══ -->
+  <rect x="293" y="348" width="214" height="50" rx="8" fill="#b91c1c"/>
+  <text x="400" y="369" text-anchor="middle" font-size="12" font-weight="700" fill="white">Gmail SMTP</text>
+  <text x="400" y="387" text-anchor="middle" font-size="9" fill="#fecaca">chart image · prices · trend arrows</text>
+
+  <!-- Arrow: Gmail → Email Subscribers -->
+  <line x1="400" y1="398" x2="400" y2="463" stroke="#7c3aed" stroke-width="2" marker-end="url(#a-purple)"/>
+  <text x="406" y="438" font-size="9" fill="#6d28d9">email alert</text>
+
+  <!-- ═══ EMAIL SUBSCRIBERS ═══ -->
+  <rect x="285" y="464" width="230" height="48" rx="8" fill="#5b21b6"/>
+  <text x="400" y="485" text-anchor="middle" font-size="12" font-weight="700" fill="white">Email Subscribers</text>
+  <text x="400" y="502" text-anchor="middle" font-size="9" fill="#ddd6fe">gold price alerts in inbox</text>
+
+  <!-- ═══ NEXT.JS / VERCEL ═══ -->
+  <rect x="648" y="340" width="202" height="54" rx="8" fill="#18181b"/>
+  <text x="749" y="362" text-anchor="middle" font-size="12" font-weight="700" fill="white">&#9650; Next.js · Vercel</text>
+  <text x="749" y="381" text-anchor="middle" font-size="9" fill="#a1a1aa">Landing · Subscribe · Metrics APIs</text>
+
+  <!-- Arrow: Airtable ↔ Next.js (bidirectional) -->
+  <line x1="749" y1="256" x2="749" y2="339" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#a-blue)" marker-start="url(#a-blue-rev)"/>
+  <text x="755" y="304" font-size="9" fill="#1d4ed8">read / write</text>
+
+  <!-- ═══ WEB VISITORS ═══ -->
+  <rect x="657" y="464" width="184" height="48" rx="8" fill="#374151"/>
+  <text x="749" y="485" text-anchor="middle" font-size="12" font-weight="700" fill="white">Web Visitors</text>
+  <text x="749" y="502" text-anchor="middle" font-size="9" fill="#d1d5db">subscribe · unsubscribe</text>
+
+  <!-- Arrow: Web Visitors → Next.js -->
+  <line x1="749" y1="463" x2="749" y2="395" stroke="#64748b" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="755" y="436" font-size="9" fill="#475569">visit &amp; subscribe</text>
+
+  <!-- ═══ LEGEND ═══ -->
+  <rect x="10" y="540" width="980" height="30" rx="6" fill="#e2e8f0"/>
+  <text x="20" y="560" font-size="9" fill="#475569">&#9632; Scheduler</text>
+  <rect x="76" y="548" width="10" height="10" rx="2" fill="#15803d"/>
+  <text x="92" y="560" font-size="9" fill="#475569">Scraper</text>
+  <rect x="130" y="548" width="10" height="10" rx="2" fill="#b45309"/>
+  <text x="146" y="560" font-size="9" fill="#475569">Data Sources</text>
+  <rect x="216" y="548" width="10" height="10" rx="2" fill="#1d4ed8"/>
+  <text x="232" y="560" font-size="9" fill="#475569">Storage</text>
+  <rect x="272" y="548" width="10" height="10" rx="2" fill="#b91c1c"/>
+  <text x="288" y="560" font-size="9" fill="#475569">Email</text>
+  <rect x="316" y="548" width="10" height="10" rx="2" fill="#5b21b6"/>
+  <text x="332" y="560" font-size="9" fill="#475569">Subscribers</text>
+  <rect x="394" y="548" width="10" height="10" rx="2" fill="#18181b"/>
+  <text x="410" y="560" font-size="9" fill="#475569">Web App</text>
+  <text x="600" y="560" font-size="9" fill="#94a3b8">Open architecture.drawio in diagrams.net to edit</text>
+</svg>
