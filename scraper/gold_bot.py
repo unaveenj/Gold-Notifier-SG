@@ -650,7 +650,8 @@ def send_email_to_all(message: str, chart_bytes: bytes | None = None):
 
             for email in subscribers:
                 msg = MIMEMultipart("related")
-                msg["Subject"] = "📊 Gold Price Update"
+                sgt_now = datetime.now(pytz.timezone("Asia/Singapore"))
+                msg["Subject"] = f"📊 Gold Prices · {sgt_now.strftime('%-d %b %I:%M %p')}"
                 msg["From"]    = GMAIL_USER
                 msg["To"]      = email
 
