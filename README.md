@@ -189,6 +189,12 @@ Cron in `.github/workflows/goldrates.yml`:
 
 ---
 
+## 📧 Email Notification Preview
+
+![Gold Price Alert Email](docs/screenshots/gold-notification-email.png)
+
+---
+
 ## 📲 Email Format
 
 **On success:**
