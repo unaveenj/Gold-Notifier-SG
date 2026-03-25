@@ -193,6 +193,31 @@ a { color: inherit; text-decoration: none; }
 }
 .nav-unsub-link:hover { color: var(--text); }
 
+/* === VISITOR BADGE === */
+.visitor-badge {
+  position: fixed;
+  top: 96px;
+  left: 18px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  background: rgba(7, 7, 8, 0.72);
+  border: 1px solid rgba(200, 168, 75, 0.3);
+  border-radius: 999px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  pointer-events: none;
+  user-select: none;
+}
+.visitor-badge-icon { font-size: 0.65rem; opacity: 0.7; }
+.visitor-badge-count { color: var(--gold-1); font-family: var(--font-mono, monospace); font-weight: 600; }
+.visitor-badge-label { opacity: 0.6; }
+
 /* === BUTTONS === */
 .btn-gold {
   display: inline-flex;
