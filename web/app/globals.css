@@ -196,7 +196,7 @@ a { color: inherit; text-decoration: none; }
 /* === VISITOR BADGE === */
 .visitor-badge {
   position: fixed;
-  top: 96px;
+  top: 106px;
   left: 18px;
   z-index: 999;
   display: flex;
