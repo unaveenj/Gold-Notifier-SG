@@ -32,10 +32,10 @@ if not os.getenv("AIRTABLE_API_KEY"):
 # Environment variables
 # --------------------------------------------------
 
-AIRTABLE_API_KEY  = os.getenv("AIRTABLE_API_KEY")
-AIRTABLE_BASE_ID  = os.getenv("AIRTABLE_BASE_ID")
-GMAIL_USER        = os.getenv("GMAIL_USER")
-GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
+AIRTABLE_API_KEY = os.getenv("AIRTABLE_API_KEY")
+AIRTABLE_BASE_ID = os.getenv("AIRTABLE_BASE_ID")
+EMAIL_USER       = os.getenv("EMAIL_USER")
+EMAIL_PASSWORD   = os.getenv("EMAIL_PASSWORD")
 
 # --------------------------------------------------
 # Config
@@ -627,6 +627,43 @@ def build_message(mustafa_result: dict, malabar_result: dict, joyalukkas_result:
 # Send email notifications
 # --------------------------------------------------
 
+def send_email(to_email: str, subject: str, body: str,
+               html_body: str | None = None,
+               chart_bytes: bytes | None = None) -> bool:
+    """
+    Send a single email via Namecheap Private Email (SMTP + STARTTLS).
+
+    Returns True on success, False on failure — never raises.
+    """
+    msg = MIMEMultipart("related")
+    msg["Subject"] = subject
+    msg["From"]    = "Gold Notifier \U0001f514 <alerts@goldnotifier.com>"
+    msg["To"]      = to_email
+
+    alt = MIMEMultipart("alternative")
+    msg.attach(alt)
+    alt.attach(MIMEText(body, "plain"))
+    if html_body:
+        alt.attach(MIMEText(html_body, "html"))
+
+    if chart_bytes:
+        img = MIMEImage(chart_bytes)
+        img.add_header("Content-ID", "<goldchart>")
+        img.add_header("Content-Disposition", "inline", filename="gold_prices.png")
+        msg.attach(img)
+
+    try:
+        with smtplib.SMTP("mail.privateemail.com", 587, timeout=10) as server:
+            server.starttls()
+            server.login(EMAIL_USER, EMAIL_PASSWORD)
+            server.send_message(msg)
+        print(f"  ✉️  Sent to {to_email}")
+        return True
+    except Exception as e:
+        print(f"  Email failed for {to_email}: {e}")
+        return False
+
+
 def send_email_to_all(message: str, chart_bytes: bytes | None = None):
     subscribers = get_subscribers()
 
@@ -636,45 +673,27 @@ def send_email_to_all(message: str, chart_bytes: bytes | None = None):
 
     print(f"Sending to {len(subscribers)} subscriber(s)...")
 
-    chart_tag = '<img src="cid:goldchart" style="width:100%;max-width:680px;border-radius:8px;margin-bottom:20px;" alt="Gold price chart">' if chart_bytes else ""
+    chart_tag = (
+        '<img src="cid:goldchart" style="width:100%;max-width:680px;'
+        'border-radius:8px;margin-bottom:20px;" alt="Gold price chart">'
+        if chart_bytes else ""
+    )
 
     html_body = f"""<!DOCTYPE html>
 <html>
 <body style="margin:0;padding:24px;background:#070708;color:#e8dfc8;font-family:'Courier New',monospace;max-width:700px;">
-  <h2 style="color:#c8a84b;margin-top:0;">📊 Gold Price Update (SGD)</h2>
+  <h2 style="color:#c8a84b;margin-top:0;">&#x1F4CA; Gold Price Update (SGD)</h2>
   {chart_tag}
   <pre style="white-space:pre-wrap;font-size:13px;line-height:1.7;color:#e8dfc8;background:#111;padding:16px;border-radius:6px;border:1px solid #222;">{message}</pre>
 </body>
 </html>"""
 
-    try:
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10) as server:
-            server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+    sgt_now = datetime.now(pytz.timezone("Asia/Singapore"))
+    subject = f"Gold Prices \u00b7 {sgt_now.strftime('%-d %b %I:%M %p')}"
 
-            for email in subscribers:
-                msg = MIMEMultipart("related")
-                sgt_now = datetime.now(pytz.timezone("Asia/Singapore"))
-                msg["Subject"] = f"📊 Gold Prices · {sgt_now.strftime('%-d %b %I:%M %p')}"
-                msg["From"]    = GMAIL_USER
-                msg["To"]      = email
-
-                alt = MIMEMultipart("alternative")
-                msg.attach(alt)
-                alt.attach(MIMEText(message, "plain"))       # plain text fallback
-                alt.attach(MIMEText(html_body, "html"))      # HTML with chart
-
-                if chart_bytes:
-                    img = MIMEImage(chart_bytes)
-                    img.add_header("Content-ID", "<goldchart>")
-                    img.add_header("Content-Disposition", "inline", filename="gold_prices.png")
-                    msg.attach(img)
-
-                server.send_message(msg)
-                print(f"  ✉️  Sent to {email}")
-                time.sleep(1)
-
-    except Exception as e:
-        print("Email sending failed:", e)
+    for email in subscribers:
+        send_email(email, subject, message, html_body, chart_bytes)
+        time.sleep(1)
 
 
 # --------------------------------------------------
