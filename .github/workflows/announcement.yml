@@ -2,13 +2,6 @@ name: Send Announcement
 
 on:
   workflow_dispatch:
-    inputs:
-      subject:
-        description: "Email subject"
-        required: true
-      body:
-        description: "Email body (plain text)"
-        required: true
 
 jobs:
   announce:
@@ -28,8 +21,6 @@ jobs:
         env:
           AIRTABLE_API_KEY:     ${{ secrets.AIRTABLE_API_KEY }}
           AIRTABLE_BASE_ID:     ${{ secrets.AIRTABLE_BASE_ID }}
-          EMAIL_USER:           ${{ secrets.EMAIL_USER }}
-          EMAIL_PASSWORD:       ${{ secrets.EMAIL_PASSWORD }}
-          ANNOUNCEMENT_SUBJECT: ${{ github.event.inputs.subject }}
-          ANNOUNCEMENT_BODY:    ${{ github.event.inputs.body }}
+          EMAIL_USER:     ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         run: python scraper/announcement.py

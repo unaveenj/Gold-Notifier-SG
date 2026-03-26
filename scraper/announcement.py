@@ -21,14 +21,68 @@ if not os.getenv("AIRTABLE_API_KEY"):
 # Environment variables
 # --------------------------------------------------
 
-AIRTABLE_API_KEY     = os.getenv("AIRTABLE_API_KEY")
-AIRTABLE_BASE_ID     = os.getenv("AIRTABLE_BASE_ID")
-EMAIL_USER           = os.getenv("EMAIL_USER")
-EMAIL_PASSWORD       = os.getenv("EMAIL_PASSWORD")
-ANNOUNCEMENT_SUBJECT = os.getenv("ANNOUNCEMENT_SUBJECT", "").strip()
-ANNOUNCEMENT_BODY    = os.getenv("ANNOUNCEMENT_BODY", "").strip()
+AIRTABLE_API_KEY = os.getenv("AIRTABLE_API_KEY")
+AIRTABLE_BASE_ID = os.getenv("AIRTABLE_BASE_ID")
+EMAIL_USER       = os.getenv("EMAIL_USER")
+EMAIL_PASSWORD   = os.getenv("EMAIL_PASSWORD")
 
 SITE_URL = os.getenv("SITE_URL", "https://www.goldnotifier.com")
+
+# --------------------------------------------------
+# Announcement content — edit here before triggering
+# --------------------------------------------------
+
+ANNOUNCEMENT_SUBJECT = "GoldAlert SG — New Website & Contact Email"
+
+ANNOUNCEMENT_BODY = """Dear Subscriber,
+
+Thank you so much for being part of GoldAlert SG. Your support means a
+lot to us, and we are excited to share some updates we have been working on.
+
+WHAT'S NEW
+----------
+
+New Website
+We now have a dedicated home at:
+https://www.goldnotifier.com
+
+Visit us for live gold price updates, subscriber metrics, and to manage
+your alerts — all in one place.
+
+New Contact Email
+Going forward, all alerts and communications will come from:
+alerts@goldnotifier.com
+
+Please add this address to your contacts or safe-sender list to ensure
+our alerts always reach your inbox.
+
+More Shops, More Coverage
+We have expanded coverage to 4 top Singapore jewellers:
+  - Mustafa Jewellery
+  - Malabar Gold SG
+  - Joyalukkas SG
+  - GRT Jewels SG
+
+Price Trend Indicators
+Every alert now shows percentage change arrows so you can see at a
+glance whether prices are up or down since the last update.
+
+Price History Charts
+Our emails now include a visual price history chart so you can spot
+trends across all 4 jewellers over time.
+
+----------
+We are committed to keeping this service free and useful for every
+Singapore gold buyer. Thank you again for your trust and support —
+we hope GoldAlert SG helps you buy smarter.
+
+Warm regards,
+The GoldAlert SG Team
+alerts@goldnotifier.com
+https://www.goldnotifier.com
+
+To unsubscribe: https://www.goldnotifier.com/unsubscribe
+"""
 SGT      = pytz.timezone("Asia/Singapore")
 
 # --------------------------------------------------
@@ -89,14 +143,6 @@ def send_email(to_email: str, subject: str, body: str) -> bool:
 # --------------------------------------------------
 
 if __name__ == "__main__":
-    if not ANNOUNCEMENT_SUBJECT:
-        print("Error: ANNOUNCEMENT_SUBJECT is empty. Aborting.")
-        raise SystemExit(1)
-
-    if not ANNOUNCEMENT_BODY:
-        print("Error: ANNOUNCEMENT_BODY is empty. Aborting.")
-        raise SystemExit(1)
-
     subscribers = get_subscribers()
     if not subscribers:
         print("No subscribers found. Exiting.")
