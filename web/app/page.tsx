@@ -338,7 +338,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "The alerts helped me plan my purchase around a price dip I'd been waiting weeks for. Bought 50g at just the right moment — couldn't have timed it without GoldAlert SG.",
+      "The alerts helped me plan my purchase around a price dip I'd been waiting weeks for. Bought 50g at just the right moment — couldn't have timed it without Gold Notifier.",
     detail: 'Regular gold investor, Singapore',
   },
 ]
@@ -376,7 +376,7 @@ export default function HomePage() {
       <nav className="nav">
         <div className="nav-logo">
           <span className="nav-logo-icon">🪙</span>
-          GoldAlert&nbsp;<span className="nav-logo-sg">SG</span>
+          Gold&nbsp;<span className="nav-logo-sg">Notifier</span>
         </div>
         <div className="nav-actions">
           <Link href="/unsubscribe" className="nav-unsub-link">Unsubscribe</Link>
@@ -437,7 +437,7 @@ export default function HomePage() {
         {/* ── Features ── */}
         <section className="section features-section">
           <div className="section-inner">
-            <p className="section-label reveal">Why GoldAlert SG</p>
+            <p className="section-label reveal">Why Gold Notifier</p>
             <h2 className="section-title reveal reveal-d1">
               Everything You Need<br />to Track Gold Prices
             </h2>
@@ -551,12 +551,12 @@ export default function HomePage() {
 
         {/* ── Footer ── */}
         <footer className="footer">
-          <div className="footer-logo">🪙 GoldAlert SG</div>
+          <div className="footer-logo">🪙 Gold Notifier</div>
           <p className="footer-tagline">Free Gold Price Alerts for Singapore</p>
           <p className="footer-copy">
             Powered by automated monitoring across 4 Singapore jewellers
           </p>
-          <p className="footer-legal">© 2026 GoldAlert SG · Free Service · Singapore</p>
+          <p className="footer-legal">© 2026 Gold Notifier · Free Service · Singapore</p>
           <Link href="/unsubscribe" className="footer-unsub">Unsubscribe</Link>
         </footer>
       </main>

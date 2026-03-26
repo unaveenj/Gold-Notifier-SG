@@ -32,18 +32,27 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Gold Notifier — Never Miss a Gold Price Drop in Singapore',
-    description:
-      'Free email alerts for Singapore gold prices. 22k & 24k monitoring across Mustafa, Malabar, Joyalukkas & GRT.',
-  },
   openGraph: {
     title: 'Gold Notifier — Never Miss a Gold Price Drop in Singapore',
     description:
       'Free email alerts for Singapore gold prices. 22k & 24k monitoring across Mustafa, Malabar, Joyalukkas & GRT.',
     type: 'website',
     url: 'https://www.goldnotifier.com',
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'Gold Notifier — Free Gold Price Alerts for Singapore',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Gold Notifier — Never Miss a Gold Price Drop in Singapore',
+    description:
+      'Free email alerts for Singapore gold prices. 22k & 24k monitoring across Mustafa, Malabar, Joyalukkas & GRT.',
+    images: ['/opengraph-image'],
   },
 }
 
@@ -66,6 +75,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   url: 'https://www.goldnotifier.com',
                   name: 'Gold Notifier',
                   description: 'Free gold price alerts for Singapore',
+                },
+                {
+                  '@type': 'Organization',
+                  '@id': 'https://www.goldnotifier.com/#organization',
+                  name: 'Gold Notifier',
+                  url: 'https://www.goldnotifier.com',
+                  logo: 'https://www.goldnotifier.com/opengraph-image',
+                  contactPoint: {
+                    '@type': 'ContactPoint',
+                    email: 'alerts@goldnotifier.com',
+                    contactType: 'customer support',
+                  },
                 },
                 {
                   '@type': 'Service',
