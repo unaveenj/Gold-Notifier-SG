@@ -637,7 +637,7 @@ def send_email(to_email: str, subject: str, body: str,
     """
     msg = MIMEMultipart("related")
     msg["Subject"] = subject
-    msg["From"]    = "Gold Notifier \U0001f514 <alerts@goldnotifier.com>"
+    msg["From"]    = "Gold Notifier <alerts@goldnotifier.com>"
     msg["To"]      = to_email
 
     alt = MIMEMultipart("alternative")
