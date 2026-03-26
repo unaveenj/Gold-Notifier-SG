@@ -41,7 +41,7 @@ GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
 # Config
 # --------------------------------------------------
 
-SITE_URL       = os.getenv("SITE_URL", "https://goldalert-sg.vercel.app")
+SITE_URL       = os.getenv("SITE_URL", "https://www.goldnotifier.com")
 MUSTAFA_URL    = "https://mustafajewellery.com/"
 MALABAR_URL    = "https://www.malabargoldanddiamonds.com/stores/singapore"
 JOYALUKKAS_GQL = "https://www.joyalukkas.com/graphql"
