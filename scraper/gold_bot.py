@@ -652,15 +652,21 @@ def send_email(to_email: str, subject: str, body: str,
         img.add_header("Content-Disposition", "inline", filename="gold_prices.png")
         msg.attach(img)
 
+    if not EMAIL_USER or not EMAIL_PASSWORD:
+        print("  Email skipped: EMAIL_USER or EMAIL_PASSWORD not set.")
+        return False
+
     try:
         with smtplib.SMTP("mail.privateemail.com", 587, timeout=10) as server:
+            server.ehlo()
             server.starttls()
+            server.ehlo()
             server.login(EMAIL_USER, EMAIL_PASSWORD)
             server.send_message(msg)
         print(f"  ✉️  Sent to {to_email}")
         return True
     except Exception as e:
-        print(f"  Email failed for {to_email}: {e}")
+        print(f"  Email failed for {to_email}: {type(e).__name__}: {e}")
         return False
 
 
