@@ -29,20 +29,21 @@ export const metadata: Metadata = {
   title: 'Gold Notifier — Free Gold Price Alerts for Singapore',
   description:
     'Get instant email alerts when 22k and 24k gold prices change at Mustafa Jewellery. Free, no account needed. Updated every 2 hours, 9am–11pm SGT.',
+  alternates: {
+    canonical: '/',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Gold Notifier — Never Miss a Gold Price Drop in Singapore',
+    description:
+      'Free email alerts for Singapore gold prices. 22k & 24k monitoring across Mustafa, Malabar, Joyalukkas & GRT.',
+  },
   openGraph: {
     title: 'Gold Notifier — Never Miss a Gold Price Drop in Singapore',
     description:
       'Free email alerts for Singapore gold prices. 22k & 24k monitoring across Mustafa, Malabar, Joyalukkas & GRT.',
     type: 'website',
     url: 'https://www.goldnotifier.com',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'Gold Notifier — Singapore Gold Price Alerts',
-      },
-    ],
   },
 }
 
