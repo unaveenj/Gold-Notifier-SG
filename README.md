@@ -160,27 +160,26 @@ Go to `Repo → Settings → Secrets → Actions`:
 Cron in `.github/workflows/goldrates.yml`:
 
 ```yaml
-"0 1,3,5,7,9,11,13,15 * * *"
-# UTC 01:00–15:00 = SGT 09:00–23:00, every 2 hours
+"5 0,2,4,6,8,10,12 * * *"
+# UTC 00:05–12:05 = SGT 08:05–20:05, every 2 hours
 ```
 
 | UTC | SGT |
 |-----|-----|
-| 01:00 | 09:00 |
-| 03:00 | 11:00 |
-| 05:00 | 13:00 |
-| 07:00 | 15:00 |
-| 09:00 | 17:00 |
-| 11:00 | 19:00 |
-| 13:00 | 21:00 |
-| 15:00 | 23:00 |
+| 00:05 | 08:05 |
+| 02:05 | 10:05 |
+| 04:05 | 12:05 |
+| 06:05 | 14:05 |
+| 08:05 | 16:05 |
+| 10:05 | 18:05 |
+| 12:05 | 20:05 |
 
 ---
 
 ## 🧠 Reliability
 
 - ✅ Max 3 retry attempts per scrape
-- ✅ 10-second total scrape deadline with exponential backoff
+- ✅ 45-second total scrape deadline with exponential backoff (15s × 3 attempts)
 - ✅ Numeric price validation
 - ✅ Failure email sent even when scrape fails
 - ✅ Duplicate subscription protection (Airtable dedup)
