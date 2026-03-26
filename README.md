@@ -8,6 +8,8 @@
 [![Airtable](https://img.shields.io/badge/Database-Airtable-18BFFF?style=flat&logo=airtable&logoColor=white)](https://airtable.com)
 
 > Free, automated gold price monitoring for Singapore. Get instant email alerts when 22k and 24k gold prices change at Mustafa Jewellery.
+>
+> **Website:** [www.goldnotifier.com](https://www.goldnotifier.com) · **Contact:** alerts@goldnotifier.com
 
 ---
 
@@ -25,7 +27,7 @@ Every **2 hours from 9am–11pm SGT**, the system:
 
 1. Scrapes live gold prices from Mustafa Jewellery (22k & 24k)
 2. Compares with previous prices — adds ↑ / ↓ trend indicators
-3. Sends email alerts to all subscribers via Gmail SMTP
+3. Sends email alerts to all subscribers via Namecheap Private Email SMTP
 4. Notifies even on scrape failure (with error details)
 
 Subscribers sign up via the **Next.js landing page** hosted on Vercel. Emails are stored in **Airtable**. The scraper runs on **GitHub Actions** — fully serverless, zero infrastructure cost.
@@ -134,13 +136,16 @@ npm run dev   # http://localhost:3000
 pip install -r scraper/requirements.txt
 ```
 
-### 4 — Gmail SMTP
+### 4 — Email (Namecheap Private Email)
 
-Use a **Google App Password** (not your regular password):
+Emails are sent from `alerts@goldnotifier.com` via Namecheap Private Email SMTP:
 
-1. Enable **2-Step Verification** on your Google account
-2. Go to **Google Account → Security → App Passwords**
-3. Generate a password for `Mail / Other`
+- **Host:** `mail.privateemail.com`
+- **Port:** `587` (STARTTLS)
+- **Username:** `alerts@goldnotifier.com`
+- **Password:** mailbox password set in Namecheap dashboard
+
+For support or queries: **alerts@goldnotifier.com**
 
 ### 5 — GitHub Secrets
 
@@ -150,8 +155,8 @@ Go to `Repo → Settings → Secrets → Actions`:
 |---|---|
 | `AIRTABLE_API_KEY` | Airtable personal access token |
 | `AIRTABLE_BASE_ID` | Airtable base ID |
-| `GMAIL_USER` | Your Gmail address |
-| `GMAIL_APP_PASSWORD` | Google App Password (16 chars) |
+| `EMAIL_USER` | `alerts@goldnotifier.com` |
+| `EMAIL_PASSWORD` | Namecheap mailbox password |
 
 ---
 
@@ -257,5 +262,8 @@ Scrapes publicly available data for personal monitoring purposes only. Ensure co
 ## 🧑‍💻 Author
 
 Built as a lightweight serverless automation to help Singapore gold buyers time their purchases.
+
+**Website:** [www.goldnotifier.com](https://www.goldnotifier.com)
+**Contact:** alerts@goldnotifier.com
 
 ⭐ Star this repo if you found it useful

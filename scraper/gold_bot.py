@@ -619,7 +619,8 @@ def build_message(mustafa_result: dict, malabar_result: dict, joyalukkas_result:
         f"{SEPARATOR}\n"
         f"{grt_section}\n"
         f"{SEPARATOR}\n\n"
-        f"To unsubscribe: {SITE_URL}/unsubscribe"
+        f"To unsubscribe: {SITE_URL}/unsubscribe\n"
+        f"Questions? Contact us: alerts@goldnotifier.com"
     )
 
 

@@ -153,3 +153,4 @@ st.divider()
 
 # ── Footer ─────────────────────────────────────────────────────────────────────
 st.caption("GoldAlert SG · Free · Singapore")
+st.caption("Website: [www.goldnotifier.com](https://www.goldnotifier.com) · Contact: alerts@goldnotifier.com")
