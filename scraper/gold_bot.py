@@ -46,7 +46,14 @@ MALABAR_URL    = "https://www.malabargoldanddiamonds.com/stores/singapore"
 JOYALUKKAS_GQL = "https://www.joyalukkas.com/graphql"
 GRT_URL        = "https://www.grtjewels.com/asia/"
 MAX_ATTEMPTS = 3
-TOTAL_DEADLINE_SECONDS = 15
+TOTAL_DEADLINE_SECONDS = 45   # 15s per attempt × 3
+
+SHOP_URLS = {
+    "Mustafa Jewellery":  MUSTAFA_URL,
+    "Malabar Gold SG":    MALABAR_URL,
+    "Joyalukkas SG":      "https://www.joyalukkas.com/sg/",
+    "GRT Jewels SG":      GRT_URL,
+}
 USER_AGENT   = "Mozilla/5.0 (compatible; GoldRateBot/1.0)"
 # GRT blocks simple bots — use full browser headers to pass their bot check
 BROWSER_HEADERS = {
@@ -569,6 +576,8 @@ def build_shop_section(result: dict, last_prices: dict) -> str:
         )
 
     else:
+        shop_url = SHOP_URLS.get(shop, "")
+        url_line = f'\nCheck latest: <a href="{shop_url}" style="color:#c8a84b;">{shop_url}</a>' if shop_url else ""
         if last_prices and last_prices.get("price_22k_916") and last_prices.get("price_24k_999"):
             p22 = last_prices["price_22k_916"]
             p24 = last_prices["price_24k_999"]
@@ -579,12 +588,14 @@ def build_shop_section(result: dict, last_prices: dict) -> str:
                 f"Last updated on source: N/A\n"
                 f"Job run time: {result['scrape_time_sgt']} (SGT)\n"
                 f"Status: FAILED — {result.get('error')}"
+                f"{url_line}"
             )
         return (
             f"🏪 {shop}\n"
             f"Status: FAILED\n"
             f"Error: {result.get('error')}\n"
             f"Job run time: {result['scrape_time_sgt']} (SGT)"
+            f"{url_line}"
         )
 
 
