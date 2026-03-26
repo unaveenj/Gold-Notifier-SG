@@ -415,7 +415,7 @@ export default function HomePage() {
             <LiveMetrics />
 
             <p className="hero-source">
-              3 top Singapore jewellers · Updated every 2 hours · 9am – 11pm SGT
+              4 top Singapore jewellers · Updated every 2 hours · 9am – 11pm SGT
             </p>
           </div>
 
