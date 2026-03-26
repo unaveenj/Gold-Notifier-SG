@@ -1,0 +1,35 @@
+name: Send Announcement
+
+on:
+  workflow_dispatch:
+    inputs:
+      subject:
+        description: "Email subject"
+        required: true
+      body:
+        description: "Email body (plain text)"
+        required: true
+
+jobs:
+  announce:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r scraper/requirements.txt
+
+      - name: Send announcement
+        env:
+          AIRTABLE_API_KEY:     ${{ secrets.AIRTABLE_API_KEY }}
+          AIRTABLE_BASE_ID:     ${{ secrets.AIRTABLE_BASE_ID }}
+          EMAIL_USER:           ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD:       ${{ secrets.EMAIL_PASSWORD }}
+          ANNOUNCEMENT_SUBJECT: ${{ github.event.inputs.subject }}
+          ANNOUNCEMENT_BODY:    ${{ github.event.inputs.body }}
+        run: python scraper/announcement.py
