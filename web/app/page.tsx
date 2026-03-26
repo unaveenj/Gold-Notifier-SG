@@ -554,9 +554,9 @@ export default function HomePage() {
           <div className="footer-logo">🪙 GoldAlert SG</div>
           <p className="footer-tagline">Free Gold Price Alerts for Singapore</p>
           <p className="footer-copy">
-            Powered by automated monitoring across 3 Singapore jewellers
+            Powered by automated monitoring across 4 Singapore jewellers
           </p>
-          <p className="footer-legal">© 2025 GoldAlert SG · Free Service · Singapore</p>
+          <p className="footer-legal">© 2026 GoldAlert SG · Free Service · Singapore</p>
           <Link href="/unsubscribe" className="footer-unsub">Unsubscribe</Link>
         </footer>
       </main>
