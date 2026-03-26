@@ -18,6 +18,7 @@ import matplotlib.dates as mdates
 from pyairtable import Table
 from dotenv import load_dotenv
 from pathlib import Path
+from price_tracker import calculate_percentage_change, format_change
 
 # --------------------------------------------------
 # Load .env only for local development
@@ -548,28 +549,19 @@ def build_shop_section(result: dict, last_prices: dict) -> str:
     if result["status"] == "OK":
         p22 = result["price_22k_916"]
         p24 = result["price_24k_999"]
-        emoji22 = emoji24 = ""
 
+        change_22 = change_24 = ""
         if last_prices:
-            try:
-                if float(p22) > float(last_prices["price_22k_916"]):
-                    emoji22 = " ↑"
-                elif float(p22) < float(last_prices["price_22k_916"]):
-                    emoji22 = " ↓"
-            except Exception:
-                pass
-            try:
-                if float(p24) > float(last_prices["price_24k_999"]):
-                    emoji24 = " ↑"
-                elif float(p24) < float(last_prices["price_24k_999"]):
-                    emoji24 = " ↓"
-            except Exception:
-                pass
+            change_22 = format_change(calculate_percentage_change(p22, last_prices.get("price_22k_916")))
+            change_24 = format_change(calculate_percentage_change(p24, last_prices.get("price_24k_999")))
+
+        line_22 = f"22k (916): S${p22}" + (f"\n{change_22}" if change_22 else "")
+        line_24 = f"24k (999): S${p24}" + (f"\n{change_24}" if change_24 else "")
 
         return (
             f"🏪 {shop}\n"
-            f"22k (916): S${p22}{emoji22}\n"
-            f"24k (999): S${p24}{emoji24}\n\n"
+            f"{line_22}\n"
+            f"{line_24}\n\n"
             f"Last updated on source: {result.get('shop_last_updated', 'N/A')}\n"
             f"Job run time: {result['scrape_time_sgt']} (SGT)\n"
             f"Status: OK"
