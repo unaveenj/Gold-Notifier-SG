@@ -259,6 +259,14 @@ Scrapes publicly available data for personal monitoring purposes only. Ensure co
 
 ---
 
+## 📰 Featured Article
+
+[You Can't Time the Gold Market — But You Can Still Buy Smart](https://medium.com/@unaveenj/you-cant-time-the-gold-market-but-you-can-still-buy-smart-7c9888cbfd63)
+
+How Gold Notifier helps Singapore buyers compare prices across jewellers and make smarter purchase decisions.
+
+---
+
 ## 🧑‍💻 Author
 
 Built as a lightweight serverless automation to help Singapore gold buyers time their purchases.
