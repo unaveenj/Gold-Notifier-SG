@@ -1,85 +1,74 @@
-# I Got Tired of Checking Gold Prices Every Day — So I Automated It
+# You Can't Time the Gold Market. But You Can Still Buy Smart.
 
 *Free tool · Singapore · No account needed*
 
 ---
 
-![Gold Notifier website hero](screenshots/hero.png)
+![Gold Notifier — Never Miss a Gold Price Drop in Singapore](screenshots/hero.png)
 
 ---
 
-Buying gold in Singapore is a bit of a waiting game.
+If you've ever bought stocks, you've probably heard of dollar cost averaging — stop trying to time the market, just buy consistently and let it average out.
 
-Prices shift throughout the day. One morning it's high, by afternoon it dips, and if you blink — you missed it. The difference between a good day and a bad day to buy? Easily **S$200–S$300 on a 100g purchase.**
+Gold is no different. Nobody knows when prices will peak or dip. Anyone who tells you otherwise is guessing.
 
-I was manually checking prices across multiple shops every few hours. Tabs open, notes in my phone, checking again before bed. It was exhausting and I still felt like I was guessing.
+But here's what *is* in your control — **which shop you buy from**.
 
-So I built something to fix it.
+Gold prices in Singapore aren't the same everywhere. On any given day, the same 22k or 24k gold can be priced differently across popular jewellery shops. The gap might be S$2–5 per gram, which sounds small — until you're buying 50g or 100g.
+
+That's where [Gold Notifier](https://www.goldnotifier.com) comes in.
 
 ---
 
-## What I Built
+## What It Does
 
-**[Gold Notifier](https://www.goldnotifier.com)** — a free tool that monitors 22k and 24k gold prices across 4 popular Singapore jewellers and emails you every time something changes.
+Gold Notifier monitors 22k and 24k gold prices across 4 popular Singapore jewellers — every 2 hours, from 9am to 11pm SGT — and sends you a single email with all the prices side by side.
 
 No app. No account. Just your email.
 
-> Enter your email → get alerts. That's genuinely all it is.
+![Gold Notifier alert email with price comparison and history chart](screenshots/gold-notification-email.png)
+
+Each alert shows you:
+
+- **22k and 24k prices in SGD** — across all shops in one view
+- **Price trend arrows** — up 📈 or down 📉 since the last check
+- **Percentage change** — so you know the magnitude of the move
+- **Price history chart** — see how prices have trended over time
+
+You're not trying to catch the perfect moment. You're just making sure that when you *do* buy, you're buying at the best available price — not the most convenient one.
 
 ---
 
-## What the Alert Looks Like
+## The Real Value
 
-Every email shows you exactly what moved and by how much.
+Most people walk into whichever shop is nearby and pay whatever the price is that day.
 
-![Gold Notifier email alert with price history chart](screenshots/gold-notification-email.png)
+Nothing wrong with that. But if you knew — before leaving the house — that one shop is S$3/g cheaper than another right now, wouldn't you factor that in?
 
-You get:
-- **22k and 24k prices** in SGD per gram — across all shops in one email
-- **Trend arrows** — went up 📈 or down 📉 since the last check
-- **Percentage change** — so you know if it's worth acting on
-- **Price history chart** — spot the trend at a glance
+On a 100g purchase, that's **S$300 in your pocket** for the same gold.
 
-Alerts go out every 2 hours, from 9am to 11pm SGT. So you're never more than 2 hours behind.
+Gold Notifier gives you that information automatically, without you having to check anything manually.
 
 ---
 
-## How to Get Started
+## Getting Started Takes 30 Seconds
 
-![Full Gold Notifier website](screenshots/full-page.png)
-
-Three steps:
+![Gold Notifier full website](screenshots/full-page.png)
 
 1. Go to **[goldnotifier.com](https://www.goldnotifier.com)**
 2. Enter your email
 3. Hit **Get Free Alerts**
 
-Done. Took you less than 30 seconds.
+Add `alerts@goldnotifier.com` to your contacts so alerts don't go to spam.
 
-Add `alerts@goldnotifier.com` to your contacts so the emails don't land in spam.
-
----
-
-## Why It's Free
-
-I built this for myself first. Running cost is low. Sharing it just made sense.
-
-No premium plan. No catch. Just free.
+That's it. Free forever. No credit card. Unsubscribe anytime.
 
 ---
 
-## One Thing Worth Knowing
+## Bottom Line
 
-Gold prices in Singapore aren't the same everywhere. Different shops update at different times, and the gap between them on any given day can be meaningful — especially on larger purchases.
+Don't try to time the gold market — that's a losing game.
 
-Gold Notifier watches all of them for you and puts it in one clean email. So when prices dip, you know immediately — across every shop, at once.
-
----
-
-## That's It
-
-If you're buying gold in Singapore — whether it's for jewellery, investment, or a gift — you shouldn't have to manually chase prices.
+But do make sure you're comparing prices before you buy. The information is out there. Gold Notifier just puts it in your inbox automatically, so you can make a smarter decision without the manual work.
 
 **[Sign up free at goldnotifier.com →](https://www.goldnotifier.com)**
-
-No account. No credit card. Unsubscribe anytime with one click.
