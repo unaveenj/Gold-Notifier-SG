@@ -1,0 +1,116 @@
+<mxfile host="app.diagrams.net" modified="2026-03-27T00:00:00.000Z" agent="Claude" version="21.0.0">
+  <diagram name="Data Flow" id="dataflow">
+    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="1400" math="0" shadow="0" defaultFontFamily="Noto Sans JP">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ══ ARROWS (back layer) ══ -->
+        <mxCell id="a1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#4a90d9;fontFamily=Noto Sans JP;fontSize=14;" edge="1" source="start" target="step1" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#4a90d9;fontFamily=Noto Sans JP;fontSize=14;" edge="1" source="step1" target="step2" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#4a90d9;fontFamily=Noto Sans JP;fontSize=14;" edge="1" source="step2" target="step3" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#4a90d9;fontFamily=Noto Sans JP;fontSize=14;" edge="1" source="step3" target="step4" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#4a90d9;fontFamily=Noto Sans JP;fontSize=14;" edge="1" source="step4" target="step5" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#4a90d9;fontFamily=Noto Sans JP;fontSize=14;" edge="1" source="step5" target="step6" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#4a90d9;fontFamily=Noto Sans JP;fontSize=14;" edge="1" source="step6" target="step7" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#4a90d9;fontFamily=Noto Sans JP;fontSize=14;" edge="1" source="step7" target="step8" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a_retry" value="retry (up to 3×)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#e57373;fontColor=#e57373;fontFamily=Noto Sans JP;fontSize=12;dashed=1;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" edge="1" source="step1" target="step1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="730" y="265" />
+              <mxPoint x="730" y="215" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a_note1" value="Airtable" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#FFB74D;fontColor=#FFB74D;fontFamily=Noto Sans JP;fontSize=12;dashed=1;" edge="1" source="step2" target="note_airtable" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a_note2" value="Airtable" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#FFB74D;fontColor=#FFB74D;fontFamily=Noto Sans JP;fontSize=12;dashed=1;" edge="1" source="step5" target="note_airtable" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a_note3" value="Airtable (write)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#FFB74D;fontColor=#FFB74D;fontFamily=Noto Sans JP;fontSize=12;dashed=1;" edge="1" source="step8" target="note_airtable" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ══ SHAPES (mid layer) ══ -->
+
+        <!-- Title -->
+        <mxCell id="title" value="Scrape &amp; Alert — Data Flow" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=20;fontStyle=1;fontColor=#c8a84b;fontFamily=Noto Sans JP;" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="440" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Start -->
+        <mxCell id="start" value="GitHub Actions triggered" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e3a5f;strokeColor=#4a90d9;fontColor=#e8dfc8;fontSize=15;fontFamily=Noto Sans JP;" vertex="1" parent="1">
+          <mxGeometry x="230" y="80" width="280" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Step 1 -->
+        <mxCell id="step1" value="① Scrape all 4 shops in sequence&lt;br&gt;&lt;font style=&apos;font-size:12px;color:#aaa;&apos;&gt;Mustafa · Malabar · Joyalukkas · GRT&lt;br&gt;Up to 3 retries · 45s deadline per shop&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a2e1a;strokeColor=#81C784;fontColor=#e8dfc8;fontSize=15;arcSize=6;fontFamily=Noto Sans JP;" vertex="1" parent="1">
+          <mxGeometry x="155" y="175" width="430" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Step 2 -->
+        <mxCell id="step2" value="② Fetch last known prices from Airtable&lt;br&gt;&lt;font style=&apos;font-size:12px;color:#aaa;&apos;&gt;Used to compute ↑ / ↓ trend arrows&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e2a1a;strokeColor=#FFB74D;fontColor=#e8dfc8;fontSize=15;arcSize=6;fontFamily=Noto Sans JP;" vertex="1" parent="1">
+          <mxGeometry x="155" y="305" width="430" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Step 3 -->
+        <mxCell id="step3" value="③ Build email body&lt;br&gt;&lt;font style=&apos;font-size:12px;color:#aaa;&apos;&gt;One section per shop · OK or FAILED fallback with old rate&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#4a90d9;fontColor=#e8dfc8;fontSize=15;arcSize=6;fontFamily=Noto Sans JP;" vertex="1" parent="1">
+          <mxGeometry x="155" y="425" width="430" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Step 4 -->
+        <mxCell id="step4" value="④ Fetch full price history from Airtable&lt;br&gt;&lt;font style=&apos;font-size:12px;color:#aaa;&apos;&gt;All records across all shops and dates&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e2a1a;strokeColor=#FFB74D;fontColor=#e8dfc8;fontSize=15;arcSize=6;fontFamily=Noto Sans JP;" vertex="1" parent="1">
+          <mxGeometry x="155" y="545" width="430" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Step 5 -->
+        <mxCell id="step5" value="⑤ Generate PNG price history chart&lt;br&gt;&lt;font style=&apos;font-size:12px;color:#aaa;&apos;&gt;matplotlib Agg · dual subplot 22k / 24k · dark theme&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#4a90d9;fontColor=#e8dfc8;fontSize=15;arcSize=6;fontFamily=Noto Sans JP;" vertex="1" parent="1">
+          <mxGeometry x="155" y="665" width="430" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Step 6 -->
+        <mxCell id="step6" value="⑥ Fetch subscriber list from Airtable" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e2a1a;strokeColor=#FFB74D;fontColor=#e8dfc8;fontSize=15;arcSize=6;fontFamily=Noto Sans JP;" vertex="1" parent="1">
+          <mxGeometry x="155" y="785" width="430" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Step 7 -->
+        <mxCell id="step7" value="⑦ Send HTML email to each subscriber&lt;br&gt;&lt;font style=&apos;font-size:12px;color:#aaa;&apos;&gt;Namecheap SMTP · inline CID chart · plain text fallback&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e2a1a;strokeColor=#c8a84b;fontColor=#e8dfc8;fontSize=15;arcSize=6;fontFamily=Noto Sans JP;" vertex="1" parent="1">
+          <mxGeometry x="155" y="895" width="430" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Step 8 -->
+        <mxCell id="step8" value="⑧ Save scraped prices to Airtable&lt;br&gt;&lt;font style=&apos;font-size:12px;color:#aaa;&apos;&gt;Only for shops where status = OK&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e2a1a;strokeColor=#FFB74D;fontColor=#e8dfc8;fontSize=15;arcSize=6;fontFamily=Noto Sans JP;" vertex="1" parent="1">
+          <mxGeometry x="155" y="1015" width="430" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Airtable side note -->
+        <mxCell id="note_airtable" value="&lt;b&gt;Airtable&lt;/b&gt;&lt;br&gt;subscribers&lt;br&gt;prices&lt;br&gt;visitors · otps" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e1a1a;strokeColor=#FFB74D;fontColor=#e8dfc8;fontSize=14;arcSize=8;fontFamily=Noto Sans JP;" vertex="1" parent="1">
+          <mxGeometry x="660" y="540" width="170" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Note: step 8 after email -->
+        <mxCell id="note_order" value="Note: prices are saved AFTER&lt;br&gt;sending email — intentional.&lt;br&gt;Chart uses previous history only." style="text;html=1;strokeColor=#444;fillColor=#1a1a1a;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=12;fontColor=#aaa;fontFamily=Noto Sans JP;" vertex="1" parent="1">
+          <mxGeometry x="620" y="1015" width="240" height="70" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
