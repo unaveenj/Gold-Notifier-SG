@@ -1,2 +1,5 @@
 .env
 *.env
+
+# Articles / drafts
+docs/medium_article.md
