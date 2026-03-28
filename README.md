@@ -23,14 +23,14 @@
 
 ## ✨ What This Does
 
-Every **2 hours from 9am–11pm SGT**, the system:
+**Every 2 hours from 8am–8pm SGT**, the scraper silently collects live gold prices from 4 jewellers and saves them to Airtable — no email sent.
 
-1. Scrapes live gold prices from Mustafa Jewellery (22k & 24k)
-2. Compares with previous prices — adds ↑ / ↓ trend indicators
-3. Sends email alerts to all subscribers via Namecheap Private Email SMTP
-4. Notifies even on scrape failure (with error details)
+**Once a day at 5pm SGT**, a daily alert email is sent to all subscribers containing:
+1. Current prices across all 4 shops (22k & 24k)
+2. Percentage change vs the 24-hour average — so you see the day's trend, not just the last reading
+3. A visual price history chart across all shops
 
-Subscribers sign up via the **Next.js landing page** hosted on Vercel. Emails are stored in **Airtable**. The scraper runs on **GitHub Actions** — fully serverless, zero infrastructure cost.
+Subscribers sign up via the **Next.js landing page** hosted on Vercel. Emails are stored in **Airtable**. Everything runs on **GitHub Actions** — fully serverless, zero infrastructure cost.
 
 ---
 
@@ -107,13 +107,15 @@ Gold-Notifier-SG/
 │   ├── .env.local.example      ← Copy to .env.local with your keys
 │   └── package.json
 ├── scraper/
-│   ├── gold_bot.py             ← Scraper + email sender (Python)
+│   ├── gold_bot.py             ← Scraper + Airtable writer (--scrape-only skips email)
+│   ├── daily_alert.py          ← Daily 5pm email with 24h average comparison
 │   ├── announcement.py         ← Manual announcement broadcaster
 │   ├── test_email.py           ← Test send to dev address only
 │   └── requirements.txt
 ├── .github/
 │   └── workflows/
-│       ├── goldrates.yml       ← Cron scraper (every 2h, 8am–8pm SGT)
+│       ├── goldrates.yml       ← Cron scraper (every 2h, 8am–8pm SGT, no email)
+│       ├── daily_alert.yml     ← Daily alert at 5pm SGT (24h avg comparison)
 │       ├── announcement.yml    ← Manual announcement broadcast
 │       └── test_email.yml      ← Manual test email (dev only)
 └── docs/
@@ -190,7 +192,10 @@ Go to `Repo → Settings → Secrets → Actions`:
 
 ## ⏰ Schedule
 
-Cron in `.github/workflows/goldrates.yml`:
+Two separate workflows handle data collection and alerting independently:
+
+### Data collection — `goldrates.yml`
+Scrapes all 4 shops and saves to Airtable. **No email sent.**
 
 ```yaml
 "5 0,2,4,6,8,10,12 * * *"
@@ -206,6 +211,14 @@ Cron in `.github/workflows/goldrates.yml`:
 | 08:05 | 16:05 |
 | 10:05 | 18:05 |
 | 12:05 | 20:05 |
+
+### Daily alert — `daily_alert.yml`
+Sends one email per day at **5:00 PM SGT** with current prices and 24h average comparison.
+
+```yaml
+"0 9 * * *"
+# UTC 09:00 = SGT 17:00
+```
 
 ---
 
@@ -229,27 +242,24 @@ Cron in `.github/workflows/goldrates.yml`:
 
 ## 📲 Email Format
 
-**On success:**
+Sent once daily at **5pm SGT**. Each shop shows current price and % change vs the 24-hour average:
+
 ```
-📊 Gold Price Update
+📊 Daily Gold Price Update (SGD)
+As at 2026-03-28 17:00:00 SGT
 
-22k (916): S$204.40 ↑
-24k (999): S$222.00 →
-
-Last updated on source: 22-03-2026 09:17:03 AM
-Job run time: 2026-03-22 09:00:02 (SGT)
-
-Status: OK
-```
-
-**On failure:**
-```
-📊 Gold Price Update - STALE
-
-Job run time: 2026-03-22 09:00:02 (SGT)
-
-Status: FAILED
-Error: <error details>
+=================================
+🏪 Mustafa Jewellery
+  22k (916): S$204.40  ↑ +0.3%
+  24k (999): S$222.00  → 0.0%
+  24h avg: 22k S$203.80  |  24k S$222.00
+=================================
+🏪 Malabar Gold SG
+  22k (916): S$206.00  ↑ +0.5%
+  24k (999): S$224.50  ↑ +0.2%
+  24h avg: 22k S$204.95  |  24k S$224.00
+=================================
+...
 ```
 
 ---

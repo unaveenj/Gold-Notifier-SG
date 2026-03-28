@@ -32,52 +32,37 @@ SITE_URL = os.getenv("SITE_URL", "https://www.goldnotifier.com")
 # Announcement content — edit here before triggering
 # --------------------------------------------------
 
-ANNOUNCEMENT_SUBJECT = "GoldAlert SG — New Website & Contact Email"
+ANNOUNCEMENT_SUBJECT = "Gold Notifier — Daily Alerts & 24h Price Comparison"
 
 ANNOUNCEMENT_BODY = """Dear Subscriber,
 
-Thank you so much for being part of GoldAlert SG. Your support means a
-lot to us, and we are excited to share some updates we have been working on.
+Thank you for being part of Gold Notifier. We have made some improvements
+to how alerts work and wanted to keep you in the loop.
 
-WHAT'S NEW
-----------
+WHAT'S CHANGED
+--------------
 
-New Website
-We now have a dedicated home at:
-https://www.goldnotifier.com
+Once-a-Day Alert at 5 PM SGT
+Based on feedback, we have moved from sending alerts every 2 hours to
+one daily summary at 5 PM SGT. This gives you a clean end-of-day
+snapshot without filling up your inbox.
 
-Visit us for live gold price updates, subscriber metrics, and to manage
-your alerts — all in one place.
+24-Hour Price Comparison
+Each alert now compares today's prices against the 24-hour average
+across all 4 jewellers. You will see the current price alongside the
+percentage change so you can quickly spot whether prices are trending
+up or down on the day.
 
-New Contact Email
-Going forward, all alerts and communications will come from:
-alerts@goldnotifier.com
-
-Please add this address to your contacts or safe-sender list to ensure
-our alerts always reach your inbox.
-
-More Shops, More Coverage
-We have expanded coverage to 4 top Singapore jewellers:
-  - Mustafa Jewellery
-  - Malabar Gold SG
-  - Joyalukkas SG
-  - GRT Jewels SG
-
-Price Trend Indicators
-Every alert now shows percentage change arrows so you can see at a
-glance whether prices are up or down since the last update.
-
-Price History Charts
-Our emails now include a visual price history chart so you can spot
-trends across all 4 jewellers over time.
+We Still Scrape Every 2 Hours
+Price data is still collected every 2 hours throughout the day so the
+24-hour average is accurate — you just receive one concise email at 5 PM.
 
 ----------
-We are committed to keeping this service free and useful for every
-Singapore gold buyer. Thank you again for your trust and support —
-we hope GoldAlert SG helps you buy smarter.
+As always, Gold Notifier is completely free. No app, no login — just
+your inbox.
 
 Warm regards,
-The GoldAlert SG Team
+The Gold Notifier Team
 alerts@goldnotifier.com
 https://www.goldnotifier.com
 
