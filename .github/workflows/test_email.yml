@@ -1,12 +1,10 @@
-name: Test Email
+name: Test Email (Dev Only)
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 1 * * *"   # Daily at 09:00 SGT (01:00 UTC) — adjust or disable as needed
 
 jobs:
-  test:
+  send-test-email:
     runs-on: ubuntu-latest
 
     steps:

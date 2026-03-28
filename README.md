@@ -1,4 +1,4 @@
-# 🪙 GoldAlert SG — Gold Price Notifier
+# 🪙 Gold Notifier — Gold Price Notifier
 
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat&logo=next.js&logoColor=white)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -15,9 +15,9 @@
 
 ## 🖥 Live UI
 
-![GoldAlert SG Hero](docs/screenshots/hero.png)
+![Gold Notifier Hero](docs/screenshots/hero.png)
 
-![GoldAlert SG Full Page](docs/screenshots/full-page.png)
+![Gold Notifier Full Page](docs/screenshots/full-page.png)
 
 ---
 
@@ -36,9 +36,26 @@ Subscribers sign up via the **Next.js landing page** hosted on Vercel. Emails ar
 
 ## 🏗 Architecture
 
-![GoldAlert SG Architecture](docs/architecture.svg)
+```
+GitHub Actions (cron / manual)        goldnotifier.com/trigger (phone)
+        │                                        │
+        ▼                                        ▼
+  gold_bot.py  ──── scrape ────►  Mustafa · Malabar · Joyalukkas · GRT
+        │
+        ├── read/write ──► Airtable (subscribers · prices · history)
+        │
+        └── send email ──► Namecheap SMTP ──► Subscribers
 
-> Open [`docs/architecture.drawio`](docs/architecture.drawio) in [diagrams.net](https://app.diagrams.net) to edit.
+Announcement Workflow (manual dispatch)
+        │
+        ▼
+  announcement.py ──► Airtable (subscribers) ──► Namecheap SMTP ──► Subscribers
+
+Next.js 14 / Vercel (goldnotifier.com)
+  /subscribe · /unsubscribe · /metrics · /visitors · /trigger
+        │
+        └── read/write ──► Airtable
+```
 
 ---
 
@@ -76,18 +93,29 @@ Gold-Notifier-SG/
 ├── web/                        ← Next.js app (deploy this to Vercel)
 │   ├── app/
 │   │   ├── globals.css         ← All styles + gold animations
-│   │   ├── layout.tsx          ← Root layout with Google Fonts
+│   │   ├── layout.tsx          ← Root layout, metadata, schema
 │   │   ├── page.tsx            ← Landing page (canvas, form, sections)
+│   │   ├── robots.ts           ← robots.txt
+│   │   ├── sitemap.ts          ← sitemap.xml
+│   │   ├── unsubscribe/        ← OTP unsubscribe flow
+│   │   ├── trigger/            ← Phone-friendly manual trigger UI
 │   │   └── api/
 │   │       ├── subscribe/      ← POST: add subscriber to Airtable
-│   │       └── metrics/        ← GET: live subscriber + alert counts
+│   │       ├── metrics/        ← GET: live subscriber + alert counts
+│   │       ├── unsubscribe/    ← POST: OTP send + verify
+│   │       └── trigger/        ← POST: dispatch scraper via GitHub API
 │   ├── .env.local.example      ← Copy to .env.local with your keys
 │   └── package.json
 ├── scraper/
 │   ├── gold_bot.py             ← Scraper + email sender (Python)
+│   ├── announcement.py         ← Manual announcement broadcaster
+│   ├── test_email.py           ← Test send to dev address only
 │   └── requirements.txt
 ├── .github/
-│   └── workflows/goldrates.yml ← GitHub Actions cron scheduler
+│   └── workflows/
+│       ├── goldrates.yml       ← Cron scraper (every 2h, 8am–8pm SGT)
+│       ├── announcement.yml    ← Manual announcement broadcast
+│       └── test_email.yml      ← Manual test email (dev only)
 └── docs/
     └── screenshots/            ← UI screenshots
 ```
