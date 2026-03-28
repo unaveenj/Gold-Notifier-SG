@@ -1,0 +1,29 @@
+name: Test Email
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 1 * * *"   # Daily at 09:00 SGT (01:00 UTC) — adjust or disable as needed
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r scraper/requirements.txt
+
+      - name: Send test email
+        env:
+          AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
+          AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          TEST_EMAIL: unaveenj@gmail.com
+        run: python scraper/test_email.py
