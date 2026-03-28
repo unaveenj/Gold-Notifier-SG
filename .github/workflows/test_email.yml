@@ -24,4 +24,5 @@ jobs:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           TEST_EMAIL: unaveenj@gmail.com
+          PYTHONPATH: scraper
         run: python notifications/test_email.py

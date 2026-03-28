@@ -1,4 +1,4 @@
-# GoldAlert SG — Technical Documentation
+# Gold Notifier — Technical Documentation
 
 > Last updated: 2026-03-26
 
@@ -37,9 +37,9 @@
 
 ## 1. Overview
 
-**GoldAlert SG** is a fully serverless system that monitors live gold prices across four Singapore jewellers and sends email alerts to subscribers when prices are scraped. It targets buyers of 22k (916 purity) and 24k (999 purity) gold who want to time their purchases around price movements.
+**Gold Notifier** is a fully serverless system that monitors live gold prices across four Singapore jewellers and sends email alerts to subscribers when prices are scraped. It targets buyers of 22k (916 purity) and 24k (999 purity) gold who want to time their purchases around price movements.
 
-**The problem it solves:** Gold prices in Singapore fluctuate throughout the day and vary between shops by meaningful amounts. Manually checking four separate jeweller websites is tedious. GoldAlert SG automates this, delivering a single consolidated email — with a price history chart and trend arrows — seven times per day.
+**The problem it solves:** Gold prices in Singapore fluctuate throughout the day and vary between shops by meaningful amounts. Manually checking four separate jeweller websites is tedious. Gold Notifier automates this, delivering a single consolidated email — with a price history chart and trend arrows — seven times per day.
 
 **Key properties:**
 - Zero infrastructure cost — no servers, no databases to manage
@@ -175,7 +175,7 @@ The workflow steps are minimal by design:
 - uses: actions/setup-python@v5
   with:
     python-version: "3.11"
-- run: pip install -r scraper/requirements.txt
+- run: pip install -r requirements.txt
 - run: python scraper/gold_bot.py
   env:
     AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
@@ -195,7 +195,7 @@ The workflow also supports `workflow_dispatch`, allowing a manual trigger from t
 
 **File:** `scraper/gold_bot.py`
 
-**Dependencies** (`scraper/requirements.txt`):
+**Dependencies** (`requirements.txt`):
 
 | Package | Purpose |
 |---|---|
@@ -744,7 +744,7 @@ This requires no additional writes and stays consistent with the actual Airtable
 
 ```bash
 # From repo root
-pip install -r scraper/requirements.txt
+pip install -r requirements.txt
 
 # Create .env in repo root
 echo "AIRTABLE_API_KEY=your_token" >> .env

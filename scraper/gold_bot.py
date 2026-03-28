@@ -196,7 +196,7 @@ def generate_price_chart(history: list) -> bytes | None:
         labelcolor="white", fontsize=9, loc="upper left"
     )
 
-    fig.suptitle("GoldAlert SG — Price History", color="#c8a84b", fontsize=14, fontweight="bold", y=1.01)
+    fig.suptitle("Gold Notifier — Price History", color="#c8a84b", fontsize=14, fontweight="bold", y=1.01)
     plt.tight_layout()
 
     buf = BytesIO()

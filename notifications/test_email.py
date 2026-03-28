@@ -1,14 +1,14 @@
 """
 Test script — scrapes live prices and sends the full alert email to a single address.
 Overrides the subscriber list so real subscribers are never contacted.
-Run from repo root: python scraper/test_email.py
+Run from repo root: python notifications/test_email.py
 """
 
 import os
 import sys
 
-# Must be run from repo root so gold_bot imports work
-sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+# Ensure scraper/ is on the path when running locally
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scraper"))
 
 import gold_bot
 

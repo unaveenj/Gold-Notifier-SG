@@ -108,10 +108,15 @@ Gold-Notifier-SG/
 │   └── package.json
 ├── scraper/
 │   ├── gold_bot.py             ← Scraper + Airtable writer (--scrape-only skips email)
+│   └── price_tracker.py        ← Price change calculations
+├── notifications/
 │   ├── daily_alert.py          ← Daily 5pm email with 24h average comparison
 │   ├── announcement.py         ← Manual announcement broadcaster
-│   ├── test_email.py           ← Test send to dev address only
-│   └── requirements.txt
+│   └── test_email.py           ← Test send to dev address only
+├── scripts/
+│   ├── build_docx.py           ← Dev utility: build docs
+│   └── demo_video.py           ← Dev utility: demo video helper
+├── requirements.txt            ← Python dependencies (shared)
 ├── .github/
 │   └── workflows/
 │       ├── goldrates.yml       ← Cron scraper (every 2h, 8am–8pm SGT, no email)
@@ -163,7 +168,7 @@ npm run dev   # http://localhost:3000
 ### 3 — Scraper (Python)
 
 ```bash
-pip install -r scraper/requirements.txt
+pip install -r requirements.txt
 ```
 
 ### 4 — Email (Namecheap Private Email)

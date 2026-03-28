@@ -3,7 +3,7 @@ Daily Alert — sends the 5pm SGT email to all subscribers.
 Compares today's latest scraped prices against the 24-hour average
 from Airtable price history.
 
-Run via: python scraper/daily_alert.py
+Run via: python notifications/daily_alert.py
 """
 
 import os

@@ -48,9 +48,9 @@ async function sendOtpEmail(email: string, otp: string) {
   await transporter.sendMail({
     from: process.env.GMAIL_USER,
     to: email,
-    subject: 'GoldAlert SG — Unsubscribe Confirmation',
+    subject: 'Gold Notifier — Unsubscribe Confirmation',
     text: [
-      'You requested to unsubscribe from GoldAlert SG.',
+      'You requested to unsubscribe from Gold Notifier.',
       '',
       `Your confirmation code is: ${otp}`,
       '',
