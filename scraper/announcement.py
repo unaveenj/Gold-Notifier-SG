@@ -32,34 +32,43 @@ SITE_URL = os.getenv("SITE_URL", "https://www.goldnotifier.com")
 # Announcement content — edit here before triggering
 # --------------------------------------------------
 
-ANNOUNCEMENT_SUBJECT = "Gold Notifier — Daily Alerts & 24h Price Comparison"
+ANNOUNCEMENT_SUBJECT = "Gold Notifier — Updates You Should Know About"
 
 ANNOUNCEMENT_BODY = """Dear Subscriber,
 
-Thank you for being part of Gold Notifier. We have made some improvements
-to how alerts work and wanted to keep you in the loop.
+Thank you for your continued support of Gold Notifier. We have been
+busy improving the service and wanted to share what is new.
 
-WHAT'S CHANGED
---------------
+WHAT'S NEW
+----------
 
-Once-a-Day Alert at 5 PM SGT
-Based on feedback, we have moved from sending alerts every 2 hours to
-one daily summary at 5 PM SGT. This gives you a clean end-of-day
-snapshot without filling up your inbox.
+One Daily Alert at 5 PM SGT
+Based on your feedback, we have switched from sending alerts every
+2 hours to one clean summary each day at 5 PM SGT — less noise,
+same information.
 
 24-Hour Price Comparison
-Each alert now compares today's prices against the 24-hour average
-across all 4 jewellers. You will see the current price alongside the
-percentage change so you can quickly spot whether prices are trending
-up or down on the day.
+Each daily alert now shows how today's price compares against the
+24-hour average across all 4 jewellers. You will see a percentage
+change at a glance so you can judge whether it is a good time to buy.
 
-We Still Scrape Every 2 Hours
-Price data is still collected every 2 hours throughout the day so the
-24-hour average is accurate — you just receive one concise email at 5 PM.
+We Still Monitor Every 2 Hours
+Price data continues to be collected every 2 hours throughout the day.
+This keeps the 24-hour average accurate — you just receive one
+consolidated email instead of many.
+
+Mobile-Friendly Website
+goldnotifier.com has been optimised for mobile. Subscribe, check
+metrics, and manage your alerts from your phone without any friction.
+
+Medium Article
+If you are curious about the thinking behind this tool, we wrote
+about it here:
+https://medium.com/@unaveenj/you-cant-time-the-gold-market-but-you-can-still-buy-smart-7c9888cbfd63
 
 ----------
-As always, Gold Notifier is completely free. No app, no login — just
-your inbox.
+Gold Notifier remains completely free. No app, no login — just your
+inbox at 5 PM every day.
 
 Warm regards,
 The Gold Notifier Team
