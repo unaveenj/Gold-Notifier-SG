@@ -15,7 +15,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install -r scraper/requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Send announcement
         env:
@@ -23,4 +23,4 @@ jobs:
           AIRTABLE_BASE_ID:     ${{ secrets.AIRTABLE_BASE_ID }}
           EMAIL_USER:     ${{ secrets.EMAIL_USER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        run: python scraper/announcement.py
+        run: python notifications/announcement.py

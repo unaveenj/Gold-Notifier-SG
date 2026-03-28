@@ -15,7 +15,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install -r scraper/requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Send test email
         env:
@@ -24,4 +24,4 @@ jobs:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           TEST_EMAIL: unaveenj@gmail.com
-        run: python scraper/test_email.py
+        run: python notifications/test_email.py
