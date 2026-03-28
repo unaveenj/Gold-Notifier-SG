@@ -708,36 +708,17 @@ def send_email_to_all(message: str, chart_bytes: bytes | None = None):
 # --------------------------------------------------
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--scrape-only", action="store_true",
+                        help="Scrape and save prices to Airtable — skip email")
+    args = parser.parse_args()
 
     # Scrape all sources
     mustafa_result    = scrape_with_retry(MUSTAFA_URL, parse_mustafa_rates, "Mustafa Jewellery")
     malabar_result    = scrape_with_retry(MALABAR_URL, parse_malabar_rates, "Malabar Gold SG")
     joyalukkas_result = fetch_joyalukkas_rates("Joyalukkas SG")
     grt_result        = fetch_grt_rates("GRT Jewels SG")
-
-    # Fetch last prices per shop for trend arrows
-    mustafa_last    = get_last_prices("Mustafa Jewellery")
-    malabar_last    = get_last_prices("Malabar Gold SG")
-    joyalukkas_last = get_last_prices("Joyalukkas SG")
-    grt_last        = get_last_prices("GRT Jewels SG")
-
-    # Build and send combined email
-    message = build_message(
-        mustafa_result, malabar_result, joyalukkas_result, grt_result,
-        mustafa_last, malabar_last, joyalukkas_last, grt_last,
-    )
-
-    print("\n" + SEPARATOR)
-    print("📨 EMAIL TO SEND")
-    print(SEPARATOR)
-    print(message)
-    print(SEPARATOR)
-
-    # Generate price history chart
-    price_history = get_price_history()
-    chart_bytes   = generate_price_chart(price_history)
-
-    send_email_to_all(message, chart_bytes)
 
     # Save prices to Airtable (only on success)
     if mustafa_result["status"] == "OK":
@@ -751,3 +732,27 @@ if __name__ == "__main__":
 
     if grt_result["status"] == "OK":
         save_prices(grt_result["price_22k_916"], grt_result["price_24k_999"], "GRT Jewels SG")
+
+    if args.scrape_only:
+        print("Scrape-only mode — prices saved, email skipped.")
+    else:
+        # Fetch last prices per shop for trend arrows
+        mustafa_last    = get_last_prices("Mustafa Jewellery")
+        malabar_last    = get_last_prices("Malabar Gold SG")
+        joyalukkas_last = get_last_prices("Joyalukkas SG")
+        grt_last        = get_last_prices("GRT Jewels SG")
+
+        message = build_message(
+            mustafa_result, malabar_result, joyalukkas_result, grt_result,
+            mustafa_last, malabar_last, joyalukkas_last, grt_last,
+        )
+
+        print("\n" + SEPARATOR)
+        print("📨 EMAIL TO SEND")
+        print(SEPARATOR)
+        print(message)
+        print(SEPARATOR)
+
+        price_history = get_price_history()
+        chart_bytes   = generate_price_chart(price_history)
+        send_email_to_all(message, chart_bytes)

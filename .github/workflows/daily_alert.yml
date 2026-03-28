@@ -1,12 +1,12 @@
-name: Gold Price Bot
+name: Daily Gold Alert
 
 on:
   schedule:
-    - cron: "5 0,2,4,6,8,10,12 * * *"
+    - cron: "0 9 * * *"   # 5:00 PM SGT (09:00 UTC)
   workflow_dispatch:
 
 jobs:
-  run:
+  send-daily-alert:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,10 +19,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r scraper/requirements.txt
 
-      - name: Run scraper
+      - name: Send daily alert
         env:
           AIRTABLE_API_KEY: ${{ secrets.AIRTABLE_API_KEY }}
           AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        run: python scraper/gold_bot.py --scrape-only
+        run: python scraper/daily_alert.py
