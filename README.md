@@ -274,11 +274,6 @@ mustafajewellery.com
 - [x] Multiple pricing sources — Mustafa, Malabar, Joyalukkas, GRT
 - [x] Daily digest option
 
-## 🔜 Coming Soon
-
-- [ ] **Price drop push notifications** — browser push alerts (via Web Push API) so you get notified instantly without waiting for the next email batch
-- [ ] **Telegram / WhatsApp bot** — get gold price updates directly in your messaging app, with inline reply buttons to set personal price targets
-
 ---
 
 ## ⚠ Disclaimer
