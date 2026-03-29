@@ -15,8 +15,6 @@
 
 ## 🖥 Live UI
 
-![Gold Notifier Hero](docs/screenshots/hero.png)
-
 ![Gold Notifier Full Page](docs/screenshots/full-page.png)
 
 ---
