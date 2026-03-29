@@ -126,5 +126,25 @@ if __name__ == "__main__":
     history     = get_price_history()
     chart_bytes = generate_price_chart(history)
 
-    send_email_to_all(message, chart_bytes)
+    results = [
+        {
+            "shop": shop,
+            "status": "OK" if shop in latest else "FAILED",
+            "price_22k_916": latest[shop]["p22"] if shop in latest else None,
+            "price_24k_999": latest[shop]["p24"] if shop in latest else None,
+            "shop_last_updated": None,
+        }
+        for shop in [
+            "Mustafa Jewellery",
+            "Malabar Gold SG",
+            "Joyalukkas SG",
+            "GRT Jewels SG",
+        ]
+    ]
+    last_prices_map = {
+        shop: {"price_22k_916": avg["p22"], "price_24k_999": avg["p24"]}
+        for shop, avg in averages.items()
+    }
+
+    send_email_to_all(message, chart_bytes, results=results, last_prices_map=last_prices_map)
     print("=== Done ===")
