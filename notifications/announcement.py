@@ -32,43 +32,35 @@ SITE_URL = os.getenv("SITE_URL", "https://www.goldnotifier.com")
 # Announcement content — edit here before triggering
 # --------------------------------------------------
 
-ANNOUNCEMENT_SUBJECT = "Gold Notifier — Updates You Should Know About"
+ANNOUNCEMENT_SUBJECT = "Gold Notifier — Cleaner Emails, Same Great Data"
 
 ANNOUNCEMENT_BODY = """Dear Subscriber,
 
-Thank you for your continued support of Gold Notifier. We have been
-busy improving the service and wanted to share what is new.
+A quick update on what has changed with your daily 5 PM gold alert.
 
 WHAT'S NEW
 ----------
 
-One Daily Alert at 5 PM SGT
-Based on your feedback, we have switched from sending alerts every
-2 hours to one clean summary each day at 5 PM SGT — less noise,
-same information.
+Redesigned Email Layout
+Your daily alert now arrives as a clean price table — shop names,
+22K and 24K prices side by side, with a change indicator showing
+how today's price compares to the 24-hour average. No more scrolling
+through a wall of text.
 
-24-Hour Price Comparison
-Each daily alert now shows how today's price compares against the
-24-hour average across all 4 jewellers. You will see a percentage
-change at a glance so you can judge whether it is a good time to buy.
+Change Arrows at a Glance
+Each price now shows a directional indicator:
+  ▲  price is above the 24h average
+  ▼  price is below the 24h average
+  ↔  no significant movement
 
-We Still Monitor Every 2 Hours
-Price data continues to be collected every 2 hours throughout the day.
-This keeps the 24-hour average accurate — you just receive one
-consolidated email instead of many.
-
-Mobile-Friendly Website
-goldnotifier.com has been optimised for mobile. Subscribe, check
-metrics, and manage your alerts from your phone without any friction.
-
-Medium Article
-If you are curious about the thinking behind this tool, we wrote
-about it here:
-https://medium.com/@unaveenj/you-cant-time-the-gold-market-but-you-can-still-buy-smart-7c9888cbfd63
+Everything Else Stays the Same
+- One email per day at 5 PM SGT
+- All 4 jewellers: Mustafa, Malabar, Joyalukkas, GRT
+- Price chart still included
+- Data collected every 2 hours throughout the day
 
 ----------
-Gold Notifier remains completely free. No app, no login — just your
-inbox at 5 PM every day.
+Gold Notifier is completely free. No app, no login.
 
 Warm regards,
 The Gold Notifier Team
