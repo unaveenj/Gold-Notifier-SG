@@ -40,6 +40,15 @@ print(message)
 price_history = gold_bot.get_price_history()
 chart_bytes   = gold_bot.generate_price_chart(price_history)
 
-gold_bot.send_email_to_all(message, chart_bytes)
+gold_bot.send_email_to_all(
+    message, chart_bytes,
+    results=[mustafa_result, malabar_result, joyalukkas_result, grt_result],
+    last_prices_map={
+        "Mustafa Jewellery": mustafa_last,
+        "Malabar Gold SG":   malabar_last,
+        "Joyalukkas SG":     joyalukkas_last,
+        "GRT Jewels SG":     grt_last,
+    },
+)
 
 print(f"\n=== Done. Check {TEST_EMAIL} for the test email. ===")
