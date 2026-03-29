@@ -130,8 +130,8 @@ if __name__ == "__main__":
         {
             "shop": shop,
             "status": "OK" if shop in latest else "FAILED",
-            "price_22k_916": latest[shop]["p22"] if shop in latest else None,
-            "price_24k_999": latest[shop]["p24"] if shop in latest else None,
+            "price_22k_916": round(latest[shop]["p22"], 2) if shop in latest else None,
+            "price_24k_999": round(latest[shop]["p24"], 2) if shop in latest else None,
             "shop_last_updated": None,
         }
         for shop in [
