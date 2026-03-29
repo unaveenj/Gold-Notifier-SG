@@ -625,6 +625,110 @@ def build_message(mustafa_result: dict, malabar_result: dict, joyalukkas_result:
 
 
 # --------------------------------------------------
+# Build HTML email (table layout)
+# --------------------------------------------------
+
+def _html_change_cell(pct: float | None) -> str:
+    style = "text-align:right;font-size:10px;padding:6px 4px 1px;"
+    if pct is None:
+        return f'<td style="{style}color:#555;">—</td>'
+    if abs(pct) < 0.20:
+        return f'<td style="{style}color:#888;">↔</td>'
+    if pct > 0:
+        return f'<td style="{style}color:#4ade80;">▲{pct:.1f}%</td>'
+    return f'<td style="{style}color:#f87171;">▼{abs(pct):.1f}%</td>'
+
+
+def _html_shop_rows(result: dict, last_prices: dict | None) -> str:
+    shop  = result["shop"]
+    color = SHOP_COLORS.get(shop, "#e8dfc8")
+    td_name  = f'padding:6px 8px 1px;color:{color};font-weight:bold;font-size:11px;font-family:sans-serif;'
+    td_price = 'padding:6px 8px 1px;text-align:right;color:#e8dfc8;font-family:monospace;font-weight:bold;font-size:13px;'
+    src_time = result.get("shop_last_updated") or "N/A"
+
+    if result["status"] == "OK":
+        p22   = result["price_22k_916"]
+        p24   = result["price_24k_999"]
+        pct22 = calculate_percentage_change(p22, last_prices.get("price_22k_916")) if last_prices else None
+        pct24 = calculate_percentage_change(p24, last_prices.get("price_24k_999")) if last_prices else None
+        return (
+            f'<tr>'
+            f'<td style="{td_name}">{shop}</td>'
+            f'<td style="{td_price}">{p22}</td>'
+            f'{_html_change_cell(pct22)}'
+            f'<td style="{td_price}">{p24}</td>'
+            f'{_html_change_cell(pct24)}'
+            f'</tr>'
+            f'<tr style="border-bottom:1px solid #1a1a1a;">'
+            f'<td colspan="5" style="padding:0 8px 6px;color:#3a3a3a;font-size:9px;font-family:sans-serif;">src updated {src_time}</td>'
+            f'</tr>'
+        )
+
+    # FAILED — show stale prices if available
+    stale = '<span style="background:#3a1a1a;color:#f87171;font-size:8px;padding:1px 4px;border-radius:3px;margin-left:4px;font-weight:normal;">STALE</span>'
+    if last_prices and last_prices.get("price_22k_916") and last_prices.get("price_24k_999"):
+        p22, p24 = last_prices["price_22k_916"], last_prices["price_24k_999"]
+        dim_p = 'padding:6px 8px 1px;text-align:right;color:#888;font-family:monospace;font-size:13px;'
+        dim_c = 'text-align:right;color:#555;font-size:10px;padding:6px 4px 1px;'
+        price_row = (
+            f'<tr>'
+            f'<td style="{td_name}">{shop}{stale}</td>'
+            f'<td style="{dim_p}">{p22}</td><td style="{dim_c}">—</td>'
+            f'<td style="{dim_p}">{p24}</td><td style="{dim_c}">—</td>'
+            f'</tr>'
+        )
+    else:
+        price_row = (
+            f'<tr>'
+            f'<td style="{td_name}">{shop}{stale}</td>'
+            f'<td colspan="4" style="padding:6px 8px 1px;color:#f87171;font-size:10px;font-family:sans-serif;">Scrape failed — no data available</td>'
+            f'</tr>'
+        )
+    shop_url  = SHOP_URLS.get(shop, "")
+    fail_link = f' · <a href="{shop_url}" style="color:#c8a84b;">check site</a>' if shop_url else ""
+    return (
+        price_row
+        + f'<tr style="border-bottom:1px solid #1a1a1a;">'
+          f'<td colspan="5" style="padding:0 8px 6px;color:#3a3a3a;font-size:9px;font-family:sans-serif;">'
+          f'src updated {src_time} · <span style="color:#f87171;">scrape failed</span>{fail_link}'
+          f'</td></tr>'
+    )
+
+
+def build_html_email(results: list, last_prices_map: dict, chart_tag: str, sgt_now) -> str:
+    header_date = sgt_now.strftime("%-d %b, %I:%M %p")
+    rows = "".join(_html_shop_rows(r, last_prices_map.get(r["shop"])) for r in results)
+    return f"""<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:24px;background:#070708;color:#e8dfc8;font-family:sans-serif;max-width:620px;">
+  <div style="margin-bottom:16px;">
+    <div style="color:#c8a84b;font-size:18px;font-weight:bold;margin-bottom:2px;">Gold Prices &middot; {header_date}</div>
+    <div style="color:#555;font-size:11px;">goldnotifier.com &middot; alerts@goldnotifier.com</div>
+  </div>
+  {chart_tag}
+  <table style="width:100%;border-collapse:collapse;font-size:12px;">
+    <thead>
+      <tr style="border-bottom:1px solid #2a2a2a;">
+        <th style="text-align:left;color:#666;padding:6px 8px;font-size:10px;font-weight:normal;font-family:sans-serif;letter-spacing:0.05em;">SHOP</th>
+        <th style="text-align:right;color:#c8a84b;padding:6px 8px;font-size:10px;font-weight:normal;font-family:sans-serif;">22K (S$)</th>
+        <th style="text-align:right;color:#666;padding:6px 4px;font-size:10px;font-weight:normal;font-family:sans-serif;">chg</th>
+        <th style="text-align:right;color:#c8a84b;padding:6px 8px;font-size:10px;font-weight:normal;font-family:sans-serif;">24K (S$)</th>
+        <th style="text-align:right;color:#666;padding:6px 4px;font-size:10px;font-weight:normal;font-family:sans-serif;">chg</th>
+      </tr>
+    </thead>
+    <tbody>
+      {rows}
+    </tbody>
+  </table>
+  <div style="margin-top:20px;padding-top:12px;border-top:1px solid #1a1a1a;display:flex;justify-content:space-between;align-items:center;">
+    <a href="{SITE_URL}/unsubscribe" style="color:#444;font-size:10px;text-decoration:none;">Unsubscribe</a>
+    <span style="color:#444;font-size:10px;">Questions? alerts@goldnotifier.com</span>
+  </div>
+</body>
+</html>"""
+
+
+# --------------------------------------------------
 # Send email notifications
 # --------------------------------------------------
 
@@ -671,7 +775,8 @@ def send_email(to_email: str, subject: str, body: str,
         return False
 
 
-def send_email_to_all(message: str, chart_bytes: bytes | None = None):
+def send_email_to_all(message: str, chart_bytes: bytes | None = None,
+                      results: list | None = None, last_prices_map: dict | None = None):
     subscribers = get_subscribers()
 
     if not subscribers:
@@ -680,13 +785,19 @@ def send_email_to_all(message: str, chart_bytes: bytes | None = None):
 
     print(f"Sending to {len(subscribers)} subscriber(s)...")
 
+    sgt_now = datetime.now(pytz.timezone("Asia/Singapore"))
+    subject = f"Gold Prices \u00b7 {sgt_now.strftime('%-d %b %I:%M %p')}"
+
     chart_tag = (
-        '<img src="cid:goldchart" style="width:100%;max-width:680px;'
-        'border-radius:8px;margin-bottom:20px;" alt="Gold price chart">'
+        '<img src="cid:goldchart" style="width:100%;max-width:580px;'
+        'border-radius:8px;margin-bottom:16px;" alt="Gold price chart">'
         if chart_bytes else ""
     )
 
-    html_body = f"""<!DOCTYPE html>
+    if results and last_prices_map is not None:
+        html_body = build_html_email(results, last_prices_map, chart_tag, sgt_now)
+    else:
+        html_body = f"""<!DOCTYPE html>
 <html>
 <body style="margin:0;padding:24px;background:#070708;color:#e8dfc8;font-family:'Courier New',monospace;max-width:700px;">
   <h2 style="color:#c8a84b;margin-top:0;">&#x1F4CA; Gold Price Update (SGD)</h2>
@@ -694,9 +805,6 @@ def send_email_to_all(message: str, chart_bytes: bytes | None = None):
   <pre style="white-space:pre-wrap;font-size:13px;line-height:1.7;color:#e8dfc8;background:#111;padding:16px;border-radius:6px;border:1px solid #222;">{message}</pre>
 </body>
 </html>"""
-
-    sgt_now = datetime.now(pytz.timezone("Asia/Singapore"))
-    subject = f"Gold Prices \u00b7 {sgt_now.strftime('%-d %b %I:%M %p')}"
 
     for email in subscribers:
         send_email(email, subject, message, html_body, chart_bytes)
@@ -755,4 +863,13 @@ if __name__ == "__main__":
 
         price_history = get_price_history()
         chart_bytes   = generate_price_chart(price_history)
-        send_email_to_all(message, chart_bytes)
+        send_email_to_all(
+            message, chart_bytes,
+            results=[mustafa_result, malabar_result, joyalukkas_result, grt_result],
+            last_prices_map={
+                "Mustafa Jewellery": mustafa_last,
+                "Malabar Gold SG":   malabar_last,
+                "Joyalukkas SG":     joyalukkas_last,
+                "GRT Jewels SG":     grt_last,
+            },
+        )
