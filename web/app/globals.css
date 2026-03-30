@@ -1175,3 +1175,346 @@ a { color: inherit; text-decoration: none; touch-action: manipulation; }
   .cta-section { padding: 3.5rem 1rem; }
   .unsub-card { padding: 2rem 1.25rem; }
 }
+
+/* ============================================================
+   GOLD BAR 3D
+   Pure CSS 3D gold ingot — no Three.js, no canvas
+   Box: W=260px  H=82px  D=54px
+   Face formula (right-to-left transform order):
+     front/back  → translateZ(D/2=27px)
+     left/right  → translateZ(W/2=130px)
+     top/bottom  → translateZ(H/2=41px)
+   Face positions (centering narrow faces in parent):
+     left/right  → left:(W-D)/2=103px
+     top/bottom  → top:(H-D)/2=14px
+   ============================================================ */
+
+@keyframes gold3d-rock {
+  0%   { transform: rotateX(-14deg) rotateY(-22deg); }
+  25%  { transform: rotateX(-11deg) rotateY(-4deg);  }
+  50%  { transform: rotateX(-14deg) rotateY(22deg);  }
+  75%  { transform: rotateX(-11deg) rotateY(4deg);   }
+  100% { transform: rotateX(-14deg) rotateY(-22deg); }
+}
+
+@keyframes gold3d-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-14px); }
+}
+
+@keyframes gold3d-shine-sweep {
+  0%   { transform: translateX(-180%) skewX(-12deg); opacity: 0; }
+  20%  { opacity: 1; }
+  60%  { opacity: 0.6; }
+  80%  { transform: translateX(220%) skewX(-12deg); opacity: 0; }
+  100% { transform: translateX(220%) skewX(-12deg); opacity: 0; }
+}
+
+@keyframes gold3d-shadow-pulse {
+  0%, 100% { transform: scaleX(1);    opacity: 0.55; }
+  50%       { transform: scaleX(0.8); opacity: 0.3;  }
+}
+
+@keyframes gold3d-glow-pulse {
+  0%, 100% { opacity: 0.18; transform: scale(1);    }
+  50%       { opacity: 0.32; transform: scale(1.08); }
+}
+
+/* Scene container */
+.gold3d-scene {
+  position: relative;
+  width: 360px;
+  height: 280px;
+  perspective: 650px;
+  perspective-origin: 50% 42%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Ambient glow behind bar */
+.gold3d-glow {
+  position: absolute;
+  width: 280px;
+  height: 160px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -58%);
+  background: radial-gradient(
+    ellipse,
+    rgba(245, 216, 122, 0.22) 0%,
+    rgba(200, 168, 75, 0.12) 40%,
+    transparent 72%
+  );
+  border-radius: 50%;
+  filter: blur(18px);
+  animation: gold3d-glow-pulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Float wrapper — handles vertical bob */
+.gold3d-float {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: gold3d-float 4s ease-in-out infinite;
+}
+
+/* The 3D bar element */
+.gold3d-bar {
+  width: 260px;
+  height: 82px;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: gold3d-rock 7s ease-in-out infinite;
+}
+
+/* All faces share position: absolute */
+.gold3d-face {
+  position: absolute;
+  overflow: hidden;
+}
+
+/* ── Front face (260×82) ── */
+.gold3d-front {
+  width: 260px;
+  height: 82px;
+  top: 0; left: 0;
+  transform: translateZ(27px);
+  background:
+    linear-gradient(
+      162deg,
+      #ffe898 0%,
+      #f0cc58 15%,
+      #d4a830 38%,
+      #c89820 55%,
+      #d4a830 72%,
+      #e8be48 88%,
+      #f0cc58 100%
+    );
+  border: 1px solid rgba(255, 230, 120, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Inset bevels on front face corners */
+.gold3d-bevel-tl,
+.gold3d-bevel-br {
+  position: absolute;
+  width: 85%;
+  height: 68%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 240, 160, 0.22);
+  pointer-events: none;
+}
+.gold3d-bevel-br {
+  width: 70%;
+  height: 52%;
+  border-color: rgba(140, 100, 20, 0.35);
+}
+
+/* Engraved text block */
+.gold3d-engraving {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  position: relative;
+  z-index: 1;
+}
+
+.gold3d-fineness {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  color: rgba(60, 38, 0, 0.65);
+  text-shadow: 0 1px 0 rgba(255, 245, 180, 0.55);
+}
+
+.gold3d-label {
+  font-family: var(--font-cormorant, serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: rgba(45, 28, 0, 0.78);
+  text-shadow: 0 1px 0 rgba(255, 248, 190, 0.6),
+               0 -1px 0 rgba(120, 80, 0, 0.3);
+  text-transform: uppercase;
+}
+
+.gold3d-mass {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  color: rgba(60, 38, 0, 0.5);
+  text-shadow: 0 1px 0 rgba(255, 245, 180, 0.4);
+}
+
+/* Shine sweep overlay */
+.gold3d-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.gold3d-shine-front {
+  background: linear-gradient(
+    108deg,
+    transparent 0%,
+    transparent 28%,
+    rgba(255, 255, 210, 0.0)  32%,
+    rgba(255, 255, 220, 0.55) 36%,
+    rgba(255, 255, 200, 0.75) 38%,
+    rgba(255, 255, 220, 0.55) 40%,
+    rgba(255, 255, 210, 0.0)  44%,
+    transparent 48%,
+    transparent 100%
+  );
+  animation: gold3d-shine-sweep 5s ease-in-out infinite;
+  animation-delay: 0.4s;
+}
+
+/* ── Back face (260×82) ── */
+.gold3d-back {
+  width: 260px;
+  height: 82px;
+  top: 0; left: 0;
+  transform: rotateY(180deg) translateZ(27px);
+  background: linear-gradient(160deg, #7a5810, #3a2806);
+}
+
+/* ── Left face (54×82) — shadow side ── */
+.gold3d-left {
+  width: 54px;
+  height: 82px;
+  top: 0; left: 103px;
+  transform: rotateY(-90deg) translateZ(130px);
+  background: linear-gradient(
+    to bottom,
+    #b08020 0%,
+    #8a6010 40%,
+    #6a4808 100%
+  );
+}
+
+/* ── Right face (54×82) — lit side ── */
+.gold3d-right {
+  width: 54px;
+  height: 82px;
+  top: 0; left: 103px;
+  transform: rotateY(90deg) translateZ(130px);
+  background: linear-gradient(
+    to bottom,
+    #e8c858 0%,
+    #c8a030 40%,
+    #a07820 100%
+  );
+}
+
+/* ── Top face (260×54) — brightest ── */
+.gold3d-top {
+  width: 260px;
+  height: 54px;
+  top: 14px; left: 0;
+  transform: rotateX(90deg) translateZ(41px);
+  background: linear-gradient(
+    130deg,
+    #fffacc 0%,
+    #ffe870 18%,
+    #f5d040 40%,
+    #e0b830 58%,
+    #f0cc50 75%,
+    #ffe878 90%,
+    #fffacc 100%
+  );
+}
+
+.gold3d-shine-top {
+  background: linear-gradient(
+    95deg,
+    transparent 0%,
+    transparent 20%,
+    rgba(255, 255, 240, 0.0)  24%,
+    rgba(255, 255, 250, 0.65) 28%,
+    rgba(255, 255, 240, 0.0)  32%,
+    transparent 36%,
+    transparent 100%
+  );
+  animation: gold3d-shine-sweep 5s ease-in-out infinite;
+  animation-delay: 0s;
+}
+
+/* ── Bottom face (260×54) ── */
+.gold3d-bottom {
+  width: 260px;
+  height: 54px;
+  top: 14px; left: 0;
+  transform: rotateX(-90deg) translateZ(41px);
+  background: linear-gradient(135deg, #5a3e08, #2e1e04);
+}
+
+/* Ground shadow */
+.gold3d-shadow {
+  width: 220px;
+  height: 18px;
+  margin-top: 22px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(200, 160, 40, 0.38) 0%,
+    rgba(150, 110, 20, 0.18) 45%,
+    transparent 72%
+  );
+  border-radius: 50%;
+  filter: blur(7px);
+  animation: gold3d-shadow-pulse 4s ease-in-out infinite;
+}
+
+/* ── Hero two-column layout (desktop only) ── */
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1120px;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-visual {
+  display: none;
+}
+
+@media (min-width: 960px) {
+  .hero {
+    text-align: left;
+  }
+  .hero-inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4rem;
+  }
+  .hero-content {
+    text-align: left;
+    align-items: flex-start;
+    max-width: 560px;
+  }
+  .hero-content .live-badge {
+    align-self: flex-start;
+  }
+  .hero-content .gold-divider {
+    margin-left: 0;
+  }
+  .hero-content .hero-source {
+    text-align: left;
+  }
+  .hero-visual {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+  }
+}

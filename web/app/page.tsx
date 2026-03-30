@@ -6,6 +6,7 @@ import LiveMetrics from './components/LiveMetrics'
 import VisitorBadge from './components/VisitorBadge'
 import RevealObserver from './components/RevealObserver'
 import ScrollToFormButton from './components/ScrollToFormButton'
+import GoldBar3D from './components/GoldBar3D'
 
 const FEATURES = [
   {
@@ -97,34 +98,40 @@ export default function HomePage() {
       <main>
         {/* ── Hero ── */}
         <section className="hero" id="hero">
-          <div className="hero-content">
-            <div className="live-badge">
-              <span className="live-badge-dot" />
-              Live Gold Price Monitoring · Singapore
+          <div className="hero-inner">
+            <div className="hero-content">
+              <div className="live-badge">
+                <span className="live-badge-dot" />
+                Live Gold Price Monitoring · Singapore
+              </div>
+
+              <h1 className="hero-headline">
+                Never Miss a<br />
+                <span className="hero-headline-shimmer">Gold Price Drop</span>
+                <span className="hero-headline-small">in Singapore</span>
+              </h1>
+
+              <div className="gold-divider" />
+
+              <p className="hero-subtext">
+                Get instant email alerts when 22k and 24k gold prices change.
+                <br />Free forever. No account needed.
+              </p>
+
+              <div id="subscribe">
+                <SubscribeForm size="large" />
+              </div>
+
+              <LiveMetrics />
+
+              <p className="hero-source">
+                4 top Singapore jewellers · Updated every 2 hours · 9am – 11pm SGT
+              </p>
             </div>
 
-            <h1 className="hero-headline">
-              Never Miss a<br />
-              <span className="hero-headline-shimmer">Gold Price Drop</span>
-              <span className="hero-headline-small">in Singapore</span>
-            </h1>
-
-            <div className="gold-divider" />
-
-            <p className="hero-subtext">
-              Get instant email alerts when 22k and 24k gold prices change.
-              <br />Free forever. No account needed.
-            </p>
-
-            <div id="subscribe">
-              <SubscribeForm size="large" />
+            <div className="hero-visual">
+              <GoldBar3D />
             </div>
-
-            <LiveMetrics />
-
-            <p className="hero-source">
-              4 top Singapore jewellers · Updated every 2 hours · 9am – 11pm SGT
-            </p>
           </div>
 
           <div className="scroll-cue" aria-hidden="true">
