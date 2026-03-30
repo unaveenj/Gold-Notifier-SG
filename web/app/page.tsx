@@ -1,288 +1,12 @@
-'use client'
-
-import { useEffect, useRef, useState, useCallback, Fragment } from 'react'
+import { Fragment } from 'react'
 import Link from 'next/link'
+import GoldCanvas from './components/GoldCanvas'
+import SubscribeForm from './components/SubscribeForm'
+import LiveMetrics from './components/LiveMetrics'
+import VisitorBadge from './components/VisitorBadge'
+import RevealObserver from './components/RevealObserver'
+import ScrollToFormButton from './components/ScrollToFormButton'
 
-/* ─── Types ─── */
-interface Particle {
-  x: number; y: number; size: number; speed: number
-  opacity: number; color: string; phase: number; phaseSpeed: number
-}
-interface GlowOrb {
-  x: number; y: number; radius: number; opacity: number; dx: number; dy: number
-}
-
-/* ─── Gold canvas animation ─── */
-function GoldCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    let animId: number
-    let particles: Particle[] = []
-    let orbs: GlowOrb[] = []
-
-    const COLORS = ['#c8a84b', '#d4b55c', '#e8c86d', '#f0d070', '#f5d87a', '#b89438', '#a07d30']
-
-    function resize() {
-      canvas!.width = window.innerWidth
-      canvas!.height = window.innerHeight
-    }
-
-    function initParticles() {
-      particles = Array.from({ length: 130 }, () => ({
-        x: Math.random() * canvas!.width,
-        y: Math.random() * canvas!.height,
-        size: Math.random() * 1.8 + 0.4,
-        speed: Math.random() * 0.55 + 0.15,
-        opacity: Math.random() * 0.45 + 0.08,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        phase: Math.random() * Math.PI * 2,
-        phaseSpeed: (Math.random() * 0.015) + 0.008,
-      }))
-
-      orbs = Array.from({ length: 7 }, () => ({
-        x: Math.random() * canvas!.width,
-        y: Math.random() * canvas!.height,
-        radius: Math.random() * 220 + 80,
-        opacity: Math.random() * 0.028 + 0.008,
-        dx: (Math.random() - 0.5) * 0.25,
-        dy: (Math.random() - 0.5) * 0.25,
-      }))
-    }
-
-    function draw() {
-      ctx!.clearRect(0, 0, canvas!.width, canvas!.height)
-
-      // Glow orbs
-      for (const orb of orbs) {
-        const g = ctx!.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.radius)
-        g.addColorStop(0, `rgba(200,168,75,${orb.opacity})`)
-        g.addColorStop(1, 'rgba(200,168,75,0)')
-        ctx!.fillStyle = g
-        ctx!.beginPath()
-        ctx!.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2)
-        ctx!.fill()
-
-        orb.x += orb.dx
-        orb.y += orb.dy
-        if (orb.x < -orb.radius) orb.x = canvas!.width + orb.radius
-        if (orb.x > canvas!.width + orb.radius) orb.x = -orb.radius
-        if (orb.y < -orb.radius) orb.y = canvas!.height + orb.radius
-        if (orb.y > canvas!.height + orb.radius) orb.y = -orb.radius
-      }
-
-      // Particles
-      ctx!.save()
-      for (const p of particles) {
-        ctx!.globalAlpha = p.opacity
-        ctx!.fillStyle = p.color
-        ctx!.beginPath()
-        ctx!.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-        ctx!.fill()
-
-        p.phase += p.phaseSpeed
-        p.y -= p.speed
-        p.x += Math.sin(p.phase) * 0.28
-
-        if (p.y < -p.size * 2) {
-          p.y = canvas!.height + p.size
-          p.x = Math.random() * canvas!.width
-        }
-        if (p.x < 0) p.x = canvas!.width
-        if (p.x > canvas!.width) p.x = 0
-      }
-      ctx!.restore()
-
-      animId = requestAnimationFrame(draw)
-    }
-
-    resize()
-    initParticles()
-    draw()
-
-    const onResize = () => { resize(); initParticles() }
-    window.addEventListener('resize', onResize)
-    return () => {
-      cancelAnimationFrame(animId)
-      window.removeEventListener('resize', onResize)
-    }
-  }, [])
-
-  return <canvas ref={canvasRef} id="gold-canvas" aria-hidden="true" />
-}
-
-/* ─── Subscribe form ─── */
-type FormStatus = 'idle' | 'loading' | 'success' | 'error' | 'duplicate'
-
-function SubscribeForm({ size = 'default' }: { size?: 'default' | 'large' }) {
-  const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<FormStatus>('idle')
-  const [message, setMessage] = useState('')
-
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (status === 'loading' || status === 'success') return
-
-    const trimmed = email.trim().toLowerCase()
-    if (!trimmed.includes('@') || !trimmed.includes('.')) {
-      setStatus('error')
-      setMessage('Please enter a valid email address.')
-      return
-    }
-
-    setStatus('loading')
-    setMessage('')
-
-    try {
-      const res = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: trimmed }),
-      })
-
-      if (res.status === 409) {
-        setStatus('duplicate')
-        setMessage("You're already subscribed — we'll keep sending alerts!")
-        return
-      }
-
-      if (!res.ok) throw new Error('Server error')
-
-      setStatus('success')
-      setMessage('You\'re in! Expect your first alert soon.')
-      setEmail('')
-      window.dispatchEvent(new Event('metrics-refresh'))
-    } catch {
-      setStatus('error')
-      setMessage('Something went wrong. Please try again.')
-    }
-  }, [email, status])
-
-  const btnLabel: Record<FormStatus, string> = {
-    idle:      'Get Free Alerts',
-    loading:   'Subscribing…',
-    success:   '✓ You\'re In!',
-    error:     'Try Again',
-    duplicate: '✓ Already In!',
-  }
-
-  const isLarge = size === 'large'
-
-  return (
-    <div className="subscribe-wrap">
-      <form className="subscribe-form" onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="your@email.com"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          className="subscribe-input"
-          disabled={status === 'loading' || status === 'success'}
-          aria-label="Email address"
-          style={isLarge ? { fontSize: '1.05rem', padding: '1rem 1.4rem' } : {}}
-        />
-        <button
-          type="submit"
-          className={`btn-gold ${status === 'success' || status === 'duplicate' ? 'success' : ''}`}
-          disabled={status === 'loading' || status === 'success' || status === 'duplicate'}
-          style={isLarge ? { fontSize: '0.88rem', padding: '1rem 2.2rem' } : {}}
-        >
-          {btnLabel[status]}
-        </button>
-      </form>
-      {message && (
-        <p className={`form-feedback ${status}`} role="status">{message}</p>
-      )}
-    </div>
-  )
-}
-
-/* ─── Live metrics ─── */
-function LiveMetrics() {
-  const [metrics, setMetrics] = useState({ subscribers: 0, notifications: 0 })
-  const [updating, setUpdating] = useState(false)
-
-  const fetchMetrics = useCallback(async () => {
-    try {
-      const res = await fetch('/api/metrics')
-      if (!res.ok) return
-      const data = await res.json()
-      setUpdating(true)
-      setMetrics(data)
-      setTimeout(() => setUpdating(false), 600)
-    } catch { /* silent */ }
-  }, [])
-
-  useEffect(() => {
-    fetchMetrics()
-    const id = setInterval(fetchMetrics, 30_000)
-    window.addEventListener('metrics-refresh', fetchMetrics)
-    return () => {
-      clearInterval(id)
-      window.removeEventListener('metrics-refresh', fetchMetrics)
-    }
-  }, [fetchMetrics])
-
-  return (
-    <div className="metrics-strip">
-      <div className="metric-item">
-        <span className={`metric-value ${updating ? 'updating' : ''}`}>
-          {metrics.subscribers.toLocaleString()}
-        </span>
-        <span className="metric-label">Subscribers</span>
-      </div>
-      <div className="metrics-divider" />
-      <div className="metric-item">
-        <span className={`metric-value ${updating ? 'updating' : ''}`}>
-          {metrics.notifications.toLocaleString()}
-        </span>
-        <span className="metric-label">Alerts Sent</span>
-      </div>
-    </div>
-  )
-}
-
-/* ─── Visitor badge ─── */
-function VisitorBadge() {
-  const [count, setCount] = useState<number | null>(null)
-
-  useEffect(() => {
-    // Increment on first visit per session, then just read
-    const key = 'ga_visited'
-    const visited = sessionStorage.getItem(key)
-    const endpoint = '/api/visitors'
-
-    if (!visited) {
-      sessionStorage.setItem(key, '1')
-      fetch(endpoint, { method: 'POST' })
-        .then(r => r.json())
-        .then(d => setCount(d.count))
-        .catch(() => {})
-    } else {
-      fetch(endpoint)
-        .then(r => r.json())
-        .then(d => setCount(d.count))
-        .catch(() => {})
-    }
-  }, [])
-
-  if (count === null) return null
-
-  return (
-    <div className="visitor-badge" aria-label={`${count} visitors`}>
-      <span className="visitor-badge-icon">👁</span>
-      <span className="visitor-badge-count">{count.toLocaleString()}</span>
-      <span className="visitor-badge-label">visitors</span>
-    </div>
-  )
-}
-
-/* ─── Data ─── */
 const FEATURES = [
   {
     icon: '💛',
@@ -343,26 +67,12 @@ const TESTIMONIALS = [
   },
 ]
 
-/* ─── Page ─── */
 export default function HomePage() {
-  // Scroll reveal
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') }),
-      { threshold: 0.12 }
-    )
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
-    return () => observer.disconnect()
-  }, [])
-
-  const scrollToForm = () => {
-    document.getElementById('subscribe')?.scrollIntoView({ behavior: 'smooth' })
-  }
-
   return (
     <>
       <GoldCanvas />
       <VisitorBadge />
+      <RevealObserver />
 
       {/* ── Announcement Bar ── */}
       <div className="announcement-bar" role="banner">
@@ -380,9 +90,7 @@ export default function HomePage() {
         </div>
         <div className="nav-actions">
           <Link href="/unsubscribe" className="nav-unsub-link">Unsubscribe</Link>
-          <button className="btn-gold-outline" onClick={scrollToForm}>
-            Subscribe Free
-          </button>
+          <ScrollToFormButton />
         </div>
       </nav>
 

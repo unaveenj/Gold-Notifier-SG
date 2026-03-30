@@ -73,7 +73,7 @@ export default function UnsubscribePage() {
       <div className="unsub-card">
         <Link href="/" className="unsub-back">← Back</Link>
 
-        <div className="unsub-logo">🪙 GoldAlert SG</div>
+        <div className="unsub-logo">🪙 Gold Notifier</div>
 
         {step === 'email' && (
           <>
@@ -149,7 +149,7 @@ export default function UnsubscribePage() {
             <div className="unsub-success-icon">✓</div>
             <h1 className="unsub-title">Unsubscribed</h1>
             <p className="unsub-sub">
-              You&apos;ve been removed from GoldAlert SG. You won&apos;t receive any more alerts.
+              You&apos;ve been removed from Gold Notifier. You won&apos;t receive any more alerts.
             </p>
             <Link href="/" className="btn-gold" style={{ display: 'inline-block', marginTop: '1rem', textAlign: 'center' }}>
               Back to Home
