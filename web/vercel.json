@@ -2,5 +2,13 @@
   "installCommand": "npm install",
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "goldnotifier.com" }],
+      "destination": "https://www.goldnotifier.com/:path*",
+      "permanent": true
+    }
+  ]
 }

@@ -5,14 +5,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: 'https://www.goldnotifier.com',
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: 'daily',
       priority: 1,
-    },
-    {
-      url: 'https://www.goldnotifier.com/unsubscribe',
-      lastModified: new Date(),
-      changeFrequency: 'never',
-      priority: 0.3,
     },
   ]
 }
