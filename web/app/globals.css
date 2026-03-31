@@ -1179,53 +1179,43 @@ a { color: inherit; text-decoration: none; touch-action: manipulation; }
 /* ============================================================
    GOLD BAR 3D
    Pure CSS 3D gold ingot — no Three.js, no canvas
-   Box: W=260px  H=82px  D=54px
-   Face formula (right-to-left transform order):
-     front/back  → translateZ(D/2=27px)
-     left/right  → translateZ(W/2=130px)
-     top/bottom  → translateZ(H/2=41px)
-   Face positions (centering narrow faces in parent):
-     left/right  → left:(W-D)/2=103px
-     top/bottom  → top:(H-D)/2=14px
+   Box: W=320px  H=100px  D=66px
+   Face transforms (right-to-left order):
+     front/back  → translateZ(D/2 = 33px)
+     left/right  → translateZ(W/2 = 160px), left:(W-D)/2=127px
+     top/bottom  → translateZ(H/2 = 50px),  top:(H-D)/2=17px
+   Rotation driven by JS CSS vars: --bar-rx, --bar-ry
    ============================================================ */
-
-@keyframes gold3d-rock {
-  0%   { transform: rotateX(-14deg) rotateY(-22deg); }
-  25%  { transform: rotateX(-11deg) rotateY(-4deg);  }
-  50%  { transform: rotateX(-14deg) rotateY(22deg);  }
-  75%  { transform: rotateX(-11deg) rotateY(4deg);   }
-  100% { transform: rotateX(-14deg) rotateY(-22deg); }
-}
 
 @keyframes gold3d-float {
   0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-14px); }
+  50%       { transform: translateY(-16px); }
 }
 
 @keyframes gold3d-shine-sweep {
-  0%   { transform: translateX(-180%) skewX(-12deg); opacity: 0; }
-  20%  { opacity: 1; }
-  60%  { opacity: 0.6; }
-  80%  { transform: translateX(220%) skewX(-12deg); opacity: 0; }
-  100% { transform: translateX(220%) skewX(-12deg); opacity: 0; }
+  0%   { transform: translateX(-200%) skewX(-12deg); opacity: 0; }
+  15%  { opacity: 1; }
+  65%  { opacity: 0.6; }
+  85%  { transform: translateX(240%) skewX(-12deg); opacity: 0; }
+  100% { transform: translateX(240%) skewX(-12deg); opacity: 0; }
 }
 
 @keyframes gold3d-shadow-pulse {
   0%, 100% { transform: scaleX(1);    opacity: 0.55; }
-  50%       { transform: scaleX(0.8); opacity: 0.3;  }
+  50%       { transform: scaleX(0.78); opacity: 0.28; }
 }
 
 @keyframes gold3d-glow-pulse {
   0%, 100% { opacity: 0.18; transform: scale(1);    }
-  50%       { opacity: 0.32; transform: scale(1.08); }
+  50%       { opacity: 0.34; transform: scale(1.1); }
 }
 
 /* Scene container */
 .gold3d-scene {
   position: relative;
-  width: 360px;
-  height: 280px;
-  perspective: 650px;
+  width: 440px;
+  height: 320px;
+  perspective: 750px;
   perspective-origin: 50% 42%;
   display: flex;
   align-items: center;
@@ -1236,19 +1226,19 @@ a { color: inherit; text-decoration: none; touch-action: manipulation; }
 /* Ambient glow behind bar */
 .gold3d-glow {
   position: absolute;
-  width: 280px;
-  height: 160px;
+  width: 340px;
+  height: 200px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -58%);
   background: radial-gradient(
     ellipse,
-    rgba(245, 216, 122, 0.22) 0%,
-    rgba(200, 168, 75, 0.12) 40%,
+    rgba(245, 216, 122, 0.24) 0%,
+    rgba(200, 168, 75, 0.13) 42%,
     transparent 72%
   );
   border-radius: 50%;
-  filter: blur(18px);
+  filter: blur(22px);
   animation: gold3d-glow-pulse 4s ease-in-out infinite;
   pointer-events: none;
 }
@@ -1261,13 +1251,16 @@ a { color: inherit; text-decoration: none; touch-action: manipulation; }
   animation: gold3d-float 4s ease-in-out infinite;
 }
 
-/* The 3D bar element */
+/* The 3D bar — JS drives rotation via CSS vars */
 .gold3d-bar {
-  width: 260px;
-  height: 82px;
+  --bar-rx: -14deg;
+  --bar-ry: -28deg;
+  width: 320px;
+  height: 100px;
   position: relative;
   transform-style: preserve-3d;
-  animation: gold3d-rock 7s ease-in-out infinite;
+  transform: rotateX(var(--bar-rx)) rotateY(var(--bar-ry));
+  transition: transform 0.08s linear;
 }
 
 /* All faces share position: absolute */
@@ -1276,12 +1269,12 @@ a { color: inherit; text-decoration: none; touch-action: manipulation; }
   overflow: hidden;
 }
 
-/* ── Front face (260×82) ── */
+/* ── Front face (320×100) ── */
 .gold3d-front {
-  width: 260px;
-  height: 82px;
+  width: 320px;
+  height: 100px;
   top: 0; left: 0;
-  transform: translateZ(27px);
+  transform: translateZ(33px);
   background:
     linear-gradient(
       162deg,
@@ -1293,30 +1286,30 @@ a { color: inherit; text-decoration: none; touch-action: manipulation; }
       #e8be48 88%,
       #f0cc58 100%
     );
-  border: 1px solid rgba(255, 230, 120, 0.25);
+  border: 1px solid rgba(255, 230, 120, 0.22);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Inset bevels on front face corners */
+/* Inset bevels */
 .gold3d-bevel-tl,
 .gold3d-bevel-br {
   position: absolute;
-  width: 85%;
-  height: 68%;
+  width: 86%;
+  height: 70%;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  border: 1px solid rgba(255, 240, 160, 0.22);
+  border: 1px solid rgba(255, 240, 160, 0.2);
   pointer-events: none;
 }
 .gold3d-bevel-br {
-  width: 70%;
-  height: 52%;
-  border-color: rgba(140, 100, 20, 0.35);
+  width: 72%;
+  height: 54%;
+  border-color: rgba(130, 92, 16, 0.32);
 }
 
-/* Engraved text block */
+/* Engraved text */
 .gold3d-engraving {
   display: flex;
   flex-direction: column;
@@ -1328,29 +1321,29 @@ a { color: inherit; text-decoration: none; touch-action: manipulation; }
 
 .gold3d-fineness {
   font-family: var(--font-mono, monospace);
-  font-size: 0.58rem;
-  letter-spacing: 0.22em;
-  color: rgba(60, 38, 0, 0.65);
+  font-size: 0.65rem;
+  letter-spacing: 0.24em;
+  color: rgba(55, 34, 0, 0.62);
   text-shadow: 0 1px 0 rgba(255, 245, 180, 0.55);
 }
 
 .gold3d-label {
   font-family: var(--font-cormorant, serif);
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  letter-spacing: 0.3em;
-  color: rgba(45, 28, 0, 0.78);
+  letter-spacing: 0.32em;
+  color: rgba(42, 26, 0, 0.76);
   text-shadow: 0 1px 0 rgba(255, 248, 190, 0.6),
-               0 -1px 0 rgba(120, 80, 0, 0.3);
+               0 -1px 0 rgba(110, 74, 0, 0.28);
   text-transform: uppercase;
 }
 
 .gold3d-mass {
   font-family: var(--font-mono, monospace);
-  font-size: 0.5rem;
-  letter-spacing: 0.2em;
-  color: rgba(60, 38, 0, 0.5);
-  text-shadow: 0 1px 0 rgba(255, 245, 180, 0.4);
+  font-size: 0.52rem;
+  letter-spacing: 0.18em;
+  color: rgba(55, 34, 0, 0.48);
+  text-shadow: 0 1px 0 rgba(255, 245, 180, 0.38);
 }
 
 /* Shine sweep overlay */
@@ -1363,70 +1356,68 @@ a { color: inherit; text-decoration: none; touch-action: manipulation; }
 .gold3d-shine-front {
   background: linear-gradient(
     108deg,
-    transparent 0%,
-    transparent 28%,
-    rgba(255, 255, 210, 0.0)  32%,
-    rgba(255, 255, 220, 0.55) 36%,
-    rgba(255, 255, 200, 0.75) 38%,
-    rgba(255, 255, 220, 0.55) 40%,
-    rgba(255, 255, 210, 0.0)  44%,
-    transparent 48%,
-    transparent 100%
+    transparent 0%, transparent 26%,
+    rgba(255,255,210,0.0)  30%,
+    rgba(255,255,220,0.55) 34%,
+    rgba(255,255,200,0.78) 37%,
+    rgba(255,255,220,0.55) 40%,
+    rgba(255,255,210,0.0)  44%,
+    transparent 48%, transparent 100%
   );
-  animation: gold3d-shine-sweep 5s ease-in-out infinite;
-  animation-delay: 0.4s;
+  animation: gold3d-shine-sweep 5.5s ease-in-out infinite;
+  animation-delay: 0.5s;
 }
 
-/* ── Back face (260×82) ── */
+/* ── Back face (320×100) ── */
 .gold3d-back {
-  width: 260px;
-  height: 82px;
+  width: 320px;
+  height: 100px;
   top: 0; left: 0;
-  transform: rotateY(180deg) translateZ(27px);
+  transform: rotateY(180deg) translateZ(33px);
   background: linear-gradient(160deg, #7a5810, #3a2806);
 }
 
-/* ── Left face (54×82) — shadow side ── */
+/* ── Left face (66×100) — shadow side ── */
 .gold3d-left {
-  width: 54px;
-  height: 82px;
-  top: 0; left: 103px;
-  transform: rotateY(-90deg) translateZ(130px);
+  width: 66px;
+  height: 100px;
+  top: 0; left: 127px;
+  transform: rotateY(-90deg) translateZ(160px);
   background: linear-gradient(
     to bottom,
-    #b08020 0%,
-    #8a6010 40%,
-    #6a4808 100%
+    #a87820 0%,
+    #845c0e 40%,
+    #604408 100%
   );
 }
 
-/* ── Right face (54×82) — lit side ── */
+/* ── Right face (66×100) — lit side ── */
 .gold3d-right {
-  width: 54px;
-  height: 82px;
-  top: 0; left: 103px;
-  transform: rotateY(90deg) translateZ(130px);
+  width: 66px;
+  height: 100px;
+  top: 0; left: 127px;
+  transform: rotateY(90deg) translateZ(160px);
   background: linear-gradient(
     to bottom,
-    #e8c858 0%,
-    #c8a030 40%,
-    #a07820 100%
+    #eacc5c 0%,
+    #c8a02e 40%,
+    #9e781e 100%
   );
 }
 
-/* ── Top face (260×54) — brightest ── */
+/* ── Top face (320×66) — brightest ── */
 .gold3d-top {
-  width: 260px;
-  height: 54px;
-  top: 14px; left: 0;
-  transform: rotateX(90deg) translateZ(41px);
+  width: 320px;
+  height: 66px;
+  top: 17px; left: 0;
+  transform: rotateX(90deg) translateZ(50px);
   background: linear-gradient(
     130deg,
     #fffacc 0%,
     #ffe870 18%,
     #f5d040 40%,
-    #e0b830 58%,
-    #f0cc50 75%,
+    #deb830 58%,
+    #eeca50 75%,
     #ffe878 90%,
     #fffacc 100%
   );
@@ -1435,40 +1426,38 @@ a { color: inherit; text-decoration: none; touch-action: manipulation; }
 .gold3d-shine-top {
   background: linear-gradient(
     95deg,
-    transparent 0%,
-    transparent 20%,
-    rgba(255, 255, 240, 0.0)  24%,
-    rgba(255, 255, 250, 0.65) 28%,
-    rgba(255, 255, 240, 0.0)  32%,
-    transparent 36%,
-    transparent 100%
+    transparent 0%, transparent 18%,
+    rgba(255,255,240,0.0)  22%,
+    rgba(255,255,252,0.68) 26%,
+    rgba(255,255,240,0.0)  30%,
+    transparent 34%, transparent 100%
   );
-  animation: gold3d-shine-sweep 5s ease-in-out infinite;
+  animation: gold3d-shine-sweep 5.5s ease-in-out infinite;
   animation-delay: 0s;
 }
 
-/* ── Bottom face (260×54) ── */
+/* ── Bottom face (320×66) ── */
 .gold3d-bottom {
-  width: 260px;
-  height: 54px;
-  top: 14px; left: 0;
-  transform: rotateX(-90deg) translateZ(41px);
-  background: linear-gradient(135deg, #5a3e08, #2e1e04);
+  width: 320px;
+  height: 66px;
+  top: 17px; left: 0;
+  transform: rotateX(-90deg) translateZ(50px);
+  background: linear-gradient(135deg, #5a3e08, #2c1c04);
 }
 
 /* Ground shadow */
 .gold3d-shadow {
-  width: 220px;
-  height: 18px;
-  margin-top: 22px;
+  width: 270px;
+  height: 20px;
+  margin-top: 28px;
   background: radial-gradient(
     ellipse at center,
-    rgba(200, 160, 40, 0.38) 0%,
-    rgba(150, 110, 20, 0.18) 45%,
+    rgba(200, 160, 40, 0.4) 0%,
+    rgba(150, 110, 20, 0.18) 48%,
     transparent 72%
   );
   border-radius: 50%;
-  filter: blur(7px);
+  filter: blur(8px);
   animation: gold3d-shadow-pulse 4s ease-in-out infinite;
 }
 
@@ -1478,7 +1467,7 @@ a { color: inherit; text-decoration: none; touch-action: manipulation; }
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 1120px;
+  max-width: 1140px;
   position: relative;
   z-index: 2;
 }
