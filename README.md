@@ -7,7 +7,7 @@
 [![GitHub Actions](https://img.shields.io/badge/Scheduler-GitHub%20Actions-2088FF?style=flat&logo=github-actions&logoColor=white)](https://github.com/features/actions)
 [![Airtable](https://img.shields.io/badge/Database-Airtable-18BFFF?style=flat&logo=airtable&logoColor=white)](https://airtable.com)
 
-> Free, automated gold price monitoring for Singapore. Get instant email alerts when 22k and 24k gold prices change at multiple popular indian jewelerry.
+> Free, automated gold price monitoring for Singapore. Get daily email alerts comparing 22k and 24k gold prices across 4 major jewellers, with 24-hour average trends.
 >
 > **Website:** [www.goldnotifier.com](https://www.goldnotifier.com) · **Contact:** alerts@goldnotifier.com
 
@@ -42,7 +42,12 @@ GitHub Actions (cron / manual)        goldnotifier.com/trigger (phone)
         │
         ├── read/write ──► Airtable (subscribers · prices · history)
         │
-        └── send email ──► Namecheap SMTP ──► Subscribers
+        └── (scrape-only, no email)
+
+Daily Alert Workflow
+        │
+        ▼
+  daily_alert.py ──► Airtable (prices · subscribers) ──► Namecheap SMTP ──► Subscribers
 
 Announcement Workflow (manual dispatch)
         │
@@ -50,16 +55,21 @@ Announcement Workflow (manual dispatch)
   announcement.py ──► Airtable (subscribers) ──► Namecheap SMTP ──► Subscribers
 
 Next.js 14 / Vercel (goldnotifier.com)
-  /subscribe · /unsubscribe · /metrics · /visitors · /trigger
+  / · /unsubscribe · /trigger
         │
-        └── read/write ──► Airtable
+        └── API routes ──► Airtable
+              ├── /api/subscribe       ← add subscriber
+              ├── /api/unsubscribe/*   ← OTP-based unsub flow
+              ├── /api/metrics         ← live counts
+              ├── /api/visitors        ← session visitor counter
+              └── /api/trigger         ← dispatch GitHub workflow
 ```
 
 ---
 
 ## 🎨 Frontend — Dark Luxury Gold UI
 
-Built with **Next.js 14 App Router**, pure CSS, and Google Fonts. No UI library dependencies.
+Built with **Next.js 14 App Router**, pure CSS, and Google Fonts. No UI library dependencies. Server components used for SEO-critical sections so Googlebot can index the full page.
 
 | Element | Choice |
 |---|---|
@@ -73,14 +83,26 @@ Built with **Next.js 14 App Router**, pure CSS, and Google Fonts. No UI library 
 ### Page Sections
 
 1. **Announcement bar** — animated gold shimmer · "100% Free for Life — Limited Early Access"
-2. **Hero** — live badge, Cormorant headline with shimmer animation, subscribe form, live metrics
-3. **Stats band** — 2hr updates · 22k & 24k · 100% free
+2. **Hero** — live badge, Cormorant headline with shimmer animation, subscribe form, live metrics, interactive 3D gold bar
+3. **Stats band** — 4 shops · 22k & 24k · 100% free
 4. **Features** — 4 cards with gold border glow on hover
 5. **Testimonials** — 2-column social proof cards
 6. **How It Works** — 3-step process with connector lines
 7. **Value Prop** — "Save up to S$350 per 100g" with gold shimmer
 8. **CTA** — repeat subscribe form
 9. **Footer**
+
+### React Components
+
+| Component | Purpose |
+|---|---|
+| **GoldBar3D** | Interactive 3D CSS gold bar; scroll-driven Y-rotation (−28° → +28°) with smooth X-tilt |
+| **GoldCanvas** | Canvas particle system: 130 gold dust particles + 7 ambient glow orbs |
+| **SubscribeForm** | Email subscription form with idle/loading/success/error/duplicate states |
+| **LiveMetrics** | Live subscriber + alert counts, auto-refreshes every 30 s |
+| **VisitorBadge** | Session-based visitor counter badge |
+| **RevealObserver** | Intersection observer for staggered scroll-reveal animations |
+| **ScrollToFormButton** | Smooth scroll anchor to `#subscribe` |
 
 ---
 
@@ -91,24 +113,37 @@ Gold-Notifier-SG/
 ├── web/                        ← Next.js app (deploy this to Vercel)
 │   ├── app/
 │   │   ├── globals.css         ← All styles + gold animations
-│   │   ├── layout.tsx          ← Root layout, metadata, schema
-│   │   ├── page.tsx            ← Landing page (canvas, form, sections)
-│   │   ├── robots.ts           ← robots.txt
-│   │   ├── sitemap.ts          ← sitemap.xml
-│   │   ├── unsubscribe/        ← OTP unsubscribe flow
+│   │   ├── layout.tsx          ← Root layout, metadata, schema.org JSON-LD
+│   │   ├── page.tsx            ← Landing page (server component shell)
+│   │   ├── robots.ts           ← robots.txt generation
+│   │   ├── sitemap.ts          ← sitemap.xml generation
+│   │   ├── opengraph-image.tsx ← OG image (1200×630)
+│   │   ├── components/
+│   │   │   ├── GoldBar3D.tsx        ← Scroll-driven 3D gold bar
+│   │   │   ├── GoldCanvas.tsx       ← Canvas particle system
+│   │   │   ├── SubscribeForm.tsx    ← Email subscribe form
+│   │   │   ├── LiveMetrics.tsx      ← Live subscriber/alert counter
+│   │   │   ├── VisitorBadge.tsx     ← Visitor counter badge
+│   │   │   ├── RevealObserver.tsx   ← Scroll reveal helper
+│   │   │   └── ScrollToFormButton.tsx
+│   │   ├── unsubscribe/        ← OTP unsubscribe flow (email → OTP → done)
 │   │   ├── trigger/            ← Phone-friendly manual trigger UI
 │   │   └── api/
 │   │       ├── subscribe/      ← POST: add subscriber to Airtable
 │   │       ├── metrics/        ← GET: live subscriber + alert counts
-│   │       ├── unsubscribe/    ← POST: OTP send + verify
-│   │       └── trigger/        ← POST: dispatch scraper via GitHub API
+│   │       ├── visitors/       ← GET/POST: session-based visitor counter
+│   │       ├── unsubscribe/
+│   │       │   ├── request/    ← POST: send OTP to email
+│   │       │   └── confirm/    ← POST: verify OTP + delete subscriber
+│   │       └── trigger/        ← POST: dispatch workflow via GitHub API
 │   ├── .env.local.example      ← Copy to .env.local with your keys
+│   ├── vercel.json
 │   └── package.json
 ├── scraper/
 │   ├── gold_bot.py             ← Scraper + Airtable writer (--scrape-only skips email)
-│   └── price_tracker.py        ← Price change calculations
+│   └── price_tracker.py        ← Price change calculations + formatting
 ├── notifications/
-│   ├── daily_alert.py          ← Daily 5pm email with 24h average comparison
+│   ├── daily_alert.py          ← Daily 5pm email with 24h average comparison + chart
 │   ├── announcement.py         ← Manual announcement broadcaster
 │   └── test_email.py           ← Test send to dev address only
 ├── scripts/
@@ -142,7 +177,7 @@ cd Gold-Notifier-SG
 cd web
 npm install
 
-# Copy and fill in your Airtable credentials
+# Copy and fill in your keys
 cp .env.local.example .env.local
 ```
 
@@ -150,6 +185,8 @@ cp .env.local.example .env.local
 ```
 AIRTABLE_API_KEY=your_airtable_personal_access_token
 AIRTABLE_BASE_ID=your_airtable_base_id
+GITHUB_TOKEN=your_github_pat          # for /trigger endpoint
+TRIGGER_SECRET=your_trigger_secret    # optional auth for trigger UI
 ```
 
 Run locally:
@@ -160,7 +197,7 @@ npm run dev   # http://localhost:3000
 **Deploy to Vercel:**
 1. Import repo at [vercel.com/new](https://vercel.com/new)
 2. Set **Root Directory** → `web`
-3. Add environment variables: `AIRTABLE_API_KEY`, `AIRTABLE_BASE_ID`
+3. Add environment variables: `AIRTABLE_API_KEY`, `AIRTABLE_BASE_ID`, `GITHUB_TOKEN`, `TRIGGER_SECRET`
 4. Deploy ✓
 
 ### 3 — Scraper (Python)
@@ -227,13 +264,25 @@ Sends one email per day at **5:00 PM SGT** with current prices and 24h average c
 
 ## 🧠 Reliability
 
-- ✅ Max 3 retry attempts per scrape
-- ✅ 45-second total scrape deadline with exponential backoff (15s × 3 attempts)
-- ✅ Numeric price validation
+- ✅ Max 3 retry attempts per scrape with exponential backoff (0.5s, 1s, 2s)
+- ✅ 45-second total scrape deadline
+- ✅ Numeric price validation with plausibility range check (80–600 SGD)
+- ✅ Cloudscraper for Cloudflare-protected shops (GRT)
 - ✅ Failure email sent even when scrape fails
 - ✅ Duplicate subscription protection (Airtable dedup)
-- ✅ Live subscriber + alert counts on landing page (60s refresh)
+- ✅ OTP-protected unsubscribe (6-digit code, 10-minute TTL)
+- ✅ Live subscriber + alert counts on landing page (30s refresh)
 - ✅ Fully serverless — no server to maintain
+
+---
+
+## 🔍 SEO
+
+- **Schema.org JSON-LD** — WebSite, Organization, Service, and FAQPage structured data
+- **Open Graph + Twitter Card** — 1200×630 OG image generated server-side
+- **robots.ts / sitemap.ts** — Auto-generated via Next.js App Router
+- **Server components** — SEO-critical page sections rendered server-side for full Googlebot indexing
+- **Canonical URL** — `https://www.goldnotifier.com`
 
 ---
 
@@ -267,15 +316,14 @@ As at 2026-03-28 17:00:00 SGT
 
 ---
 
-## 🛠 Scraper — Target Elements
+## 🛠 Scraper — Target Shops
 
-```
-mustafajewellery.com
-  #22k_price1        → 22k (916) price
-  #24k_price1        → 24k (999) price
-  #date_update_gold  → source last-updated date
-  #time_updates_gold → source last-updated time
-```
+| Shop | Method | Notes |
+|---|---|---|
+| **Mustafa Jewellery** | HTML (requests) | `#22k_price1`, `#24k_price1` |
+| **Malabar Gold SG** | HTML (requests) | `#price22kt_85`, `#price24kt_85` |
+| **Joyalukkas SG** | GraphQL API | POST with `Store: "sg"` header |
+| **GRT Jewels SG** | HTML (cloudscraper) | Cloudflare WAF bypass, regex price extraction |
 
 ---
 
@@ -285,7 +333,12 @@ mustafajewellery.com
 - [x] Price threshold alerts (notify only when below X)
 - [x] Unsubscribe link in email footer
 - [x] Multiple pricing sources — Mustafa, Malabar, Joyalukkas, GRT
-- [x] Daily digest option
+- [x] Daily digest with 24h average comparison
+- [x] Interactive 3D gold bar in hero
+- [x] Full SEO — schema.org, OG image, sitemap, robots
+- [x] Server/client component split for Googlebot indexing
+- [x] Live metrics display (subscriber + alert counts)
+- [x] Session-based visitor counter
 
 ---
 
@@ -307,7 +360,7 @@ How Gold Notifier helps Singapore buyers compare prices across jewellers and mak
 
 Built as a lightweight serverless automation to help Singapore gold buyers time their purchases.
 
-**Website:** [www.goldnotifier.com](https://www.goldnotifier.com)
+**Website:** [www.goldnotifier.com](https://www.goldnotifier.com)  
 **Contact:** alerts@goldnotifier.com
 
 ⭐ Star this repo if you found it useful
