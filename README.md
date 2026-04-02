@@ -13,7 +13,7 @@
 
 ---
 
-## 🖥 Live UI
+## 🖥 Screenshots
 
 ![Gold Notifier Full Page](docs/screenshots/full-page.png)
 
