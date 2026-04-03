@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const GITHUB_OWNER    = 'unaveenj'
 const GITHUB_REPO     = 'Gold-Notifier-SG'
-const WORKFLOW_FILE   = 'goldrates.yml'
+const WORKFLOW_FILE   = 'daily_alert.yml'
 
 export async function POST(req: NextRequest) {
   const token        = process.env.TRIGGER_TOKEN

@@ -57,7 +57,7 @@ export default function TriggerPage() {
           Gold Notifier
         </h1>
         <p style={{ color: '#888', margin: 0, fontSize: '13px', textAlign: 'center' }}>
-          Manual scraper trigger
+          Send daily alert email now
         </p>
 
         <input
@@ -91,7 +91,7 @@ export default function TriggerPage() {
             cursor: status === 'loading' ? 'not-allowed' : 'pointer',
           }}
         >
-          {status === 'loading' ? 'Triggering...' : 'Run Scraper Now'}
+          {status === 'loading' ? 'Sending...' : 'Send Alert Now'}
         </button>
 
         {message && (
