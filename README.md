@@ -23,7 +23,7 @@
 
 **Every 2 hours from 8am–8pm SGT**, the scraper silently collects live gold prices from 4 jewellers and saves them to Airtable — no email sent.
 
-**Once a day at 5pm SGT**, a daily alert email is sent to all subscribers containing:
+**Once a day at around 5pm SGT**, a daily alert email is sent to all subscribers containing:
 1. Current prices across all 4 shops (22k & 24k)
 2. Percentage change vs the 24-hour average — so you see the day's trend, not just the last reading
 3. A visual price history chart across all shops
