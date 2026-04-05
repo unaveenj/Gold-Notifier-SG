@@ -1,4 +1,4 @@
-# 🪙 Gold Notifier — Gold Price Notifier
+# 🪙 Gold Notifier — Gold Price Notifier for singapore
 
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat&logo=next.js&logoColor=white)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
