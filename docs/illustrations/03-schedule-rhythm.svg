@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" width="1200" height="520">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,1 L9,5 L0,9 Z" fill="#f97316"/>
+    </marker>
+    <marker id="drip" viewBox="0 0 10 10" refX="5" refY="9" markerWidth="5" markerHeight="5" orient="auto">
+      <circle cx="5" cy="5" r="4" fill="#f97316"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="520" fill="white"/>
+
+  <!-- ── LEFT: drip tap + bucket ── -->
+
+  <!-- TAP (pipe shape) -->
+  <rect x="185" y="70" width="16" height="80" rx="4" fill="none" stroke="#374151" stroke-width="2.5"/>
+  <!-- horizontal elbow -->
+  <path d="M185,110 L155,110" stroke="#374151" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <!-- tap nozzle -->
+  <rect x="188" y="148" width="10" height="14" rx="3" fill="none" stroke="#374151" stroke-width="2"/>
+
+  <!-- "silent scrape" label -->
+  <text x="108" y="104" font-family="sans-serif" font-size="12" fill="#9ca3af" text-anchor="middle">silent</text>
+  <text x="108" y="120" font-family="sans-serif" font-size="12" fill="#9ca3af" text-anchor="middle">scrape</text>
+
+  <!-- drip drops (7 drops falling) -->
+  <circle cx="193" cy="172" r="5" fill="#f97316" opacity="0.9"/>
+  <circle cx="193" cy="192" r="4" fill="#f97316" opacity="0.6"/>
+  <circle cx="193" cy="210" r="3" fill="#f97316" opacity="0.35"/>
+
+  <!-- BUCKET outline -->
+  <!-- bucket trapezoid: wider at top -->
+  <path d="M148,230 L238,230 L224,360 L162,360 Z" fill="#fffbeb" stroke="#d97706" stroke-width="2.5"/>
+  <!-- water level inside -->
+  <path d="M155,290 L231,290 L226,316 L160,316 Z" fill="#fed7aa" opacity="0.6"/>
+  <!-- bucket handle arc -->
+  <path d="M158,230 Q193,205 228,230" stroke="#d97706" stroke-width="2" fill="none"/>
+
+  <!-- Time labels beside drip (representing every 2h scrape) -->
+  <text x="258" y="166" font-family="sans-serif" font-size="12" fill="#6b7280">8am</text>
+  <text x="258" y="192" font-family="sans-serif" font-size="12" fill="#6b7280">10am</text>
+  <text x="258" y="218" font-family="sans-serif" font-size="12" fill="#6b7280">12pm</text>
+
+  <!-- Small time marks inside bucket (continuing) -->
+  <text x="193" y="270" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#92400e" opacity="0.7">2pm  4pm</text>
+
+  <!-- "every 2h" label -->
+  <text x="193" y="402" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#78350f">every 2 hours  ·  8am – 8pm</text>
+
+  <!-- Xiaohei watching beside the bucket -->
+  <g transform="translate(310,300)">
+    <path d="M0,-30 C20,-30 30,-17 30,0 C30,17 20,30 0,30 C-20,30 -30,17 -30,0 C-30,-17 -20,-30 0,-30Z" fill="#1a1a1a"/>
+    <circle cx="-10" cy="-7" r="5" fill="white"/>
+    <circle cx="10" cy="-7" r="5" fill="white"/>
+    <!-- arm pointing to bucket -->
+    <path d="M-28,2 C-42,0 -55,-4 -62,-6" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <!-- other arm relaxed -->
+    <path d="M28,2 C40,8 44,14 42,20" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <line x1="-9" y1="30" x2="-13" y2="54" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="9" y1="30" x2="13" y2="54" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- "watching" annotation -->
+  <text x="312" y="384" text-anchor="middle" font-family="serif" font-size="13" fill="#6b7280" font-style="italic">…waiting</text>
+
+  <!-- ── 5PM TRIGGER (center) ── -->
+  <!-- vertical dashed divider -->
+  <line x1="500" y1="80" x2="500" y2="440" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="6,4"/>
+
+  <!-- Clock icon at top of divider -->
+  <circle cx="500" cy="180" r="46" fill="white" stroke="#dc2626" stroke-width="2.5"/>
+  <circle cx="500" cy="180" r="4" fill="#dc2626"/>
+  <!-- Clock hands showing 5:00 -->
+  <line x1="500" y1="180" x2="500" y2="146" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Hour hand pointing to 5 (150°) -->
+  <line x1="500" y1="180" x2="520" y2="214" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Clock tick marks -->
+  <line x1="500" y1="137" x2="500" y2="144" stroke="#374151" stroke-width="1.5"/>
+  <line x1="500" y1="216" x2="500" y2="223" stroke="#374151" stroke-width="1.5"/>
+  <line x1="457" y1="180" x2="464" y2="180" stroke="#374151" stroke-width="1.5"/>
+  <line x1="536" y1="180" x2="543" y2="180" stroke="#374151" stroke-width="1.5"/>
+
+  <text x="500" y="252" text-anchor="middle" font-family="sans-serif" font-size="15" fill="#dc2626" font-weight="600">5 pm SGT</text>
+  <text x="500" y="272" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#9ca3af">once daily</text>
+
+  <!-- ── RIGHT: tipping bucket into funnel → envelope ── -->
+
+  <!-- Arrow from center to funnel -->
+  <path d="M554,300 L640,300" stroke="#f97316" stroke-width="4" fill="none" marker-end="url(#arr)"/>
+
+  <!-- FUNNEL -->
+  <!-- Funnel wide top -->
+  <path d="M648,240 L780,240 L732,328 L696,328 Z" fill="#fffbeb" stroke="#d97706" stroke-width="2.5"/>
+  <!-- Funnel narrow neck -->
+  <rect x="704" y="328" width="28" height="34" rx="4" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
+
+  <!-- Xiaohei tipping bucket into funnel -->
+  <g transform="translate(620,220) rotate(30)">
+    <!-- tilted bucket pouring -->
+    <path d="M-28,-10 L28,-10 L20,34 L-20,34 Z" fill="none" stroke="#d97706" stroke-width="2"/>
+    <!-- liquid pouring out -->
+    <path d="M-20,34 Q-10,50 4,60" stroke="#f97316" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.7"/>
+    <path d="M20,34 Q14,50 4,60" stroke="#f97316" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+  </g>
+
+  <!-- Xiaohei holding/tipping -->
+  <g transform="translate(618,185)">
+    <path d="M0,-28 C18,-28 28,-16 28,0 C28,16 18,28 0,28 C-18,28 -28,16 -28,0 C-28,-16 -18,-28 0,-28Z" fill="#1a1a1a"/>
+    <circle cx="-9" cy="-6" r="5" fill="white"/>
+    <circle cx="9" cy="-6" r="5" fill="white"/>
+    <path d="M-26,0 C-38,-6 -46,-14 -50,-18" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <path d="M26,0 C38,-6 46,-14 48,-18" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <line x1="-9" y1="28" x2="-13" y2="50" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+    <line x1="9" y1="28" x2="13" y2="50" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- Orange drop falling through funnel neck -->
+  <path d="M718,362 L718,390" stroke="#f97316" stroke-width="3" stroke-dasharray="4,3" opacity="0.7"/>
+
+  <!-- Arrow from funnel bottom to envelope -->
+  <path d="M718,398 L800,398" stroke="#f97316" stroke-width="4" fill="none" marker-end="url(#arr)"/>
+
+  <!-- ENVELOPE -->
+  <g transform="translate(910,398)">
+    <rect x="-82" y="-48" width="164" height="96" rx="7" fill="#fefce8" stroke="#1a1a1a" stroke-width="2.5"/>
+    <path d="M-82,-48 L0,22 L82,-48" stroke="#1a1a1a" stroke-width="2" fill="none"/>
+    <path d="M-82,48 L-10,10" stroke="#1a1a1a" stroke-width="1" fill="none" opacity="0.2"/>
+    <path d="M82,48 L10,10" stroke="#1a1a1a" stroke-width="1" fill="none" opacity="0.2"/>
+  </g>
+
+  <text x="910" y="476" text-anchor="middle" font-family="serif" font-size="15" fill="#1d4ed8" font-style="italic">one email  ·  all subscribers</text>
+  <text x="910" y="498" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#9ca3af">22k &amp; 24k · 4 shops · 24h trend</text>
+</svg>

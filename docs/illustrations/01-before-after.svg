@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,1 L9,5 L0,9 Z" fill="#f97316"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="630" fill="white"/>
+
+  <!-- Section labels -->
+  <text x="285" y="76" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ccc" letter-spacing="6">BEFORE</text>
+  <text x="915" y="76" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#ccc" letter-spacing="6">AFTER</text>
+
+  <!-- ── BEFORE: price tags ── -->
+  <g transform="translate(138,168) rotate(-13)">
+    <rect x="-64" y="-22" width="128" height="44" rx="5" fill="#fff5f5" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="0" y="7" text-anchor="middle" font-family="monospace" font-size="14" fill="#dc2626">Mustafa?</text>
+  </g>
+  <g transform="translate(420,192) rotate(9)">
+    <rect x="-64" y="-22" width="128" height="44" rx="5" fill="#fff5f5" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="0" y="7" text-anchor="middle" font-family="monospace" font-size="14" fill="#dc2626">Malabar?</text>
+  </g>
+  <g transform="translate(140,450) rotate(5)">
+    <rect x="-48" y="-22" width="96" height="44" rx="5" fill="#fff5f5" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="0" y="7" text-anchor="middle" font-family="monospace" font-size="14" fill="#dc2626">GRT?</text>
+  </g>
+  <g transform="translate(425,465) rotate(-7)">
+    <rect x="-74" y="-22" width="148" height="44" rx="5" fill="#fff5f5" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="0" y="7" text-anchor="middle" font-family="monospace" font-size="14" fill="#dc2626">Joyalukkas?</text>
+  </g>
+
+  <!-- Xiaohei BEFORE at (285, 318) — arms raised in panic -->
+  <g transform="translate(285,318)">
+    <path d="M0,-37 C26,-37 38,-21 38,0 C38,21 26,37 0,37 C-26,37 -38,21 -38,0 C-38,-21 -26,-37 0,-37Z" fill="#1a1a1a"/>
+    <circle cx="-13" cy="-9" r="6.5" fill="white"/>
+    <circle cx="13" cy="-9" r="6.5" fill="white"/>
+    <path d="M-35,-14 C-54,-30 -65,-46 -68,-58" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M35,-14 C54,-30 65,-46 68,-58" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <line x1="-12" y1="37" x2="-18" y2="64" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
+    <line x1="12" y1="37" x2="18" y2="64" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- Before annotation -->
+  <text x="150" y="548" font-family="serif" font-size="15" fill="#dc2626" font-style="italic" transform="rotate(-2,150,548)">check 4 sites...</text>
+  <text x="165" y="572" font-family="serif" font-size="15" fill="#dc2626" font-style="italic">every single day?</text>
+
+  <!-- ── CENTER ARROW ── -->
+  <path d="M550,318 L650,318" stroke="#f97316" stroke-width="5" fill="none" marker-end="url(#arr)"/>
+
+  <!-- ── AFTER: envelope ── -->
+  <g transform="translate(990,304)">
+    <rect x="-70" y="-46" width="140" height="92" rx="7" fill="#fefce8" stroke="#1a1a1a" stroke-width="2.5"/>
+    <path d="M-70,-46 L0,18 L70,-46" stroke="#1a1a1a" stroke-width="2" fill="none"/>
+    <path d="M-70,46 L-8,6" stroke="#1a1a1a" stroke-width="1" fill="none" opacity="0.2"/>
+    <path d="M70,46 L8,6" stroke="#1a1a1a" stroke-width="1" fill="none" opacity="0.2"/>
+  </g>
+
+  <!-- Xiaohei AFTER at (855, 318) — calm, arm extended to envelope -->
+  <g transform="translate(855,318)">
+    <path d="M0,-37 C26,-37 38,-21 38,0 C38,21 26,37 0,37 C-26,37 -38,21 -38,0 C-38,-21 -26,-37 0,-37Z" fill="#1a1a1a"/>
+    <circle cx="-13" cy="-9" r="6" fill="white"/>
+    <circle cx="13" cy="-9" r="6" fill="white"/>
+    <!-- arm reaching toward envelope -->
+    <path d="M36,2 C58,-4 76,-10 90,-14" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <!-- other arm relaxed at side -->
+    <path d="M-36,2 C-52,8 -58,16 -55,24" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <line x1="-12" y1="37" x2="-18" y2="64" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
+    <line x1="12" y1="37" x2="18" y2="64" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- After annotation -->
+  <text x="912" y="530" text-anchor="middle" font-family="serif" font-size="15" fill="#1d4ed8" font-style="italic">one email</text>
+  <text x="912" y="555" text-anchor="middle" font-family="serif" font-size="15" fill="#1d4ed8" font-style="italic">done ✓</text>
+</svg>

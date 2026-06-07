@@ -53,7 +53,7 @@ Constraints:
 One image explains only one core structure. Keep the main subject around 40-60% of the canvas. Preserve at least 35% blank white space. Use at most 5-8 short labels. Do not write a title in the top-left corner. Not a formal diagram. Strange but clean.
 -->
 
-![Before vs After: manual price checking vs one daily email](docs/illustrations/01-before-after.png)
+![Before vs After: manual price checking vs one daily email](docs/illustrations/01-before-after.svg)
 
 Gold Notifier automates the whole loop — scrape, compare, email — so you only need to check your inbox once a day.
 
@@ -98,7 +98,7 @@ Constraints:
 One image explains only one core structure. Keep the main subject around 40-60% of the canvas. Preserve at least 35% blank white space. At most 7 short labels. No title in top-left corner. Not a formal flowchart or system architecture diagram. Invent a fresh machine metaphor — do not reuse conveyor belts or prior compositions.
 -->
 
-![System pipeline: scrape 4 shops → Airtable → daily email](docs/illustrations/02-system-flow.png)
+![System pipeline: scrape 4 shops → Airtable → daily email](docs/illustrations/02-system-flow.svg)
 
 **Every 2 hours (8am–8pm SGT):** `gold_bot.py` scrapes live prices from all 4 jewellers and writes them to Airtable. No email is sent.
 
@@ -166,7 +166,7 @@ Constraints:
 One image, one idea. Preserve at least 35% white space. At most 5 short labels. No title in top-left corner. Strange but tidy. Do not copy prior funnel/conveyor/fish compositions.
 -->
 
-![Silent all-day scraping, then one email at 5pm](docs/illustrations/03-schedule-rhythm.png)
+![Silent all-day scraping, then one email at 5pm](docs/illustrations/03-schedule-rhythm.svg)
 
 Each daily email contains:
 

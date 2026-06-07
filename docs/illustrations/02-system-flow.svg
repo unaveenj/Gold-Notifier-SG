@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 580" width="1200" height="580">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 Z" fill="#f97316"/>
+    </marker>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 Z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="580" fill="white"/>
+
+  <!-- ── LEFT: 4 Shops ── -->
+  <!-- Mustafa -->
+  <rect x="58" y="138" width="130" height="42" rx="6" fill="#f9fafb" stroke="#374151" stroke-width="1.5"/>
+  <text x="123" y="164" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#374151">Mustafa</text>
+  <!-- Malabar -->
+  <rect x="58" y="210" width="130" height="42" rx="6" fill="#f9fafb" stroke="#374151" stroke-width="1.5"/>
+  <text x="123" y="236" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#374151">Malabar</text>
+  <!-- Joyalukkas -->
+  <rect x="58" y="316" width="130" height="42" rx="6" fill="#f9fafb" stroke="#374151" stroke-width="1.5"/>
+  <text x="123" y="342" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#374151">Joyalukkas</text>
+  <!-- GRT -->
+  <rect x="58" y="388" width="130" height="42" rx="6" fill="#f9fafb" stroke="#374151" stroke-width="1.5"/>
+  <text x="123" y="414" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#374151">GRT</text>
+
+  <!-- lines from shops converging to scraper input (x=280, y=290) -->
+  <path d="M188,159 Q234,159 280,290" stroke="#f97316" stroke-width="1.5" fill="none" stroke-dasharray="5,3" opacity="0.7"/>
+  <path d="M188,231 Q240,231 280,290" stroke="#f97316" stroke-width="1.5" fill="none" stroke-dasharray="5,3" opacity="0.7"/>
+  <path d="M188,337 Q240,337 280,290" stroke="#f97316" stroke-width="1.5" fill="none" stroke-dasharray="5,3" opacity="0.7"/>
+  <path d="M188,409 Q234,409 280,290" stroke="#f97316" stroke-width="1.5" fill="none" stroke-dasharray="5,3" opacity="0.7"/>
+
+  <!-- ── SCRAPER BOX (Xiaohei machine) ── -->
+  <rect x="282" y="238" width="180" height="104" rx="8" fill="#fffbeb" stroke="#f97316" stroke-width="2" stroke-dasharray="7,4"/>
+  <!-- Xiaohei at (372, 290) -->
+  <g transform="translate(372,290)">
+    <path d="M0,-30 C20,-30 30,-17 30,0 C30,17 20,30 0,30 C-20,30 -30,17 -30,0 C-30,-17 -20,-30 0,-30Z" fill="#1a1a1a"/>
+    <circle cx="-10" cy="-7" r="5" fill="white"/>
+    <circle cx="10" cy="-7" r="5" fill="white"/>
+    <!-- crank arm -->
+    <path d="M26,0 C35,-8 42,-14 48,-8 C54,-2 50,6 44,10" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <line x1="-9" y1="30" x2="-13" y2="52" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="9" y1="30" x2="13" y2="52" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+  <!-- Label below scraper box -->
+  <text x="372" y="365" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#78350f">every 2h  ·  8am–8pm SGT</text>
+  <text x="372" y="382" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#9ca3af">gold_bot.py</text>
+
+  <!-- arrow: scraper → airtable -->
+  <path d="M462,290 L540,290" stroke="#f97316" stroke-width="3" fill="none" marker-end="url(#arr)"/>
+
+  <!-- ── AIRTABLE CYLINDER ── -->
+  <!-- cylinder body -->
+  <rect x="545" y="258" width="100" height="64" rx="4" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <!-- cylinder top ellipse -->
+  <ellipse cx="595" cy="258" rx="50" ry="13" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <!-- cylinder bottom ellipse -->
+  <ellipse cx="595" cy="322" rx="50" ry="13" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="595" y="294" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#1d4ed8">Airtable</text>
+  <text x="595" y="370" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#9ca3af">prices · subscribers</text>
+
+  <!-- vertical arrow from airtable down to 5pm trigger -->
+  <path d="M595,340 L595,408" stroke="#f97316" stroke-width="3" fill="none" marker-end="url(#arr)"/>
+  <!-- "5pm SGT" label on arrow -->
+  <text x="608" y="382" font-family="sans-serif" font-size="12" fill="#dc2626">5pm SGT</text>
+
+  <!-- ── DAILY ALERT BOX ── -->
+  <rect x="545" y="414" width="100" height="46" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+  <text x="595" y="432" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#92400e">daily_alert</text>
+  <text x="595" y="450" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#92400e">.py</text>
+
+  <!-- arrow: daily_alert → email -->
+  <path d="M645,437 L730,437" stroke="#f97316" stroke-width="3" fill="none" marker-end="url(#arr)"/>
+
+  <!-- ── EMAIL ENVELOPE ── -->
+  <g transform="translate(820,437)">
+    <rect x="-78" y="-46" width="156" height="92" rx="7" fill="#fefce8" stroke="#1a1a1a" stroke-width="2"/>
+    <path d="M-78,-46 L0,20 L78,-46" stroke="#1a1a1a" stroke-width="2" fill="none"/>
+    <path d="M-78,46 L-10,8" stroke="#1a1a1a" stroke-width="1" fill="none" opacity="0.2"/>
+    <path d="M78,46 L10,8" stroke="#1a1a1a" stroke-width="1" fill="none" opacity="0.2"/>
+  </g>
+  <text x="820" y="516" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#374151">daily email</text>
+  <text x="820" y="534" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#9ca3af">subscribers</text>
+
+  <!-- connecting line from scraper box top to GitHub Actions label -->
+  <text x="372" y="220" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#6b7280">GitHub Actions cron</text>
+
+  <!-- Namecheap SMTP label -->
+  <text x="690" y="420" font-family="sans-serif" font-size="11" fill="#9ca3af">SMTP</text>
+</svg>
