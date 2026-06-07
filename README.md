@@ -1,4 +1,4 @@
-# 🪙 Gold Notifier — Gold Price Notifier for singapore
+# Gold Notifier SG
 
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat&logo=next.js&logoColor=white)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -7,294 +7,172 @@
 [![GitHub Actions](https://img.shields.io/badge/Scheduler-GitHub%20Actions-2088FF?style=flat&logo=github-actions&logoColor=white)](https://github.com/features/actions)
 [![Airtable](https://img.shields.io/badge/Database-Airtable-18BFFF?style=flat&logo=airtable&logoColor=white)](https://airtable.com)
 
-> Free, automated gold price monitoring for Singapore. Get daily email alerts comparing 22k and 24k gold prices across 4 major jewellers, with 24-hour average trends.
+> Free, automated gold price monitoring for Singapore. Get one daily email comparing 22k and 24k prices across 4 major jewellers, with 24-hour average trends.
 >
 > **Website:** [www.goldnotifier.com](https://www.goldnotifier.com) · **Contact:** alerts@goldnotifier.com
 
 ---
 
-## 🖥 Screenshots
+## The Problem It Solves
 
-![Gold Notifier Full Page](docs/screenshots/full-page.png)
+Gold prices in Singapore change daily and vary across shops — Mustafa, Malabar, Joyalukkas, GRT. Checking all four manually to find the best time to buy is tedious and easy to forget.
+
+<!--
+ILLUSTRATION 1 — Before/After contrast
+Place: here, after "The Problem It Solves"
+
+Prompt:
+Generate one standalone 16:9 horizontal article illustration.
+
+Visual DNA:
+Pure white background. Minimalist black hand-drawn line art. Slightly wobbly pen lines. Lots of empty white space. Sparse handwritten English annotations. Clean absurd product-sketch feeling. No gradients, no shadows, no paper texture, no complex background, no commercial vector style, no PPT infographic look.
+
+Recurring IP character required:
+小黑, a small solid-black absurd creature with white dot eyes, tiny thin legs, blank serious expression, slightly uneven hand-drawn body shape. 小黑 must perform the core conceptual action, not decorate the scene.
+
+Theme: The exhausting manual way vs the calm automated way.
+
+Structure type: Before/After contrast.
+
+Core idea: Left side — chaos of checking multiple shop websites; right side — one clean email, decision made.
+
+Composition:
+Left half: 小黑 buried under a pile of floating price tags from 4 different shops, arms flailing, overwhelmed. Hand-drawn tags scattering everywhere.
+Orange arrow pointing right to the right half.
+Right half: 小黑 sitting calmly, holding one small envelope, single price card visible. Relaxed posture, deadpan expression.
+
+Suggested elements: price tag pile / envelope / arrow / minimal shop names as floating labels.
+
+English handwritten labels:
+"check 4 sites" / "every day??" / "→" / "one email" / "done"
+
+Color use:
+Black for main line art and 小黑. Orange for the central transition arrow. Red for the price tag chaos on the left. Blue for the calm envelope on the right.
+
+Constraints:
+One image explains only one core structure. Keep the main subject around 40-60% of the canvas. Preserve at least 35% blank white space. Use at most 5-8 short labels. Do not write a title in the top-left corner. Not a formal diagram. Strange but clean.
+-->
+
+![Before vs After: manual price checking vs one daily email](docs/illustrations/01-before-after.png)
+
+Gold Notifier automates the whole loop — scrape, compare, email — so you only need to check your inbox once a day.
 
 ---
 
-## ✨ What This Does
+## How It Works
 
-**Every 2 hours from 8am–8pm SGT**, the scraper silently collects live gold prices from 4 jewellers and saves them to Airtable — no email sent.
+<!--
+ILLUSTRATION 2 — System workflow
+Place: here, under "How It Works"
 
-**Once a day at around 5pm SGT**, a daily alert email is sent to all subscribers containing:
-1. Current prices across all 4 shops (22k & 24k)
-2. Percentage change vs the 24-hour average — so you see the day's trend, not just the last reading
-3. A visual price history chart across all shops
+Prompt:
+Generate one standalone 16:9 horizontal article illustration.
 
-Subscribers sign up via the **Next.js landing page** hosted on Vercel. Emails are stored in **Airtable**. Everything runs on **GitHub Actions** — fully serverless, zero infrastructure cost.
+Visual DNA:
+Pure white background. Minimalist black hand-drawn line art. Slightly wobbly pen lines. Lots of empty white space. Sparse handwritten English annotations. Clean absurd product-sketch feeling. No gradients, no shadows, no paper texture, no complex background, no commercial vector style, no PPT infographic look.
 
----
+Recurring IP character required:
+小黑, a small solid-black absurd creature with white dot eyes, tiny thin legs, blank serious expression, slightly uneven hand-drawn body shape. 小黑 must perform the core conceptual action, not decorate the scene.
 
-## 🏗 Architecture
+Theme: The full automated pipeline from shops to subscriber inbox.
+
+Structure type: Workflow — input → process → output.
+
+Core idea: 4 shop websites are scraped by a machine, prices are stored, and once a day one tidy email goes out to subscribers.
+
+Composition:
+Far left: four small hand-drawn shop storefronts in a loose column, labelled.
+Orange arrows pointing right into a strange hand-drawn machine in the center. 小黑 is inside the machine turning a crank, deadpan.
+Two outputs come out of the machine going right: a small cylinder (Airtable database) and a small clock/calendar.
+At 5pm the clock triggers a final orange arrow to a floating envelope on the far right labelled "daily email".
+
+Suggested elements: shop storefronts / weird crank machine / database cylinder / clock / envelope.
+
+English handwritten labels:
+"Mustafa" / "Malabar" / "Joyalukkas" / "GRT" / "every 2h" / "5pm SGT" / "your inbox"
+
+Color use:
+Black for main line art and 小黑. Orange for all flow arrows and main paths. Blue for the database cylinder. Red only for the clock trigger moment.
+
+Constraints:
+One image explains only one core structure. Keep the main subject around 40-60% of the canvas. Preserve at least 35% blank white space. At most 7 short labels. No title in top-left corner. Not a formal flowchart or system architecture diagram. Invent a fresh machine metaphor — do not reuse conveyor belts or prior compositions.
+-->
+
+![System pipeline: scrape 4 shops → Airtable → daily email](docs/illustrations/02-system-flow.png)
+
+**Every 2 hours (8am–8pm SGT):** `gold_bot.py` scrapes live prices from all 4 jewellers and writes them to Airtable. No email is sent.
+
+**Once daily at 5pm SGT:** `daily_alert.py` reads the last 24 hours of prices, calculates the trend, and sends one email to every subscriber.
 
 ```
-GitHub Actions (cron / manual)        goldnotifier.com/trigger (phone)
-        │                                        │
-        ▼                                        ▼
-  gold_bot.py  ──── scrape ────►  Mustafa · Malabar · Joyalukkas · GRT
-        │
-        ├── read/write ──► Airtable (subscribers · prices · history)
-        │
-        └── (scrape-only, no email)
+GitHub Actions (cron)           goldnotifier.com/trigger (phone)
+       │                                   │
+       ▼                                   ▼
+ gold_bot.py ── scrape ──► Mustafa · Malabar · Joyalukkas · GRT
+       │
+       └── read/write ──► Airtable (subscribers · prices · history)
 
-Daily Alert Workflow
-        │
-        ▼
-  daily_alert.py ──► Airtable (prices · subscribers) ──► Namecheap SMTP ──► Subscribers
+Daily at 5pm SGT
+       │
+       ▼
+ daily_alert.py ──► Airtable ──► Namecheap SMTP ──► Subscribers
 
-Announcement Workflow (manual dispatch)
-        │
-        ▼
-  announcement.py ──► Airtable (subscribers) ──► Namecheap SMTP ──► Subscribers
-
-Next.js 14 / Vercel (goldnotifier.com)
-  / · /unsubscribe · /trigger
-        │
-        └── API routes ──► Airtable
-              ├── /api/subscribe       ← add subscriber
-              ├── /api/unsubscribe/*   ← OTP-based unsub flow
-              ├── /api/metrics         ← live counts
-              ├── /api/visitors        ← session visitor counter
-              └── /api/trigger         ← dispatch GitHub workflow
-```
-
----
-
-## 🎨 Frontend — Dark Luxury Gold UI
-
-Built with **Next.js 14 App Router**, pure CSS, and Google Fonts. No UI library dependencies. Server components used for SEO-critical sections so Googlebot can index the full page.
-
-| Element | Choice |
-|---|---|
-| **Display font** | Cormorant Garamond (serif, editorial) |
-| **Body font** | Outfit (modern, clean) |
-| **Number font** | JetBrains Mono (monospaced, precise) |
-| **Gold accent** | `#c8a84b` — real 22k gold hue |
-| **Background** | `#070708` near-black |
-| **Motion** | Canvas particle system (130 gold dust particles + 7 glow orbs) |
-
-### Page Sections
-
-1. **Announcement bar** — animated gold shimmer · "100% Free for Life — Limited Early Access"
-2. **Hero** — live badge, Cormorant headline with shimmer animation, subscribe form, live metrics, interactive 3D gold bar
-3. **Stats band** — 4 shops · 22k & 24k · 100% free
-4. **Features** — 4 cards with gold border glow on hover
-5. **Testimonials** — 2-column social proof cards
-6. **How It Works** — 3-step process with connector lines
-7. **Value Prop** — "Save up to S$350 per 100g" with gold shimmer
-8. **CTA** — repeat subscribe form
-9. **Footer**
-
-### React Components
-
-| Component | Purpose |
-|---|---|
-| **GoldBar3D** | Interactive 3D CSS gold bar; scroll-driven Y-rotation (−28° → +28°) with smooth X-tilt |
-| **GoldCanvas** | Canvas particle system: 130 gold dust particles + 7 ambient glow orbs |
-| **SubscribeForm** | Email subscription form with idle/loading/success/error/duplicate states |
-| **LiveMetrics** | Live subscriber + alert counts, auto-refreshes every 30 s |
-| **VisitorBadge** | Session-based visitor counter badge |
-| **RevealObserver** | Intersection observer for staggered scroll-reveal animations |
-| **ScrollToFormButton** | Smooth scroll anchor to `#subscribe` |
-
----
-
-## 📁 Project Structure
-
-```
-Gold-Notifier-SG/
-├── web/                        ← Next.js app (deploy this to Vercel)
-│   ├── app/
-│   │   ├── globals.css         ← All styles + gold animations
-│   │   ├── layout.tsx          ← Root layout, metadata, schema.org JSON-LD
-│   │   ├── page.tsx            ← Landing page (server component shell)
-│   │   ├── robots.ts           ← robots.txt generation
-│   │   ├── sitemap.ts          ← sitemap.xml generation
-│   │   ├── opengraph-image.tsx ← OG image (1200×630)
-│   │   ├── components/
-│   │   │   ├── GoldBar3D.tsx        ← Scroll-driven 3D gold bar
-│   │   │   ├── GoldCanvas.tsx       ← Canvas particle system
-│   │   │   ├── SubscribeForm.tsx    ← Email subscribe form
-│   │   │   ├── LiveMetrics.tsx      ← Live subscriber/alert counter
-│   │   │   ├── VisitorBadge.tsx     ← Visitor counter badge
-│   │   │   ├── RevealObserver.tsx   ← Scroll reveal helper
-│   │   │   └── ScrollToFormButton.tsx
-│   │   ├── unsubscribe/        ← OTP unsubscribe flow (email → OTP → done)
-│   │   ├── trigger/            ← Phone-friendly manual trigger UI
-│   │   └── api/
-│   │       ├── subscribe/      ← POST: add subscriber to Airtable
-│   │       ├── metrics/        ← GET: live subscriber + alert counts
-│   │       ├── visitors/       ← GET/POST: session-based visitor counter
-│   │       ├── unsubscribe/
-│   │       │   ├── request/    ← POST: send OTP to email
-│   │       │   └── confirm/    ← POST: verify OTP + delete subscriber
-│   │       └── trigger/        ← POST: dispatch workflow via GitHub API
-│   ├── .env.local.example      ← Copy to .env.local with your keys
-│   ├── vercel.json
-│   └── package.json
-├── scraper/
-│   ├── gold_bot.py             ← Scraper + Airtable writer (--scrape-only skips email)
-│   └── price_tracker.py        ← Price change calculations + formatting
-├── notifications/
-│   ├── daily_alert.py          ← Daily 5pm email with 24h average comparison + chart
-│   ├── announcement.py         ← Manual announcement broadcaster
-│   └── test_email.py           ← Test send to dev address only
-├── scripts/
-│   ├── build_docx.py           ← Dev utility: build docs
-│   └── demo_video.py           ← Dev utility: demo video helper
-├── requirements.txt            ← Python dependencies (shared)
-├── .github/
-│   └── workflows/
-│       ├── goldrates.yml       ← Cron scraper (every 2h, 8am–8pm SGT, no email)
-│       ├── daily_alert.yml     ← Daily alert at 5pm SGT (24h avg comparison)
-│       ├── announcement.yml    ← Manual announcement broadcast
-│       └── test_email.yml      ← Manual test email (dev only)
-└── docs/
-    └── screenshots/            ← UI screenshots
+Next.js / Vercel  (goldnotifier.com)
+  └── API routes ──► Airtable
+        ├── /api/subscribe
+        ├── /api/unsubscribe/*  (OTP flow)
+        ├── /api/metrics
+        ├── /api/visitors
+        └── /api/trigger        (dispatch workflow from phone)
 ```
 
 ---
 
-## 🚀 Setup
+## What You Get in the Email
 
-### 1 — Clone
+<!--
+ILLUSTRATION 3 — Schedule / rhythm
+Place: here, after "What You Get in the Email" heading
 
-```bash
-git clone https://github.com/unaveenj/Gold-Notifier-SG.git
-cd Gold-Notifier-SG
-```
+Prompt:
+Generate one standalone 16:9 horizontal article illustration.
 
-### 2 — Web App (Next.js → Vercel)
+Visual DNA:
+Pure white background. Minimalist black hand-drawn line art. Slightly wobbly pen lines. Lots of empty white space. Sparse handwritten English annotations. Clean absurd product-sketch feeling. No gradients, no shadows, no paper texture, no complex background, no commercial vector style, no PPT infographic look.
 
-```bash
-cd web
-npm install
+Recurring IP character required:
+小黑, a small solid-black absurd creature with white dot eyes, tiny thin legs, blank serious expression, slightly uneven hand-drawn body shape. 小黑 must perform the core conceptual action, not decorate the scene.
 
-# Copy and fill in your keys
-cp .env.local.example .env.local
-```
+Theme: Silent data collection all day, then one decisive delivery at 5pm.
 
-`.env.local`:
-```
-AIRTABLE_API_KEY=your_airtable_personal_access_token
-AIRTABLE_BASE_ID=your_airtable_base_id
-GITHUB_TOKEN=your_github_pat          # for /trigger endpoint
-TRIGGER_SECRET=your_trigger_secret    # optional auth for trigger UI
-```
+Structure type: Conceptual metaphor.
 
-Run locally:
-```bash
-npm run dev   # http://localhost:3000
-```
+Core idea: 小黑 quietly fills a bucket with data points all day (each drip = one scrape), then at 5pm tips the full bucket into a funnel that produces a single neat envelope.
 
-**Deploy to Vercel:**
-1. Import repo at [vercel.com/new](https://vercel.com/new)
-2. Set **Root Directory** → `web`
-3. Add environment variables: `AIRTABLE_API_KEY`, `AIRTABLE_BASE_ID`, `GITHUB_TOKEN`, `TRIGGER_SECRET`
-4. Deploy ✓
+Composition:
+Left side: a tall narrow bucket. A dripping tap above it with very thin orange drips falling in. Small clock-like marks beside the drips showing "every 2h". 小黑 stands beside the bucket watching it fill, arms at sides, expressionless.
+Right side: at 5pm mark, 小黑 tips the bucket into a wide funnel. Out the funnel's narrow end comes one small envelope with an orange arrow pointing to the right edge of the canvas.
+The funnel is slightly strange/wobbly looking.
 
-### 3 — Scraper (Python)
+Suggested elements: dripping tap / bucket / funnel / envelope / time marks.
 
-```bash
-pip install -r requirements.txt
-```
+English handwritten labels:
+"every 2h" / "8am–8pm" / "silent" / "5pm" / "→ inbox"
 
-### 4 — Email (Namecheap Private Email)
+Color use:
+Black for main line art and 小黑. Orange for drips, the tipping action, and the final arrow. Blue only for the bucket fill level. Red for the "5pm" moment.
 
-Emails are sent from `alerts@goldnotifier.com` via Namecheap Private Email SMTP:
+Constraints:
+One image, one idea. Preserve at least 35% white space. At most 5 short labels. No title in top-left corner. Strange but tidy. Do not copy prior funnel/conveyor/fish compositions.
+-->
 
-- **Host:** `mail.privateemail.com`
-- **Port:** `587` (STARTTLS)
-- **Username:** `alerts@goldnotifier.com`
-- **Password:** mailbox password set in Namecheap dashboard
+![Silent all-day scraping, then one email at 5pm](docs/illustrations/03-schedule-rhythm.png)
 
-For support or queries: **alerts@goldnotifier.com**
+Each daily email contains:
 
-### 5 — GitHub Secrets
-
-Go to `Repo → Settings → Secrets → Actions`:
-
-| Secret | Description |
-|---|---|
-| `AIRTABLE_API_KEY` | Airtable personal access token |
-| `AIRTABLE_BASE_ID` | Airtable base ID |
-| `EMAIL_USER` | `alerts@goldnotifier.com` |
-| `EMAIL_PASSWORD` | Namecheap mailbox password |
-
----
-
-## ⏰ Schedule
-
-Two separate workflows handle data collection and alerting independently:
-
-### Data collection — `goldrates.yml`
-Scrapes all 4 shops and saves to Airtable. **No email sent.**
-
-```yaml
-"5 0,2,4,6,8,10,12 * * *"
-# UTC 00:05–12:05 = SGT 08:05–20:05, every 2 hours
-```
-
-| UTC | SGT |
-|-----|-----|
-| 00:05 | 08:05 |
-| 02:05 | 10:05 |
-| 04:05 | 12:05 |
-| 06:05 | 14:05 |
-| 08:05 | 16:05 |
-| 10:05 | 18:05 |
-| 12:05 | 20:05 |
-
-### Daily alert — `daily_alert.yml`
-Sends one email per day at **5:00 PM SGT** with current prices and 24h average comparison.
-
-```yaml
-"0 9 * * *"
-# UTC 09:00 = SGT 17:00
-```
-
----
-
-## 🧠 Reliability
-
-- ✅ Max 3 retry attempts per scrape with exponential backoff (0.5s, 1s, 2s)
-- ✅ 45-second total scrape deadline
-- ✅ Numeric price validation with plausibility range check (80–600 SGD)
-- ✅ Cloudscraper for Cloudflare-protected shops (GRT)
-- ✅ Failure email sent even when scrape fails
-- ✅ Duplicate subscription protection (Airtable dedup)
-- ✅ OTP-protected unsubscribe (6-digit code, 10-minute TTL)
-- ✅ Live subscriber + alert counts on landing page (30s refresh)
-- ✅ Fully serverless — no server to maintain
-
----
-
-## 🔍 SEO
-
-- **Schema.org JSON-LD** — WebSite, Organization, Service, and FAQPage structured data
-- **Open Graph + Twitter Card** — 1200×630 OG image generated server-side
-- **robots.ts / sitemap.ts** — Auto-generated via Next.js App Router
-- **Server components** — SEO-critical page sections rendered server-side for full Googlebot indexing
-- **Canonical URL** — `https://www.goldnotifier.com`
-
----
-
-## 📧 Email Notification Preview
-
-![Gold Price Alert Email](docs/screenshots/gold-notification-email.png)
-
----
-
-## 📲 Email Format
-
-Sent once daily at **5pm SGT**. Each shop shows current price and % change vs the 24-hour average:
+1. **Current prices** across all 4 shops — 22k and 24k
+2. **% change vs the 24-hour average** — so you see the day's trend, not just one snapshot
+3. **A visual price history chart** across all shops
 
 ```
 📊 Daily Gold Price Update (SGD)
@@ -314,23 +192,216 @@ As at 2026-03-28 17:00:00 SGT
 ...
 ```
 
+![Gold Price Alert Email](docs/screenshots/gold-notification-email.png)
+
 ---
 
-## 🛠 Scraper — Target Shops
+## Screenshots
 
-| Shop | Method | Notes |
+![Gold Notifier Full Page](docs/screenshots/full-page.png)
+
+---
+
+## Architecture
+
+### Data Collection Schedule
+
+Two independent workflows handle scraping and alerting:
+
+**Scraper — `goldrates.yml`** (no email, data only)
+```yaml
+"5 0,2,4,6,8,10,12 * * *"
+# UTC 00:05–12:05 = SGT 08:05–20:05, every 2 hours
+```
+
+**Daily Alert — `daily_alert.yml`**
+```yaml
+"0 9 * * *"
+# UTC 09:00 = SGT 17:00
+```
+
+### Target Shops
+
+| Shop | Scrape Method | Notes |
 |---|---|---|
 | **Mustafa Jewellery** | HTML (requests) | `#22k_price1`, `#24k_price1` |
 | **Malabar Gold SG** | HTML (requests) | `#price22kt_85`, `#price24kt_85` |
 | **Joyalukkas SG** | GraphQL API | POST with `Store: "sg"` header |
-| **GRT Jewels SG** | HTML (cloudscraper) | Cloudflare WAF bypass, regex price extraction |
+| **GRT Jewels SG** | HTML (cloudscraper) | Cloudflare WAF bypass, regex extraction |
+
+### Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | Next.js 14 App Router, TypeScript, pure CSS |
+| **Hosting** | Vercel |
+| **Scraper** | Python 3.11, requests, cloudscraper |
+| **Database** | Airtable (subscribers, prices, history) |
+| **Scheduler** | GitHub Actions (cron) |
+| **Email** | Namecheap Private Email SMTP |
 
 ---
 
-## 📈 Roadmap
+## Setup
+
+### 1 — Clone
+
+```bash
+git clone https://github.com/unaveenj/Gold-Notifier-SG.git
+cd Gold-Notifier-SG
+```
+
+### 2 — Web App (Next.js → Vercel)
+
+```bash
+cd web
+npm install
+cp .env.local.example .env.local
+```
+
+Fill in `.env.local`:
+```
+AIRTABLE_API_KEY=your_airtable_personal_access_token
+AIRTABLE_BASE_ID=your_airtable_base_id
+GITHUB_TOKEN=your_github_pat
+TRIGGER_SECRET=your_trigger_secret
+```
+
+Run locally:
+```bash
+npm run dev   # http://localhost:3000
+```
+
+**Deploy to Vercel:** Import repo → set Root Directory to `web` → add env vars → deploy.
+
+### 3 — Python Scraper
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4 — Email (Namecheap SMTP)
+
+Sent from `alerts@goldnotifier.com`:
+
+| Setting | Value |
+|---|---|
+| Host | `mail.privateemail.com` |
+| Port | `587` (STARTTLS) |
+| Username | `alerts@goldnotifier.com` |
+
+### 5 — GitHub Secrets
+
+`Repo → Settings → Secrets → Actions`:
+
+| Secret | Description |
+|---|---|
+| `AIRTABLE_API_KEY` | Airtable personal access token |
+| `AIRTABLE_BASE_ID` | Airtable base ID |
+| `EMAIL_USER` | `alerts@goldnotifier.com` |
+| `EMAIL_PASSWORD` | Namecheap mailbox password |
+
+---
+
+## Frontend — Dark Luxury Gold UI
+
+Built with Next.js 14 App Router, pure CSS, and Google Fonts. No UI library.
+
+| Element | Choice |
+|---|---|
+| **Display font** | Cormorant Garamond (serif, editorial) |
+| **Body font** | Outfit (modern, clean) |
+| **Number font** | JetBrains Mono (monospaced) |
+| **Gold accent** | `#c8a84b` — real 22k gold hue |
+| **Background** | `#070708` near-black |
+| **Motion** | Canvas particle system — 130 gold dust particles + 7 glow orbs |
+
+### React Components
+
+| Component | Purpose |
+|---|---|
+| **GoldBar3D** | Scroll-driven 3D CSS gold bar (−28° → +28° Y-rotation) |
+| **GoldCanvas** | 130 gold dust particles + 7 ambient glow orbs |
+| **SubscribeForm** | Email form with idle / loading / success / error / duplicate states |
+| **LiveMetrics** | Live subscriber + alert counts, auto-refreshes every 30s |
+| **VisitorBadge** | Session-based visitor counter |
+| **RevealObserver** | Intersection observer for staggered scroll-reveal |
+| **ScrollToFormButton** | Smooth scroll anchor to `#subscribe` |
+
+---
+
+## Reliability
+
+- Max 3 retry attempts per scrape with exponential backoff (0.5s, 1s, 2s)
+- 45-second total scrape deadline
+- Numeric price validation — plausibility range check (80–600 SGD)
+- Cloudscraper for Cloudflare-protected shops (GRT)
+- Failure email sent even when scrape fails
+- Duplicate subscription protection via Airtable dedup
+- OTP-protected unsubscribe (6-digit code, 10-minute TTL)
+- Fully serverless — no server to maintain
+
+---
+
+## SEO
+
+- Schema.org JSON-LD — WebSite, Organization, Service, FAQPage
+- Open Graph + Twitter Card — 1200×630 OG image generated server-side
+- `robots.ts` / `sitemap.ts` via Next.js App Router
+- SEO-critical sections rendered as server components for Googlebot
+- Canonical URL: `https://www.goldnotifier.com`
+
+---
+
+## Project Structure
+
+```
+Gold-Notifier-SG/
+├── web/                        ← Next.js app (deploy to Vercel)
+│   ├── app/
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   ├── components/
+│   │   │   ├── GoldBar3D.tsx
+│   │   │   ├── GoldCanvas.tsx
+│   │   │   ├── SubscribeForm.tsx
+│   │   │   ├── LiveMetrics.tsx
+│   │   │   ├── VisitorBadge.tsx
+│   │   │   └── RevealObserver.tsx
+│   │   ├── unsubscribe/        ← OTP unsubscribe flow
+│   │   ├── trigger/            ← Phone-friendly manual trigger
+│   │   └── api/
+│   │       ├── subscribe/
+│   │       ├── metrics/
+│   │       ├── visitors/
+│   │       ├── unsubscribe/request/
+│   │       ├── unsubscribe/confirm/
+│   │       └── trigger/
+│   └── package.json
+├── scraper/
+│   ├── gold_bot.py             ← Scraper + Airtable writer
+│   └── price_tracker.py        ← Price change calculations
+├── notifications/
+│   ├── daily_alert.py          ← Daily 5pm email
+│   ├── announcement.py         ← Manual broadcast
+│   └── test_email.py
+├── .github/workflows/
+│   ├── goldrates.yml           ← Cron scraper (every 2h, 8am–8pm SGT)
+│   ├── daily_alert.yml         ← Daily alert at 5pm SGT
+│   ├── announcement.yml        ← Manual broadcast
+│   └── test_email.yml
+└── docs/
+    ├── screenshots/
+    └── illustrations/          ← Xiaohei illustrations (see prompts in README comments)
+```
+
+---
+
+## Roadmap
 
 - [x] Historical price chart in email
-- [x] Price threshold alerts (notify only when below X)
+- [x] Price threshold alerts
 - [x] Unsubscribe link in email footer
 - [x] Multiple pricing sources — Mustafa, Malabar, Joyalukkas, GRT
 - [x] Daily digest with 24h average comparison
@@ -342,23 +413,21 @@ As at 2026-03-28 17:00:00 SGT
 
 ---
 
-## ⚠ Disclaimer
+## Disclaimer
 
-Scrapes publicly available data for personal monitoring purposes only. Ensure compliance with the target website's terms of service before deploying at scale.
+Scrapes publicly available data for personal monitoring purposes only. Ensure compliance with each website's terms of service before deploying at scale.
 
 ---
 
-## 📰 Featured Article
+## Featured Article
 
 [You Can't Time the Gold Market — But You Can Still Buy Smart](https://medium.com/@unaveenj/you-cant-time-the-gold-market-but-you-can-still-buy-smart-7c9888cbfd63)
 
-How Gold Notifier helps Singapore buyers compare prices across jewellers and make smarter purchase decisions.
-
 ---
 
-## 🧑‍💻 Author
+## Author
 
-Built as a lightweight serverless automation to help Singapore gold buyers time their purchases.
+Built as a lightweight serverless automation to help Singapore gold buyers compare prices and time their purchases.
 
 **Website:** [www.goldnotifier.com](https://www.goldnotifier.com)  
 **Contact:** alerts@goldnotifier.com
