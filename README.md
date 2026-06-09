@@ -204,12 +204,6 @@ As at 2026-03-28 17:00:00 SGT
 
 ---
 
-## Screenshots
-
-![Gold Notifier Full Page](docs/screenshots/full-page.png)
-
----
-
 ## Architecture
 
 ### Data Collection Schedule
