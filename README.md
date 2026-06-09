@@ -13,6 +13,12 @@
 
 ---
 
+## Demo
+
+[![Gold Notifier SG — Product Demo](https://img.youtube.com/vi/u0Ga1t7mMMA/maxresdefault.jpg)](https://youtu.be/u0Ga1t7mMMA?feature=shared)
+
+---
+
 ## The Problem It Solves
 
 Gold prices in Singapore change daily and vary across shops — Mustafa, Malabar, Joyalukkas, GRT. Checking all four manually to find the best time to buy is tedious and easy to forget.
