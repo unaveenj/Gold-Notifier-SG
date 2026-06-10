@@ -178,6 +178,8 @@ One image, one idea. Preserve at least 35% white space. At most 5 short labels. 
 
 ![Silent all-day scraping, then one email at 5pm](docs/illustrations/03-schedule-rhythm.svg)
 
+![Daily gold price email preview](docs/screenshots/email-preview.gif)
+
 Each daily email contains:
 
 1. **Current prices** across all 4 shops — 22k and 24k
