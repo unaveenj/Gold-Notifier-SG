@@ -15,7 +15,9 @@
 
 ## Demo
 
-[![Gold Notifier SG — Product Demo](https://img.youtube.com/vi/u0Ga1t7mMMA/maxresdefault.jpg)](https://youtu.be/u0Ga1t7mMMA?feature=shared)
+![Gold Notifier SG — Product Demo](docs/screenshots/product-demo.gif)
+
+▶ [Watch on YouTube](https://youtu.be/u0Ga1t7mMMA?feature=shared)
 
 ---
 
