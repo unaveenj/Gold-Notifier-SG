@@ -61,7 +61,7 @@ Constraints:
 One image explains only one core structure. Keep the main subject around 40-60% of the canvas. Preserve at least 35% blank white space. Use at most 5-8 short labels. Do not write a title in the top-left corner. Not a formal diagram. Strange but clean.
 -->
 
-![Before vs After: manual price checking vs one daily email](docs/illustrations/01-before-after.svg)
+
 
 Gold Notifier automates the whole loop — scrape, compare, email — so you only need to check your inbox once a day.
 
