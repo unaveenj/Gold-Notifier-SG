@@ -108,6 +108,8 @@ One image explains only one core structure. Keep the main subject around 40-60% 
 
 ![System pipeline: scrape 4 shops → Airtable → daily email](docs/illustrations/02-system-flow.svg)
 
+![How Gold Notifier works](docs/screenshots/how-it-works.gif)
+
 **Every 2 hours (8am–8pm SGT):** `gold_bot.py` scrapes live prices from all 4 jewellers and writes them to Airtable. No email is sent.
 
 **Once daily at 5pm SGT:** `daily_alert.py` reads the last 24 hours of prices, calculates the trend, and sends one email to every subscriber.
